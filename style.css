@@ -136,7 +136,9 @@ button:hover {
     }
 }
 
+    @media (max-width: 480px) {
     #game-screen, #start-screen, #task-screen, #end-screen {
-        padding: 10px;
+        padding: 5px;  /* Weniger Abstand für mehr Platz */
     }
 }
+
