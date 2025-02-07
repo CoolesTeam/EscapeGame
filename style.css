@@ -70,3 +70,32 @@ button {
 button:hover {
     opacity: 0.8;
 }
+/* Anpassung für Tablets */
+@media (max-width: 768px) {
+    body {
+        background-size: cover;
+    }
+
+    button {
+        font-size: 18px;
+        padding: 12px 15px;
+        width: 80%;
+    }
+}
+
+/* Anpassung für Smartphones */
+@media (max-width: 480px) {
+    h1, h2 {
+        font-size: 22px;
+    }
+
+    button {
+        font-size: 16px;
+        padding: 10px 12px;
+        width: 90%;
+    }
+
+    #game-screen, #start-screen, #task-screen, #end-screen {
+        padding: 10px;
+    }
+}
