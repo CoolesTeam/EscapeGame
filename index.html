@@ -10,14 +10,14 @@
 <body>
 
     <!-- Startbildschirm -->
-    <div id="start-screen">
-        <h1>Willkommen im Escape Game!</h1>
-        <p>Hilf Miraculix, die Zutaten für den Zaubertrank zu sammeln!</p>
-        <button onclick="startGame()">Spiel starten</button>
-    </div>
+<div id="start-screen">
+    <h1>Willkommen im Escape Game!</h1>
+    <p>Hilf Miraculix, die Zutaten für den Zaubertrank zu sammeln!</p>
+    <button onclick="startGame()">Spiel starten</button>
+</div>
 
-    <!-- Spielbereich (Landkarte mit Regionen) -->
-    <div id="game-screen">
+<!-- Spielbereich (zuerst unsichtbar) -->
+<div id="game-screen" style="display: none;">
     <h2>Wähle eine Region:</h2>
     <div class="map">
         <button id="btn-wald" onclick="goTo('wald')">🌲 Wald</button>
@@ -26,7 +26,6 @@
     </div>
     <p>Gesammelte Sterne: <span id="stars-count">0</span> ⭐</p>
 </div>
-
 
     <!-- Aufgabenbereich -->
     <div id="task-screen" style="display: none;">
