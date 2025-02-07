@@ -108,15 +108,11 @@ button:hover {
 
 /* Anpassung für Smartphones */
 @media (max-width: 480px) {
-    h1, h2 {
-        font-size: 22px;
-    }
+    #btn-wald { top: 30%; left: 10%; width: 120px; height: 40px; font-size: 18px; }
+    #btn-dorf { top: 60%; left: 50%; transform: translate(-50%, -50%); width: 120px; height: 40px; font-size: 18px; }
+    #btn-fluss { top: 90%; left: 50%; transform: translateX(-50%); width: 120px; height: 40px; font-size: 18px; }
+}
 
-    button {
-        font-size: 16px;
-        padding: 10px 12px;
-        width: 90%;
-    }
 
     #game-screen, #start-screen, #task-screen, #end-screen {
         padding: 10px;
