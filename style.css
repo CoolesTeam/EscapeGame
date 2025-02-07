@@ -107,7 +107,7 @@ button:hover {
 }
 
 @media (max-width: 480px) {
-    /* Spielbildschirm perfekt anpassen */
+    /* Spielbildschirm für mobile Geräte */
     #game-screen {
         padding: 0;
         margin: 0;
@@ -117,30 +117,32 @@ button:hover {
         flex-direction: column;
         align-items: center;
         justify-content: center;
+        position: relative;
     }
 
-    /* Buttons für Regionen kleiner machen & korrekt positionieren */
+    /* Buttons für Regionen auf kleine Größe anpassen */
     .map button {
-        width: 80px;  
-        height: 35px;
-        font-size: 14px;
+        width: 70px;   /* Kleinere Buttons */
+        height: 30px;
+        font-size: 12px;
+        padding: 5px 10px;
     }
 
-    /* Individuelle Button-Positionen für Smartphones */
+    /* Individuelle Positionen für die Buttons */
     #btn-wald { 
-        top: 18%;
-        left: 15%;
+        top: 15%;
+        left: 10%;
     }
 
     #btn-dorf { 
-        top: 50%;
+        top: 45%;
         left: 50%;
         transform: translate(-50%, -50%);
     }
 
     #btn-fluss { 
-        top: 80%;
-        left: 50%;
-        transform: translateX(-50%);
+        top: 75%;
+        left: 40%;
     }
 }
+
