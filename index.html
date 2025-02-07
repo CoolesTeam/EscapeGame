@@ -17,15 +17,16 @@
     </div>
 
     <!-- Spielbereich (Landkarte mit Regionen) -->
-    <div id="game-screen" style="display: none;">
-        <h2>Wähle eine Region:</h2>
-        <div class="map">
-            <button id="btn-wald" onclick="goTo('wald')">🌲 Wald</button>
-            <button id="btn-dorf" onclick="goTo('dorf')">🏠 Dorf</button>
-            <button id="btn-fluss" onclick="goTo('fluss')">🌊 Fluss</button>
-        </div>
-        <p>Gesammelte Sterne: <span id="stars-count">0</span> ⭐</p>
+    <div id="game-screen">
+    <h2>Wähle eine Region:</h2>
+    <div class="map">
+        <button id="btn-wald" onclick="goTo('wald')">🌲 Wald</button>
+        <button id="btn-dorf" onclick="goTo('dorf')">🏠 Dorf</button>
+        <button id="btn-fluss" onclick="goTo('fluss')">🌊 Fluss</button>
     </div>
+    <p>Gesammelte Sterne: <span id="stars-count">0</span> ⭐</p>
+</div>
+
 
     <!-- Aufgabenbereich -->
     <div id="task-screen" style="display: none;">
