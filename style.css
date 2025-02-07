@@ -99,15 +99,11 @@ button:hover {
 }
 /* Anpassung für Tablets */
 @media (max-width: 768px) {
-    body {
-        background-size: cover;
-    }
+    #btn-wald { top: 25%; left: 20%; }
+    #btn-dorf { top: 55%; left: 50%; transform: translate(-50%, -50%); }
+    #btn-fluss { top: 85%; left: 65%; }
+}
 
-    button {
-        font-size: 18px;
-        padding: 12px 15px;
-        width: 80%;
-    }
 }
 
 /* Anpassung für Smartphones */
