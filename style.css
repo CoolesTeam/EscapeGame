@@ -108,10 +108,35 @@ button:hover {
 
 /* Anpassung für Smartphones */
 @media (max-width: 480px) {
-    #btn-wald { top: 30%; left: 10%; width: 120px; height: 40px; font-size: 18px; }
-    #btn-dorf { top: 60%; left: 50%; transform: translate(-50%, -50%); width: 120px; height: 40px; font-size: 18px; }
-    #btn-fluss { top: 90%; left: 50%; transform: translateX(-50%); width: 120px; height: 40px; font-size: 18px; }
+    /* Wald-Button weiter nach oben und leicht nach rechts */
+    #btn-wald { 
+        top: 25%;
+        left: 20%;
+        width: 100px;
+        height: 35px;
+        font-size: 16px;
+    }
+
+    /* Dorf-Button genau in der Mitte */
+    #btn-dorf { 
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 100px;
+        height: 35px;
+        font-size: 16px;
+    }
+
+    /* Fluss-Button nach unten, aber mittiger */
+    #btn-fluss { 
+        top: 75%;
+        left: 40%;
+        width: 100px;
+        height: 35px;
+        font-size: 16px;
+    }
 }
+
 
 
     #game-screen, #start-screen, #task-screen, #end-screen {
