@@ -53,7 +53,7 @@ body {
 /* Individuelle Positionen */
 #btn-wald { top: 20%; left: 10%; background: green; }
 #btn-dorf { top: 50%; left: 50%; transform: translate(-50%, -50%); background: brown; }
-#btn-fluss { top: 80%; left: 75%; background: blue; }
+#btn-fluss { top: 40%; left: 75%; background: blue; }
 
 /* Allgemeine Button-Stile */
 button {
