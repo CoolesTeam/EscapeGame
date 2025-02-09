@@ -40,7 +40,7 @@ function showSubregions(region) {
         let btn = document.createElement("button");
         btn.textContent = sub;
         btn.classList.add("button", "subregion-button");
-        btn.onclick = () => startTask(sub);
+        btn.onclick = function () { startTask(sub); };
         container.appendChild(btn);
     });
 }
