@@ -57,9 +57,9 @@ body {
 }
 
 /* Beispiel-Positionen der Buttons (Änderbar nach Belieben) */
-#wald-button { top: 30%; left: 20%; }
-#dorf-button { top: 50%; left: 50%; transform: translate(-50%, -50%); }
-#fluss-button { top: 70%; left: 80%; }
+#wald-button { top: 30%; left: 10%; }
+#dorf-button { top: 60%; left: 50%; transform: translate(-50%, -50%); }
+#fluss-button { top: 50%; left: 70%; }
 
 /* Spielbildschirm */
 #game-screen, #task-screen {
