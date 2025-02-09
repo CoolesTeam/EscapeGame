@@ -8,10 +8,43 @@ const subregions = {
     fluss: ["Fluss aufwärts", "Der Hafen", "Fluss abwärts"]
 };
 
-/* Fragen */
+/* Alle Fragen mit Antworten */
 const questions = {
-    "Weg": [{ question: "Finde das Reflexivpronomen.", answers: ["Sunt", "item", "quae", "appellantur"], correct: 2 }],
-    "Baum": [{ question: "Markiere das Subjekt.", answers: ["bos", "cervi", "figura"], correct: 0 }]
+    "Weg": [{
+        question: "Finde das Reflexivpronomen.",
+        answers: ["Sunt", "item", "quae", "appellantur"],
+        correct: 2
+    }],
+    "Baum": [{
+        question: "Markiere das Subjekt.",
+        answers: ["bos", "cervi", "figura"],
+        correct: 0
+    }],
+    "Die Bewohner": [{
+        question: "Wie heißt der Druide des Dorfes?",
+        answers: ["Asterix", "Miraculix", "Majestix", "Obelix"],
+        correct: 1
+    }],
+    "Der Markt": [{
+        question: "Was wird auf dem Markt verkauft?",
+        answers: ["Zaubertrank", "Fisch", "Schilde", "Römerhelme"],
+        correct: 1
+    }],
+    "Fluss aufwärts": [{
+        question: "Welcher Fluss fließt durch Gallien?",
+        answers: ["Seine", "Rhein", "Loire", "Garonne"],
+        correct: 0
+    }],
+    "Der Hafen": [{
+        question: "Welche Stadt hat einen Hafen in Gallien?",
+        answers: ["Lutetia", "Massilia", "Bibracte", "Avaricum"],
+        correct: 1
+    }],
+    "Fluss abwärts": [{
+        question: "Welches Schiff ist für den Transport auf dem Fluss bekannt?",
+        answers: ["Trireme", "Langboot", "Handelsbarke", "Kogge"],
+        correct: 2
+    }]
 };
 
 /* Navigation */
@@ -47,9 +80,34 @@ function startTask(subregion) {
     document.getElementById('subregion-screen').style.display = 'none';
     document.getElementById('task-screen').style.display = 'block';
     document.getElementById('task-title').textContent = `Aufgabe in ${subregion}`;
-    document.getElementById('question-text').textContent = questions[subregion][0].question;
+
+    let task = questions[subregion][0];
+
+    document.getElementById('question-text').textContent = task.question;
+
+    let answerContainer = document.getElementById('answers-container');
+    answerContainer.innerHTML = "";  // Antworten-Container leeren
+
+    task.answers.forEach((answer, index) => {
+        let btn = document.createElement("button");
+        btn.textContent = answer;
+        btn.classList.add("button", "answer-button");
+        btn.onclick = function () { checkAnswer(index, task.correct); };
+        answerContainer.appendChild(btn);
+    });
 }
 
+/* Antwort überprüfen */
+function checkAnswer(selectedIndex, correctIndex) {
+    if (selectedIndex === correctIndex) {
+        alert("Richtig! ⭐");
+    } else {
+        alert("Falsch ❌");
+    }
+    setTimeout(backToSubregions, 1000);
+}
+
+/* Navigation */
 function backToRegions() {
     document.getElementById('subregion-screen').style.display = 'none';
     document.getElementById('game-screen').style.display = 'block';
