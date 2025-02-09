@@ -57,32 +57,21 @@ body {
     height: 100%;
 }
 
-/* Stil für Buttons */
-.button {
-    padding: 15px 30px;
-    font-size: 18px;
-    border: none;
-    cursor: pointer;
-    transition: 0.3s;
-    margin: 10px;
-}
-
 /* Frei positionierbare Buttons */
 .region-button {
     position: absolute;
     background-color: rgba(0, 123, 255, 0.8);
     color: white;
     border-radius: 8px;
+    padding: 15px 20px;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
 }
 
-/* Fix für unsichtbare Buttons */
-#wald-button, #dorf-button, #fluss-button {
-    display: block; /* Sicherstellen, dass sie sichtbar sind */
-}
-
-/* Beispiel-Positionen – Du kannst sie anpassen */
-#wald-button { top: 30%; left: 5%; }
-#dorf-button { top: 50%; left: 85%; transform: translate(-50%, -50%); }
+/* Positionen für die Buttons – hier kannst du sie verschieben */
+#wald-button { top: 40%; left: 10%; }
+#dorf-button { top: 50%; left: 50%; transform: translate(-50%, -50%); }
 #fluss-button { top: 70%; left: 80%; }
 
 /* Antwort-Buttons */
