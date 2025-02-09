@@ -10,6 +10,24 @@ body {
     color: white;
 }
 
+/* Erklärungsbildschirm */
+#intro-screen {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+#intro-screen p {
+    max-width: 600px;
+    font-size: 18px;
+}
+
 /* Startbildschirm */
 #start-screen {
     position: absolute;
@@ -29,7 +47,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.3); /* Halbtransparente Schicht über das Bild */
+    background: rgba(0, 0, 0, 0.3);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -47,7 +65,7 @@ body {
 
 /* Stil für Regions-Buttons */
 .region-button {
-    background-color: rgba(0, 123, 255, 0.8); /* Blau mit Transparenz */
+    background-color: rgba(0, 123, 255, 0.8);
     color: white;
     border-radius: 8px;
 }
@@ -56,7 +74,7 @@ body {
     background-color: rgba(0, 123, 255, 1);
 }
 
-/* Beispiel-Positionen der Buttons (Änderbar nach Belieben) */
+/* Beispiel-Positionen der Buttons */
 #wald-button { top: 30%; left: 10%; }
 #dorf-button { top: 66%; left: 45%; transform: translate(-50%, -50%); }
 #fluss-button { top: 50%; left: 70%; }
