@@ -1,4 +1,3 @@
-let stars = 0;
 let currentRegion = "";
 let currentSubregion = "";
 
@@ -11,8 +10,8 @@ const subregions = {
 
 /* Fragen */
 const questions = {
-    "Weg": [{ question: "Finde das Reflexivpronomen.", answers: ["Sunt", "item", "quae", "appellantur"], correct: 2, timeLimit: 15 }],
-    "Baum": [{ question: "Markiere das Subjekt.", answers: ["bos", "cervi", "figura"], correct: 0, timeLimit: 15 }]
+    "Weg": [{ question: "Finde das Reflexivpronomen.", answers: ["Sunt", "item", "quae", "appellantur"], correct: 2 }],
+    "Baum": [{ question: "Markiere das Subjekt.", answers: ["bos", "cervi", "figura"], correct: 0 }]
 };
 
 /* Navigation */
