@@ -1,6 +1,6 @@
 let stars = 0;
-let timer;
-let timeLeft;
+let currentRegion = "";
+let currentSubregion = "";
 
 /* Regionen und Unterregionen */
 const subregions = {
@@ -11,21 +11,11 @@ const subregions = {
 
 /* Fragen */
 const questions = {
-    "Weg": [
-        { question: "Finde das Reflexivpronomen.", answers: ["Sunt", "item", "quae", "appellantur"], correct: 2, timeLimit: 15 }
-    ],
-    "Baum": [
-        { question: "Markiere das Subjekt.", answers: ["bos", "cervi", "figura"], correct: 0, timeLimit: 15 }
-    ],
-    "Die Bewohner": [
-        { question: "Übersetze den Satz: 'Dicebant servos...'", answers: ["Antwort A", "Antwort B", "Antwort C"], correct: 1, timeLimit: 10 }
-    ]
+    "Weg": [{ question: "Finde das Reflexivpronomen.", answers: ["Sunt", "item", "quae", "appellantur"], correct: 2, timeLimit: 15 }],
+    "Baum": [{ question: "Markiere das Subjekt.", answers: ["bos", "cervi", "figura"], correct: 0, timeLimit: 15 }]
 };
 
-let currentRegion = "";
-let currentSubregion = "";
-
-/* Verstecke Einführungsbildschirm */
+/* Einführungsbildschirm ausblenden */
 function hideIntro() {
     document.getElementById('intro-screen').style.display = 'none';
     document.getElementById('start-screen').style.display = 'flex';
@@ -52,27 +42,6 @@ function showSubregions(region) {
         btn.onclick = () => startTask(sub);
         container.appendChild(btn);
     });
-}
-
-function startTask(subregion) {
-    currentSubregion = subregion;
-    document.getElementById('subregion-screen').style.display = 'none';
-    document.getElementById('task-screen').style.display = 'block';
-
-    let task = questions[subregion][0];
-    document.getElementById('task-title').textContent = `Aufgabe in ${subregion}`;
-    document.getElementById('question-text').textContent = task.question;
-    let container = document.getElementById('answers-container');
-    container.innerHTML = "";
-
-    task.answers.forEach((answer, index) => {
-        let btn = document.createElement("button");
-        btn.textContent = answer;
-        btn.onclick = () => checkAnswer(index);
-        container.appendChild(btn);
-    });
-
-    startTimer(task.timeLimit);
 }
 
 function backToRegions() {
