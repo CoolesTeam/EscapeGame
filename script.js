@@ -10,12 +10,6 @@ const questions = {
             answers: ["Sunt", "item", "quae", "appellantur"],
             correct: 2,
             timeLimit: 15
-        },
-        {
-            question: "Finde die Verben und markiere sie grün.",
-            answers: ["Sunt", "item", "quae", "appellantur"],
-            correct: [0, 3],
-            timeLimit: 15
         }
     ],
     dorf: [
