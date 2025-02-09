@@ -24,63 +24,6 @@ const questions = {
             answers: ["Majestix", "Asterix", "Miraculix", "Troubadix"],
             correct: 0
         }
-    ],
-    druiden: [
-        {
-            question: "Wofür waren die Druiden verantwortlich?",
-            answers: ["Religionswissen", "Opferbesorgung", "Lehrer", "Alles zusammen"],
-            correct: 3
-        }
-    ],
-    staemme: [
-        {
-            question: "Wie wird dieser Stamm Galliens beschrieben?",
-            answers: ["Klein", "Sehr stark", "Neutral", "Unbedeutend"],
-            correct: 1
-        }
-    ],
-    adjektive: [
-        {
-            question: "Markiere alle Adjektive:",
-            answers: ["publica", "privata", "magnus", "magno", "omnibus", "publicis", "privatisque"],
-            correct: [0, 1, 2, 3, 4, 5, 6] 
-        }
-    ],
-    volk: [
-        {
-            question: "Was ist mit 'parvum imperium' gemeint?",
-            answers: ["Einfaches Volk", "Großes Reich", "Mächtige Herrscher", "Adlige"],
-            correct: 0
-        },
-        {
-            question: "Übersetze: 'et a nobilibus et druidibus valde pendebant'",
-            answers: ["Sie waren unabhängig", "Sie waren von Adligen und Druiden abhängig", "Sie regierten selbst", "Sie waren unbedeutend"],
-            correct: 1
-        }
-    ],
-    sklaven: [
-        {
-            question: "Übersetze den Satz: 'Dominos servos nullis iuribus praeditos esse et penitus a dominis pendere dicebant.'",
-            answers: ["Sklaven hatten keinerlei Rechte und waren vollständig abhängig", "Sklaven waren frei", "Sklaven waren mächtig", "Sklaven hatten Rechte"],
-            correct: 0
-        },
-        {
-            question: "Gib den AcI-Auslöser an.",
-            answers: ["dicebant", "praeditos", "esse", "dominos"],
-            correct: 0
-        }
-    ],
-    latein: [
-        {
-            question: "Bringe diesen Tabelleninhalt in die richtige Reihenfolge.",
-            answers: [
-                "caelo - Himmel",
-                "sacris - Opfer, Heiligtum",
-                "deos - Götter",
-                "imperium - Macht, Einfluss"
-            ],
-            correct: [0, 1, 2, 3] 
-        }
     ]
 };
 
@@ -129,24 +72,13 @@ function checkAnswer(index) {
     clearInterval(timer);
 
     let correctIndex = questions[currentLocation][0].correct;
-    if (Array.isArray(correctIndex)) {
-        if (correctIndex.includes(index)) {
-            stars++;
-            document.getElementById('correct-sound').play();
-            alert("Richtig! ⭐ Du hast einen Stern erhalten.");
-        } else {
-            document.getElementById('wrong-sound').play();
-            alert("Falsch! ❌ Versuch es erneut.");
-        }
+    if (index === correctIndex) {
+        stars++;
+        document.getElementById('correct-sound').play();
+        alert("Richtig! ⭐ Du hast einen Stern erhalten.");
     } else {
-        if (index === correctIndex) {
-            stars++;
-            document.getElementById('correct-sound').play();
-            alert("Richtig! ⭐ Du hast einen Stern erhalten.");
-        } else {
-            document.getElementById('wrong-sound').play();
-            alert("Falsch! ❌ Versuch es erneut.");
-        }
+        document.getElementById('wrong-sound').play();
+        alert("Falsch! ❌ Versuch es erneut.");
     }
 
     document.getElementById('stars-count').textContent = stars;
