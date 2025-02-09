@@ -4,114 +4,118 @@ let timer;
 let timeLeft;
 
 const questions = {
-    wald: {
-        weg: [
-            {
-                question: "Finde das Reflexivpronomen und markiere es rot.",
-                answers: ["Sunt", "item", "quae", "appellantur", "aleces"],
-                correct: 2,
-                timeLimit: null
-            },
-            {
-                question: "Finde die Verben und markiere sie grün.",
-                answers: ["Sunt", "item", "quae", "appellantur", "aleces"],
-                correct: [0, 3],
-                timeLimit: null
-            },
-            {
-                question: "Konjugiere die Verben 'Sunt' und 'Appellare'",
-                answers: ["sum", "es", "est", "sumus", "estis", "sunt", "appello", "appellas", "appellat", "appellamus", "appellatis", "appellant"],
-                correct: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
-                timeLimit: null
-            }
-        ],
-        baum: [
-            {
-                question: "Suche das Subjekt des Satzes und ziehe es in die Lücke.",
-                answers: ["bos cervi figura", "quae nobis nota sunt", "cornibus"],
-                correct: 0,
-                timeLimit: null
-            },
-            {
-                question: "In welchem Kasus steht 'nobis'?",
-                answers: ["Nominativ", "Genitiv", "Dativ", "Akkusativ", "Ablativ"],
-                correct: 2,
-                timeLimit: 15
-            },
-            {
-                question: "Auf welches Wort bezieht sich 'quae'?",
-                answers: ["bos", "cervi", "figura", "cornibus"],
-                correct: 3,
-                timeLimit: null
-            },
-            {
-                question: "Dekliniere 'Figura' und 'Cornibus' im Singular.",
-                answers: ["figura", "figurae", "figurae", "figuram", "figura", "cornus", "corn-us/os/i", "corn-ui/u", "cornum", "cornu"],
-                correct: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
-                timeLimit: 90
-            }
-        ]
-    },
-    dorf: {
-        bewohner: [
-            {
-                question: "Übersetze den Satz.",
-                answers: ["Sie sagten, dass die Sklaven keinerlei Rechte hätten und vollständig abhängig sind.", "Die Sklaven haben keine Rechte und sind abhängig von ihren Herren", "Die Sklaven sagen, dass sie keine Rechte haben."],
-                correct: 0,
-                timeLimit: null
-            },
-            {
-                question: "Gib den AcI Auslöser an.",
-                answers: ["dicebant", "praeditos", "esse", "dominis"],
-                correct: 0,
-                timeLimit: 15
-            }
-        ],
-        markt: [
-            {
-                question: "Markiere die drei Stämme von Gallien lila.",
-                answers: ["Belgae", "Aquitani", "Celtae", "Galli"],
-                correct: [0, 1, 2],
-                timeLimit: 60
-            },
-            {
-                question: "Markiere die beiden Flüsse.",
-                answers: ["Rhodano", "Garumna", "Belgarum", "Oceanus"],
-                correct: [0, 1],
-                timeLimit: null
-            },
-            {
-                question: "Dekliniere die Flüsse 'Rhodano' und 'Garumna' im Singular.",
-                answers: ["Rhodannus", "Garunna", "Rhodani", "Garunnae", "Rhodano", "Garunnae", "Rhodanum", "Garunnam", "Rhodano", "Garunna"],
-                correct: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
-                timeLimit: null
-            }
-        ]
-    },
-    fluss: {
-        flussaufwaerts: [
-            {
-                question: "Bringe diesen Tabelleninhalt in die richtige Reihenfolge.",
-                answers: ["caelo - Himmel", "sacris - Opfer, Heiligtum", "deos - Götter", "imperium - Macht, Einfluss"],
-                correct: [0, 1, 2, 3],
-                timeLimit: 30
-            }
-        ],
-        hafen: [
-            {
-                question: "Wie wird dieser Stamm beschrieben?",
-                answers: ["der stärkste Stamm", "der größte Stamm", "der kleinste Stamm", "der mächtigste Stamm"],
-                correct: 0,
-                timeLimit: 10
-            }
-        ],
-        flussabwaerts: [
-            {
-                question: "Markiere alle Adjektive:",
-                answers: ["publica", "privata", "magnus", "magno", "omnibus", "publicis", "privatisque"],
-                correct: [0, 1, 2, 3, 4, 5, 6],
-                timeLimit: null
-            }
-        ]
-    }
+    wald: [
+        {
+            question: "Finde das Reflexivpronomen und markiere es rot.",
+            answers: ["Sunt", "item", "quae", "appellantur"],
+            correct: 2,
+            timeLimit: 15
+        },
+        {
+            question: "Finde die Verben und markiere sie grün.",
+            answers: ["Sunt", "item", "quae", "appellantur"],
+            correct: [0, 3],
+            timeLimit: 15
+        }
+    ],
+    dorf: [
+        {
+            question: "Übersetze den Satz: 'Dicebant servos nullis iuribus praeditos esse.'",
+            answers: [
+                "Die Sklaven haben keine Rechte und sind abhängig von ihren Herren.",
+                "Sie sagten, dass die Sklaven keinerlei Rechte hätten und vollständig abhängig sind.",
+                "Die Sklaven sagen, dass sie keine Rechte haben und abhängig von ihren Herren sind."
+            ],
+            correct: 1,
+            timeLimit: 10
+        }
+    ],
+    fluss: [
+        {
+            question: "Bringe die Tabelle in die richtige Reihenfolge.",
+            answers: ["caelo - Himmel", "sacris - Opfer", "deos - Götter", "imperium - Macht"],
+            correct: ["caelo - Himmel", "sacris - Opfer", "deos - Götter", "imperium - Macht"],
+            timeLimit: 30
+        }
+    ]
 };
+
+let currentLocation = "";
+
+function startGame() {
+    document.getElementById('start-screen').style.display = 'none';
+    document.getElementById('game-screen').style.display = 'block';
+}
+
+function goTo(location) {
+    currentLocation = location;
+    document.getElementById('task-title').textContent = `Aufgabe in ${location}`;
+
+    const selectedQuestion = questions[location][0];
+
+    document.getElementById('question-text').textContent = selectedQuestion.question;
+    let answerContainer = document.getElementById('answers-container');
+    answerContainer.innerHTML = "";
+
+    selectedQuestion.answers.forEach((answer, index) => {
+        let btn = document.createElement("button");
+        btn.textContent = answer;
+        btn.onclick = function() { checkAnswer(index); };
+        answerContainer.appendChild(btn);
+    });
+
+    document.getElementById('game-screen').style.display = 'none';
+    document.getElementById('task-screen').style.display = 'block';
+
+    startTimer(selectedQuestion.timeLimit);
+}
+
+function startTimer(seconds) {
+    clearInterval(timer);
+    timeLeft = seconds;
+    let timerText = document.getElementById('timer-text');
+    timerText.textContent = `Zeit: ${timeLeft}s`;
+
+    timer = setInterval(() => {
+        timeLeft--;
+        timerText.textContent = `Zeit: ${timeLeft}s`;
+        if (timeLeft <= 0) {
+            clearInterval(timer);
+            alert("Die Zeit ist abgelaufen!");
+            backToMap();
+        }
+    }, 1000);
+}
+
+function checkAnswer(index) {
+    clearInterval(timer);
+    let correctIndex = questions[currentLocation][0].correct;
+
+    if (Array.isArray(correctIndex)) {
+        if (correctIndex.includes(index)) {
+            stars++;
+            document.getElementById('correct-sound').play();
+            alert("Richtig! ⭐ Du hast einen Stern erhalten.");
+        } else {
+            document.getElementById('wrong-sound').play();
+            alert("Falsch! ❌ Versuch es erneut.");
+        }
+    } else {
+        if (index === correctIndex) {
+            stars++;
+            document.getElementById('correct-sound').play();
+            alert("Richtig! ⭐ Du hast einen Stern erhalten.");
+        } else {
+            document.getElementById('wrong-sound').play();
+            alert("Falsch! ❌ Versuch es erneut.");
+        }
+    }
+
+    document.getElementById('stars-count').textContent = stars;
+    setTimeout(backToMap, 1000);
+}
+
+function backToMap() {
+    document.getElementById('task-screen').style.display = 'none';
+    document.getElementById('game-screen').style.display = 'block';
+}
