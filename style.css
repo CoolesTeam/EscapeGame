@@ -1,30 +1,67 @@
+/* Allgemeine Stile */
 body {
     font-family: Arial, sans-serif;
     text-align: center;
     background: url("background.jpg") no-repeat center center fixed;
     background-size: cover;
-    padding: 20px;
+    margin: 0;
+    height: 100vh;
+    overflow: hidden;
     color: white;
 }
 
-h1, h2 {
-    color: white;
+/* Startbildschirm */
+#start-screen {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
-button {
-    padding: 10px 20px;
-    margin: 10px;
+/* Container für die Karte – über gesamten Bildschirm */
+#map-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3); /* Halbtransparente Schicht über das Bild */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Stil für Buttons */
+.button {
+    position: absolute;
+    padding: 15px 30px;
+    font-size: 18px;
     border: none;
-    background-color: #007bff;
-    color: white;
-    font-size: 16px;
     cursor: pointer;
+    transition: 0.3s;
 }
 
-button:hover {
-    background-color: #0056b3;
+/* Stil für Regions-Buttons */
+.region-button {
+    background-color: rgba(0, 123, 255, 0.8); /* Blau mit Transparenz */
+    color: white;
+    border-radius: 8px;
 }
 
+.region-button:hover {
+    background-color: rgba(0, 123, 255, 1);
+}
+
+/* Beispiel-Positionen der Buttons (Änderbar nach Belieben) */
+#wald-button { top: 30%; left: 20%; }
+#dorf-button { top: 50%; left: 50%; transform: translate(-50%, -50%); }
+#fluss-button { top: 70%; left: 80%; }
+
+/* Spielbildschirm */
 #game-screen, #task-screen {
     display: none;
     background: rgba(0, 0, 0, 0.7);
@@ -32,12 +69,14 @@ button:hover {
     border-radius: 10px;
 }
 
+/* Antwort-Container */
 #answers-container {
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
+/* Farben für richtige und falsche Antworten */
 .correct {
     background-color: green !important;
 }
@@ -46,6 +85,7 @@ button:hover {
     background-color: red !important;
 }
 
+/* Timer-Text */
 #timer-text {
     font-size: 18px;
     font-weight: bold;
