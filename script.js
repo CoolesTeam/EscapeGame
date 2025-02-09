@@ -15,14 +15,15 @@ const questions = {
     "Baum": [{ question: "Markiere das Subjekt.", answers: ["bos", "cervi", "figura"], correct: 0, timeLimit: 15 }]
 };
 
-/* Einführungsbildschirm ausblenden */
-function hideIntro() {
-    document.getElementById('intro-screen').style.display = 'none';
-    document.getElementById('start-screen').style.display = 'flex';
+/* Willkommensbildschirm ausblenden und Erklärungsbildschirm zeigen */
+function showIntro() {
+    document.getElementById('welcome-screen').style.display = 'none';
+    document.getElementById('intro-screen').style.display = 'flex';
 }
 
+/* Spiel starten */
 function startGame() {
-    document.getElementById('start-screen').style.display = 'none';
+    document.getElementById('intro-screen').style.display = 'none';
     document.getElementById('game-screen').style.display = 'block';
 }
 
@@ -44,6 +45,7 @@ function showSubregions(region) {
     });
 }
 
+/* Navigation */
 function backToRegions() {
     document.getElementById('subregion-screen').style.display = 'none';
     document.getElementById('game-screen').style.display = 'block';
