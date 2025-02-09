@@ -68,16 +68,21 @@ body {
 }
 
 /* Frei positionierbare Buttons */
-.region-button, .subregion-button {
-    position: absolute; /* Wichtig für freie Positionierung */
+.region-button {
+    position: absolute;
     background-color: rgba(0, 123, 255, 0.8);
     color: white;
     border-radius: 8px;
 }
 
-/* Beispiel-Positionen – kannst du anpassen */
-#wald-button { top: 30%; left: 30%; }
-#dorf-button { top: 50%; left: 10%; transform: translate(-50%, -50%); }
+/* Fix für unsichtbare Buttons */
+#wald-button, #dorf-button, #fluss-button {
+    display: block; /* Sicherstellen, dass sie sichtbar sind */
+}
+
+/* Beispiel-Positionen – Du kannst sie anpassen */
+#wald-button { top: 30%; left: 10%; }
+#dorf-button { top: 50%; left: 45%; transform: translate(-50%, -50%); }
 #fluss-button { top: 70%; left: 80%; }
 
 /* Antwort-Buttons */
