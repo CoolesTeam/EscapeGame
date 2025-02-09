@@ -9,7 +9,7 @@ const subregions = {
     fluss: ["Fluss aufwärts", "Der Hafen", "Fluss abwärts"]
 };
 
-/* Fragen & Antworten (Originaltext aus deiner Datei) */
+/* Fragen & Antworten aus der Textdatei */
 const questions = {
     "Weg": [{
         question: "Finde das Reflexivpronomen und markiere es rot.",
@@ -61,10 +61,85 @@ function showIntro() {
 function startGame() {
     document.getElementById('intro-screen').style.display = 'none';
     document.getElementById('game-screen').style.display = 'block';
+    updateStars();
 }
 
 function showSubregions(region) {
     currentRegion = region;
     document.getElementById('game-screen').style.display = 'none';
+    document.getElementById('subregion-screen').style.display = 'block';
+    document.getElementById('subregion-title').textContent = `Wähle eine Aufgabe in ${region}`;
+    let container = document.getElementById('subregion-container');
+    container.innerHTML = "";
+
+    subregions[region].forEach(sub => {
+        let btn = document.createElement("button");
+        btn.textContent = sub;
+        btn.classList.add("button", "subregion-button");
+        btn.onclick = function () { startTask(sub); };
+        container.appendChild(btn);
+    });
+}
+
+function startTask(subregion) {
+    currentSubregion = subregion;
+    document.getElementById('subregion-screen').style.display = 'none';
+    document.getElementById('task-screen').style.display = 'block';
+    document.getElementById('task-title').textContent = `Aufgabe in ${subregion}`;
+
+    let task = questions[subregion][0];
+
+    document.getElementById('question-text').textContent = task.question;
+
+    let answerContainer = document.getElementById('answers-container');
+    answerContainer.innerHTML = "";
+
+    task.answers.forEach((answer, index) => {
+        let btn = document.createElement("button");
+        btn.textContent = answer;
+        btn.classList.add("button", "answer-button");
+        btn.onclick = function () { checkAnswer(index, task.correct, btn); };
+        answerContainer.appendChild(btn);
+    });
+}
+
+/* Antwort überprüfen */
+function checkAnswer(selectedIndex, correctIndex, button) {
+    if (Array.isArray(correctIndex)) {
+        // Falls es mehrere richtige Antworten gibt (Mehrfachauswahl)
+        if (correctIndex.includes(selectedIndex)) {
+            stars++;
+            updateStars();
+            button.classList.add("correct");
+        } else {
+            button.classList.add("wrong");
+        }
+    } else {
+        // Normale Einzelantwort
+        if (selectedIndex === correctIndex) {
+            stars++;
+            updateStars();
+            button.classList.add("correct");
+        } else {
+            button.classList.add("wrong");
+        }
+    }
+
+    setTimeout(backToSubregions, 1000);
+}
+
+/* Sterne-Anzeige aktualisieren */
+function updateStars() {
+    document.getElementById('stars-count').textContent = stars;
+}
+
+/* Navigation */
+function backToRegions() {
+    document.getElementById('subregion-screen').style.display = 'none';
+    document.getElementById('game-screen').style.display = 'block';
+}
+
+function backToSubregions() {
+    document.getElementById('task-screen').style.display = 'none';
     document.getElementById('subregion-screen').style.display = 'block';
 }
