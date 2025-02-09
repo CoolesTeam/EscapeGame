@@ -9,7 +9,7 @@ const subregions = {
     fluss: ["Fluss aufwärts", "Der Hafen", "Fluss abwärts"]
 };
 
-/* Fragen & Antworten */
+/* Fragen & Antworten (VOLLSTÄNDIG) */
 const questions = {
     "Weg": [{
         question: "Finde das Reflexivpronomen und markiere es rot.",
@@ -33,7 +33,7 @@ const questions = {
     "Der Markt": [{
         question: "Markiere die drei Stämme von Gallien lila.",
         answers: ["Belgae", "Aquitani", "Celtae", "Romani"],
-        correct: [0, 1, 2]
+        correct: [0, 1, 2] 
     }],
     "Fluss aufwärts": [{
         question: "Bringe diese lateinischen Begriffe in die richtige Reihenfolge.",
@@ -64,16 +64,10 @@ function startGame() {
     updateStars();
 }
 
-/* FIX: Unterregionen erscheinen jetzt wirklich */
 function showSubregions(region) {
     currentRegion = region;
     document.getElementById('game-screen').style.display = 'none';
-    document.getElementById('task-screen').style.display = 'none';
-
-    let subregionScreen = document.getElementById('subregion-screen');
-    subregionScreen.style.display = "block";
-
-    document.getElementById('subregion-title').textContent = `Wähle eine Aufgabe in ${region}`;
+    document.getElementById('subregion-screen').style.display = 'block';
     
     let container = document.getElementById('subregion-container');
     container.innerHTML = ""; 
@@ -87,20 +81,22 @@ function showSubregions(region) {
     });
 }
 
-/* FIX: Aufgaben werden jetzt korrekt angezeigt */
 function startTask(subregion) {
     currentSubregion = subregion;
     document.getElementById('subregion-screen').style.display = 'none';
     document.getElementById('task-screen').style.display = 'block';
-
     document.getElementById('task-title').textContent = `Aufgabe in ${subregion}`;
 
     let task = questions[subregion][0];
+    if (!task) {
+        console.error("Fehler: Keine Frage für diese Unterregion gefunden!");
+        return;
+    }
 
     document.getElementById('question-text').textContent = task.question;
 
     let answerContainer = document.getElementById('answers-container');
-    answerContainer.innerHTML = ""; 
+    answerContainer.innerHTML = "";
 
     task.answers.forEach((answer, index) => {
         let btn = document.createElement("button");
@@ -111,7 +107,6 @@ function startTask(subregion) {
     });
 }
 
-/* Antwort überprüfen */
 function checkAnswer(selectedIndex, correctIndex, button) {
     if (Array.isArray(correctIndex)) {
         if (correctIndex.includes(selectedIndex)) {
@@ -134,12 +129,10 @@ function checkAnswer(selectedIndex, correctIndex, button) {
     setTimeout(backToSubregions, 1000);
 }
 
-/* Sterne-Anzeige aktualisieren */
 function updateStars() {
     document.getElementById('stars-count').textContent = stars;
 }
 
-/* Navigation */
 function backToRegions() {
     document.getElementById('subregion-screen').style.display = 'none';
     document.getElementById('game-screen').style.display = 'block';
