@@ -33,7 +33,6 @@ body {
     align-items: center;
 }
 
-/* Box für den Text */
 #intro-box {
     background: rgba(255, 255, 255, 0.95);
     color: black;
@@ -46,34 +45,15 @@ body {
     animation: fadeIn 0.8s ease-in-out;
 }
 
-/* Button im Erklärungsbildschirm */
-#intro-box button {
-    background-color: #008CBA;
-    color: white;
-    border: none;
-    padding: 12px 20px;
-    font-size: 18px;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 15px;
-    transition: 0.3s;
-}
-
-#intro-box button:hover {
-    background-color: #005f7f;
-}
-
-/* Spielbereich */
+/* Spielfeld */
 #game-screen, #subregion-screen, #task-screen {
     display: none;
 }
 
-/* Container für die Karte */
+/* Karte */
 #map-container, #subregion-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    position: relative;
+    width: 100%;
     height: 100%;
 }
 
@@ -87,16 +67,18 @@ body {
     margin: 10px;
 }
 
-/* Regionen- & Unterregionen-Buttons */
+/* Frei positionierbare Buttons */
 .region-button, .subregion-button {
+    position: absolute; /* Wichtig für freie Positionierung */
     background-color: rgba(0, 123, 255, 0.8);
     color: white;
     border-radius: 8px;
 }
 
-.region-button:hover, .subregion-button:hover {
-    background-color: rgba(0, 123, 255, 1);
-}
+/* Beispiel-Positionen – kannst du anpassen */
+#wald-button { top: 30%; left: 20%; }
+#dorf-button { top: 50%; left: 50%; transform: translate(-50%, -50%); }
+#fluss-button { top: 70%; left: 80%; }
 
 /* Antwort-Buttons */
 .answer-button {
