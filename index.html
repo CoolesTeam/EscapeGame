@@ -7,11 +7,23 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="start-screen">
+
+    <!-- Erklärungsbildschirm -->
+    <div id="intro-screen">
+        <h1>Escape Game Gallien</h1>
+        <p>Du bist im Lateinunterricht und deine Lehrkraft möchte, dass du dein Lateinbuch aufschlägst.  
+           Doch plötzlich wirst du in die Welt von Asterix gezogen! Hilf den Galliern, den Zaubertrank herzustellen  
+           und löse die Aufgaben, um das Spiel zu gewinnen.</p>
+        <button onclick="hideIntro()">Weiter</button>
+    </div>
+
+    <!-- Startbildschirm -->
+    <div id="start-screen" style="display: none;">
         <h1>Willkommen im Escape Game Gallien</h1>
         <button onclick="startGame()">Spiel starten</button>
     </div>
 
+    <!-- Spielübersicht -->
     <div id="game-screen" style="display: none;">
         <div id="map-container">
             <h2>Wähle eine Region:</h2>
@@ -22,6 +34,7 @@
         <p>Sterne gesammelt: <span id="stars-count">0</span></p>
     </div>
 
+    <!-- Aufgabenbereich -->
     <div id="task-screen" style="display: none;">
         <h2 id="task-title"></h2>
         <p id="question-text"></p>
