@@ -14,9 +14,11 @@
 
     <div id="game-screen" style="display: none;">
         <h2>Wähle eine Region:</h2>
-        <button onclick="goTo('wald')">🌲 Wald</button>
-        <button onclick="goTo('dorf')">🏡 Dorf</button>
-        <button onclick="goTo('fluss')">🌊 Fluss</button>
+        <div id="map-container">
+            <button onclick="goTo('wald')">🌲 Wald</button>
+            <button onclick="goTo('dorf')">🏡 Dorf</button>
+            <button onclick="goTo('fluss')">🌊 Fluss</button>
+        </div>
         <p>Sterne gesammelt: <span id="stars-count">0</span></p>
     </div>
 
