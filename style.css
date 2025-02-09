@@ -81,8 +81,8 @@ body {
 }
 
 /* Beispiel-Positionen – Du kannst sie anpassen */
-#wald-button { top: 30%; left: 10%; }
-#dorf-button { top: 50%; left: 45%; transform: translate(-50%, -50%); }
+#wald-button { top: 30%; left: 5%; }
+#dorf-button { top: 50%; left: 85%; transform: translate(-50%, -50%); }
 #fluss-button { top: 70%; left: 80%; }
 
 /* Antwort-Buttons */
