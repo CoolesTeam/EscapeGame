@@ -64,16 +64,21 @@ function startGame() {
     updateStars();
 }
 
-/* FIX: Unterregionen werden jetzt korrekt geladen */
+/* FIX: Unterregionen erscheinen jetzt wirklich */
 function showSubregions(region) {
     currentRegion = region;
-    
+
     // Alle anderen Screens ausblenden
     document.getElementById('game-screen').style.display = 'none';
     document.getElementById('task-screen').style.display = 'none';
 
-    // Unterregion-Screen sichtbar machen
-    document.getElementById('subregion-screen').style.display = 'block';
+    // WICHTIG: Unterregionen-Screen anzeigen
+    let subregionScreen = document.getElementById('subregion-screen');
+    if (!subregionScreen) {
+        console.error("Fehler: 'subregion-screen' nicht gefunden!");
+        return;
+    }
+    subregionScreen.style.display = "block";
 
     // Titel setzen
     document.getElementById('subregion-title').textContent = `Wähle eine Aufgabe in ${region}`;
@@ -88,6 +93,8 @@ function showSubregions(region) {
         btn.onclick = function () { startTask(sub); };
         container.appendChild(btn);
     });
+
+    console.log(`Unterregionen für ${region} geladen.`);
 }
 
 /* FIX: Aufgaben werden jetzt korrekt angezeigt */
@@ -97,8 +104,14 @@ function startTask(subregion) {
     // Alle anderen Screens ausblenden
     document.getElementById('subregion-screen').style.display = 'none';
     
-    // Aufgabenbildschirm anzeigen
-    document.getElementById('task-screen').style.display = 'block';
+    // Aufgabenbildschirm sichtbar machen
+    let taskScreen = document.getElementById('task-screen');
+    if (!taskScreen) {
+        console.error("Fehler: 'task-screen' nicht gefunden!");
+        return;
+    }
+    taskScreen.style.display = "block";
+    
     document.getElementById('task-title').textContent = `Aufgabe in ${subregion}`;
 
     let task = questions[subregion][0];
@@ -115,6 +128,8 @@ function startTask(subregion) {
         btn.onclick = function () { checkAnswer(index, task.correct, btn); };
         answerContainer.appendChild(btn);
     });
+
+    console.log(`Frage für ${subregion} geladen.`);
 }
 
 /* Antwort überprüfen */
