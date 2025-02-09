@@ -8,21 +8,21 @@
 </head>
 <body>
 
+    <!-- Willkommensbildschirm -->
+    <div id="welcome-screen">
+        <h1>Willkommen im Escape Game Gallien</h1>
+        <button onclick="showIntro()">Weiter</button>
+    </div>
+
     <!-- Erklärungsbildschirm -->
-    <div id="intro-screen">
+    <div id="intro-screen" style="display: none;">
         <div id="intro-box">
-            <h1>Escape Game Gallien</h1>
+            <h1>Deine Mission</h1>
             <p>Du bist im Lateinunterricht und deine Lehrkraft möchte, dass du dein Lateinbuch aufschlägst.  
                Doch plötzlich wirst du in die Welt von Asterix gezogen! Hilf den Galliern, den Zaubertrank herzustellen  
                und löse die Aufgaben, um das Spiel zu gewinnen.</p>
-            <button onclick="hideIntro()">Weiter</button>
+            <button onclick="startGame()">Spiel starten</button>
         </div>
-    </div>
-
-    <!-- Startbildschirm -->
-    <div id="start-screen" style="display: none;">
-        <h1>Willkommen im Escape Game Gallien</h1>
-        <button onclick="startGame()">Spiel starten</button>
     </div>
 
     <!-- Regionenauswahl -->
