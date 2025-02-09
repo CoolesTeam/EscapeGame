@@ -1,3 +1,4 @@
+let stars = 0;
 let currentRegion = "";
 let currentSubregion = "";
 
@@ -56,6 +57,7 @@ function showIntro() {
 function startGame() {
     document.getElementById('intro-screen').style.display = 'none';
     document.getElementById('game-screen').style.display = 'block';
+    updateStars();
 }
 
 function showSubregions(region) {
@@ -92,19 +94,28 @@ function startTask(subregion) {
         let btn = document.createElement("button");
         btn.textContent = answer;
         btn.classList.add("button", "answer-button");
-        btn.onclick = function () { checkAnswer(index, task.correct); };
+        btn.onclick = function () { checkAnswer(index, task.correct, btn); };
         answerContainer.appendChild(btn);
     });
 }
 
 /* Antwort überprüfen */
-function checkAnswer(selectedIndex, correctIndex) {
+function checkAnswer(selectedIndex, correctIndex, button) {
     if (selectedIndex === correctIndex) {
-        alert("Richtig! ⭐");
+        stars++;  // Erhöhe die Sterne-Anzahl
+        updateStars();
+        button.classList.add("correct");
+        document.getElementById('correct-sound').play();
     } else {
-        alert("Falsch ❌");
+        button.classList.add("wrong");
+        document.getElementById('wrong-sound').play();
     }
     setTimeout(backToSubregions, 1000);
+}
+
+/* Sterne-Anzeige aktualisieren */
+function updateStars() {
+    document.getElementById('stars-count').textContent = stars;
 }
 
 /* Navigation */
