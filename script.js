@@ -38,7 +38,7 @@ function showSubregions(region) {
         let btn = document.createElement("button");
         btn.textContent = sub;
         btn.classList.add("button", "subregion-button");
-        btn.onclick = () => startTask(sub);
+        btn.onclick = function () { startTask(sub); };
         container.appendChild(btn);
     });
 }
@@ -48,6 +48,7 @@ function startTask(subregion) {
     document.getElementById('subregion-screen').style.display = 'none';
     document.getElementById('task-screen').style.display = 'block';
     document.getElementById('task-title').textContent = `Aufgabe in ${subregion}`;
+    document.getElementById('question-text').textContent = questions[subregion][0].question;
 }
 
 function backToRegions() {
