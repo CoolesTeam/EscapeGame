@@ -23,11 +23,6 @@ body {
     padding: 20px;
 }
 
-#intro-screen p {
-    max-width: 600px;
-    font-size: 18px;
-}
-
 /* Startbildschirm */
 #start-screen {
     position: absolute;
@@ -40,8 +35,8 @@ body {
     align-items: center;
 }
 
-/* Container für die Karte – über gesamten Bildschirm */
-#map-container {
+/* Container für die Karte */
+#map-container, #subregion-container {
     position: absolute;
     top: 0;
     left: 0;
@@ -49,63 +44,28 @@ body {
     height: 100%;
     background: rgba(0, 0, 0, 0.3);
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
 }
 
 /* Stil für Buttons */
 .button {
-    position: absolute;
     padding: 15px 30px;
     font-size: 18px;
     border: none;
     cursor: pointer;
     transition: 0.3s;
+    margin: 10px;
 }
 
-/* Stil für Regions-Buttons */
-.region-button {
+/* Region & Unterregion Buttons */
+.region-button, .subregion-button {
     background-color: rgba(0, 123, 255, 0.8);
     color: white;
     border-radius: 8px;
 }
 
-.region-button:hover {
+.region-button:hover, .subregion-button:hover {
     background-color: rgba(0, 123, 255, 1);
-}
-
-/* Beispiel-Positionen der Buttons */
-#wald-button { top: 30%; left: 10%; }
-#dorf-button { top: 66%; left: 45%; transform: translate(-50%, -50%); }
-#fluss-button { top: 50%; left: 70%; }
-
-/* Spielbildschirm */
-#game-screen, #task-screen {
-    display: none;
-    background: rgba(0, 0, 0, 0.7);
-    padding: 20px;
-    border-radius: 10px;
-}
-
-/* Antwort-Container */
-#answers-container {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-/* Farben für richtige und falsche Antworten */
-.correct {
-    background-color: green !important;
-}
-
-.wrong {
-    background-color: red !important;
-}
-
-/* Timer-Text */
-#timer-text {
-    font-size: 18px;
-    font-weight: bold;
-    color: red;
 }
