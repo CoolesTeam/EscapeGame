@@ -9,42 +9,42 @@ const subregions = {
     fluss: ["Fluss aufwärts", "Der Hafen", "Fluss abwärts"]
 };
 
-/* Alle Fragen mit Antworten */
+/* Alle Fragen mit Original-Antworten */
 const questions = {
     "Weg": [{
-        question: "Finde das Reflexivpronomen.",
-        answers: ["Sunt", "item", "quae", "appellantur"],
-        correct: 2
+        question: "Was braucht man zum Zaubertrank?",
+        answers: ["Mispel", "Eiche", "Tanne", "Beere"],
+        correct: 0
     }],
     "Baum": [{
-        question: "Markiere das Subjekt.",
-        answers: ["bos", "cervi", "figura"],
-        correct: 0
+        question: "Welche Holzart wird für Schilde genutzt?",
+        answers: ["Eiche", "Tanne", "Kiefer", "Weide"],
+        correct: 1
     }],
     "Die Bewohner": [{
-        question: "Wie heißt der Druide des Dorfes?",
-        answers: ["Asterix", "Miraculix", "Majestix", "Obelix"],
-        correct: 1
-    }],
-    "Der Markt": [{
-        question: "Was wird auf dem Markt verkauft?",
-        answers: ["Zaubertrank", "Fisch", "Schilde", "Römerhelme"],
-        correct: 1
-    }],
-    "Fluss aufwärts": [{
-        question: "Welcher Fluss fließt durch Gallien?",
-        answers: ["Seine", "Rhein", "Loire", "Garonne"],
+        question: "Wer ist der Häuptling der Gallier?",
+        answers: ["Majestix", "Asterix", "Miraculix", "Troubadix"],
         correct: 0
     }],
-    "Der Hafen": [{
-        question: "Welche Stadt hat einen Hafen in Gallien?",
-        answers: ["Lutetia", "Massilia", "Bibracte", "Avaricum"],
+    "Der Markt": [{
+        question: "Welches Handelsgut ist am teuersten?",
+        answers: ["Fisch", "Wein", "Römerhelme", "Brot"],
+        correct: 2
+    }],
+    "Fluss aufwärts": [{
+        question: "Welche Fischart wird am häufigsten gefangen?",
+        answers: ["Aal", "Forelle", "Lachs", "Hecht"],
         correct: 1
     }],
-    "Fluss abwärts": [{
+    "Der Hafen": [{
         question: "Welches Schiff ist für den Transport auf dem Fluss bekannt?",
         answers: ["Trireme", "Langboot", "Handelsbarke", "Kogge"],
         correct: 2
+    }],
+    "Fluss abwärts": [{
+        question: "Welche Stadt liegt an der Mündung des Flusses?",
+        answers: ["Lutetia", "Massilia", "Bibracte", "Avaricum"],
+        correct: 1
     }]
 };
 
@@ -88,7 +88,7 @@ function startTask(subregion) {
     document.getElementById('question-text').textContent = task.question;
 
     let answerContainer = document.getElementById('answers-container');
-    answerContainer.innerHTML = "";  // Antworten-Container leeren
+    answerContainer.innerHTML = "";
 
     task.answers.forEach((answer, index) => {
         let btn = document.createElement("button");
@@ -102,18 +102,16 @@ function startTask(subregion) {
 /* Antwort überprüfen */
 function checkAnswer(selectedIndex, correctIndex, button) {
     if (selectedIndex === correctIndex) {
-        stars++;  // Erhöhe die Sterne-Anzahl
+        stars++;
         updateStars();
         button.classList.add("correct");
-        document.getElementById('correct-sound').play();
     } else {
         button.classList.add("wrong");
-        document.getElementById('wrong-sound').play();
     }
     setTimeout(backToSubregions, 1000);
 }
 
-/* Sterne-Anzeige aktualisieren */
+/* Sterne aktualisieren */
 function updateStars() {
     document.getElementById('stars-count').textContent = stars;
 }
