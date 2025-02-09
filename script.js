@@ -9,7 +9,7 @@ const subregions = {
     fluss: ["Fluss aufwärts", "Der Hafen", "Fluss abwärts"]
 };
 
-/* Fragen & Antworten aus der Textdatei */
+/* Fragen & Antworten */
 const questions = {
     "Weg": [{
         question: "Finde das Reflexivpronomen und markiere es rot.",
@@ -33,7 +33,7 @@ const questions = {
     "Der Markt": [{
         question: "Markiere die drei Stämme von Gallien lila.",
         answers: ["Belgae", "Aquitani", "Celtae", "Romani"],
-        correct: [0, 1, 2] // Mehrfachauswahl möglich
+        correct: [0, 1, 2]
     }],
     "Fluss aufwärts": [{
         question: "Bringe diese lateinischen Begriffe in die richtige Reihenfolge.",
@@ -68,9 +68,10 @@ function showSubregions(region) {
     currentRegion = region;
     document.getElementById('game-screen').style.display = 'none';
     document.getElementById('subregion-screen').style.display = 'block';
+    
     document.getElementById('subregion-title').textContent = `Wähle eine Aufgabe in ${region}`;
     let container = document.getElementById('subregion-container');
-    container.innerHTML = "";
+    container.innerHTML = ""; 
 
     subregions[region].forEach(sub => {
         let btn = document.createElement("button");
@@ -92,7 +93,7 @@ function startTask(subregion) {
     document.getElementById('question-text').textContent = task.question;
 
     let answerContainer = document.getElementById('answers-container');
-    answerContainer.innerHTML = "";
+    answerContainer.innerHTML = ""; 
 
     task.answers.forEach((answer, index) => {
         let btn = document.createElement("button");
@@ -106,7 +107,6 @@ function startTask(subregion) {
 /* Antwort überprüfen */
 function checkAnswer(selectedIndex, correctIndex, button) {
     if (Array.isArray(correctIndex)) {
-        // Falls es mehrere richtige Antworten gibt (Mehrfachauswahl)
         if (correctIndex.includes(selectedIndex)) {
             stars++;
             updateStars();
@@ -115,7 +115,6 @@ function checkAnswer(selectedIndex, correctIndex, button) {
             button.classList.add("wrong");
         }
     } else {
-        // Normale Einzelantwort
         if (selectedIndex === correctIndex) {
             stars++;
             updateStars();
