@@ -64,12 +64,20 @@ function startGame() {
     updateStars();
 }
 
+/* FIX: Unterregionen werden jetzt korrekt geladen */
 function showSubregions(region) {
     currentRegion = region;
-    document.getElementById('game-screen').style.display = 'none';
-    document.getElementById('subregion-screen').style.display = 'block';
     
+    // Alle anderen Screens ausblenden
+    document.getElementById('game-screen').style.display = 'none';
+    document.getElementById('task-screen').style.display = 'none';
+
+    // Unterregion-Screen sichtbar machen
+    document.getElementById('subregion-screen').style.display = 'block';
+
+    // Titel setzen
     document.getElementById('subregion-title').textContent = `Wähle eine Aufgabe in ${region}`;
+    
     let container = document.getElementById('subregion-container');
     container.innerHTML = ""; 
 
@@ -82,9 +90,14 @@ function showSubregions(region) {
     });
 }
 
+/* FIX: Aufgaben werden jetzt korrekt angezeigt */
 function startTask(subregion) {
     currentSubregion = subregion;
+    
+    // Alle anderen Screens ausblenden
     document.getElementById('subregion-screen').style.display = 'none';
+    
+    // Aufgabenbildschirm anzeigen
     document.getElementById('task-screen').style.display = 'block';
     document.getElementById('task-title').textContent = `Aufgabe in ${subregion}`;
 
