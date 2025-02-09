@@ -15,19 +15,17 @@ const questions = {
     "Baum": [{ question: "Markiere das Subjekt.", answers: ["bos", "cervi", "figura"], correct: 0, timeLimit: 15 }]
 };
 
-/* Willkommensbildschirm ausblenden und Erklärungsbildschirm zeigen */
+/* Navigation */
 function showIntro() {
     document.getElementById('welcome-screen').style.display = 'none';
     document.getElementById('intro-screen').style.display = 'flex';
 }
 
-/* Spiel starten */
 function startGame() {
     document.getElementById('intro-screen').style.display = 'none';
     document.getElementById('game-screen').style.display = 'block';
 }
 
-/* Unterregionen anzeigen */
 function showSubregions(region) {
     currentRegion = region;
     document.getElementById('game-screen').style.display = 'none';
@@ -40,12 +38,18 @@ function showSubregions(region) {
         let btn = document.createElement("button");
         btn.textContent = sub;
         btn.classList.add("button", "subregion-button");
-        btn.onclick = function () { startTask(sub); };
+        btn.onclick = () => startTask(sub);
         container.appendChild(btn);
     });
 }
 
-/* Navigation */
+function startTask(subregion) {
+    currentSubregion = subregion;
+    document.getElementById('subregion-screen').style.display = 'none';
+    document.getElementById('task-screen').style.display = 'block';
+    document.getElementById('task-title').textContent = `Aufgabe in ${subregion}`;
+}
+
 function backToRegions() {
     document.getElementById('subregion-screen').style.display = 'none';
     document.getElementById('game-screen').style.display = 'block';
