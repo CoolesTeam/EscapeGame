@@ -14,13 +14,14 @@
         <button onclick="showIntro()">Weiter</button>
     </div>
 
-    <!-- Erklärungsbildschirm -->
+    <!-- Neuer Erklärungsbildschirm -->
     <div id="intro-screen" style="display: none;">
         <div id="intro-box">
             <h1>Deine Mission</h1>
-            <p>Du bist im Lateinunterricht und deine Lehrkraft möchte, dass du dein Lateinbuch aufschlägst.  
-               Doch plötzlich wirst du in die Welt von Asterix gezogen! Hilf den Galliern, den Zaubertrank herzustellen  
-               und löse die Aufgaben, um das Spiel zu gewinnen.</p>
+            <p>Du bist im Lateinunterricht und deine Lehrkraft möchte, dass du dein Lateinbuch aufschlägst, wie immer.  
+               Nur dieses Mal scheint da was anders zu sein. Mit deinem Sitznachbar zusammen schaut ihr in das Buch  
+               und ihr seht ein Bild von Obelix, der in den Asterix Comics immer zu finden ist. Das Bild wirkt  
+               auf euch verschwommen und ehe ihr euch verseht, werdet ihr in das Buch hineingezogen...</p>
             <button onclick="startGame()">Spiel starten</button>
         </div>
     </div>
@@ -29,31 +30,12 @@
     <div id="game-screen" style="display: none;">
         <h2>Wähle eine Region:</h2>
         <div id="map-container">
-    <button id="wald-button" class="button region-button" onclick="showSubregions('wald')">🌲 Wald</button>
-    <button id="dorf-button" class="button region-button" onclick="showSubregions('dorf')">🏡 Dorf</button>
-    <button id="fluss-button" class="button region-button" onclick="showSubregions('fluss')">🌊 Fluss</button>
-</div>
+            <button id="wald-button" class="button region-button" onclick="showSubregions('wald')">🌲 Wald</button>
+            <button id="dorf-button" class="button region-button" onclick="showSubregions('dorf')">🏡 Dorf</button>
+            <button id="fluss-button" class="button region-button" onclick="showSubregions('fluss')">🌊 Fluss</button>
+        </div>
         <p>Sterne gesammelt: <span id="stars-count">0</span></p>
     </div>
-
-    <!-- Unterregionen Auswahl -->
-    <div id="subregion-screen" style="display: none;">
-        <h2 id="subregion-title"></h2>
-        <div id="subregion-container"></div>
-        <button class="back-button" onclick="backToRegions()">🔙 Zurück</button>
-    </div>
-
-    <!-- Aufgabenbereich -->
-    <div id="task-screen" style="display: none;">
-        <h2 id="task-title"></h2>
-        <p id="question-text"></p>
-        <div id="answers-container"></div>
-        <p id="timer-text"></p>
-        <button class="back-button" onclick="backToSubregions()">🔙 Zurück</button>
-    </div>
-
-    <audio id="correct-sound" src="correct.mp3"></audio>
-    <audio id="wrong-sound" src="wrong.mp3"></audio>
 
     <script src="script.js"></script>
 </body>
