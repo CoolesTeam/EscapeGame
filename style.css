@@ -1,12 +1,14 @@
 body {
     font-family: Arial, sans-serif;
     text-align: center;
-    background-color: #f4f4f4;
+    background: url("background.jpg") no-repeat center center fixed;
+    background-size: cover;
     padding: 20px;
+    color: white;
 }
 
 h1, h2 {
-    color: #333;
+    color: white;
 }
 
 button {
@@ -25,6 +27,9 @@ button:hover {
 
 #game-screen, #task-screen {
     display: none;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 20px;
+    border-radius: 10px;
 }
 
 #answers-container {
