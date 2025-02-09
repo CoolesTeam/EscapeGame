@@ -13,11 +13,11 @@
     </div>
 
     <div id="game-screen" style="display: none;">
-        <h2>Wähle eine Region:</h2>
         <div id="map-container">
-            <button onclick="goTo('wald')">🌲 Wald</button>
-            <button onclick="goTo('dorf')">🏡 Dorf</button>
-            <button onclick="goTo('fluss')">🌊 Fluss</button>
+            <h2>Wähle eine Region:</h2>
+            <button id="wald-button" class="button region-button" onclick="goTo('wald')">🌲 Wald</button>
+            <button id="dorf-button" class="button region-button" onclick="goTo('dorf')">🏡 Dorf</button>
+            <button id="fluss-button" class="button region-button" onclick="goTo('fluss')">🌊 Fluss</button>
         </div>
         <p>Sterne gesammelt: <span id="stars-count">0</span></p>
     </div>
