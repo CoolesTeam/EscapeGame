@@ -33,40 +33,6 @@ body {
     align-items: center;
 }
 
-#intro-box {
-    background: rgba(255, 255, 255, 0.95);
-    color: black;
-    padding: 25px;
-    border-radius: 10px;
-    width: 60%;
-    max-width: 600px;
-    text-align: center;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
-    animation: fadeIn 0.8s ease-in-out;
-}
-
-/* Button im Erklärungsbildschirm */
-#intro-box button {
-    background-color: #008CBA;
-    color: white;
-    border: none;
-    padding: 12px 20px;
-    font-size: 18px;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 15px;
-    transition: 0.3s;
-}
-
-#intro-box button:hover {
-    background-color: #005f7f;
-}
-
-/* Spielfeld */
-#game-screen, #subregion-screen, #task-screen {
-    display: none;
-}
-
 /* Karte */
 #map-container {
     position: relative;
@@ -74,34 +40,21 @@ body {
     height: 100%;
 }
 
-/* Frei positionierbare Buttons */
-.region-button {
-    position: absolute;
-    background-color: rgba(0, 123, 255, 0.8);
-    color: white;
-    border-radius: 8px;
-    padding: 15px 20px;
+/* Buttons */
+.button {
+    padding: 15px 30px;
+    font-size: 18px;
     border: none;
-    font-size: 16px;
     cursor: pointer;
+    transition: 0.3s;
+    margin: 10px;
 }
-
-/* Positionen für die Buttons – hier kannst du sie anpassen */
-#wald-button { top: 20vh; left: 15vw; }
-#dorf-button { top: 50vh; left: 50vw; transform: translate(-50%, -50%); }
-#fluss-button { top: 75vh; left: 80vw; }
 
 /* Antwort-Buttons */
 .answer-button {
     background-color: rgba(0, 123, 255, 0.8);
     color: white;
     border-radius: 8px;
-    padding: 12px 18px;
-    margin: 5px;
-    font-size: 16px;
-    cursor: pointer;
-    border: none;
-    transition: 0.3s;
 }
 
 .answer-button:hover {
@@ -127,32 +80,4 @@ body {
     border-radius: 5px;
     margin-top: 20px;
     cursor: pointer;
-    transition: 0.3s;
-}
-
-.back-button:hover {
-    background: rgba(255, 255, 255, 0.5);
-}
-
-/* Sterne-Anzeige */
-#stars-count {
-    font-weight: bold;
-    font-size: 20px;
-    color: yellow;
-}
-
-/* Aufgabenbildschirm */
-#task-screen {
-    display: none;
-    background: rgba(0, 0, 0, 0.8);
-    color: white;
-    padding: 20px;
-    border-radius: 10px;
-    text-align: center;
-}
-
-/* Animation */
-@keyframes fadeIn {
-    from { opacity: 0; transform: scale(0.95); }
-    to { opacity: 1; transform: scale(1); }
 }
