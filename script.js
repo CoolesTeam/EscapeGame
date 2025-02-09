@@ -1,8 +1,8 @@
 let stars = 0;
-let progress = 0;
 let timer;
 let timeLeft;
 
+/* Fragen korrekt geordnet */
 const questions = {
     wald: [
         {
@@ -34,7 +34,11 @@ const questions = {
     ]
 };
 
-let currentLocation = "";
+/* Versteckt den Einführungsbildschirm */
+function hideIntro() {
+    document.getElementById('intro-screen').style.display = 'none';
+    document.getElementById('start-screen').style.display = 'flex';
+}
 
 function startGame() {
     document.getElementById('start-screen').style.display = 'none';
@@ -42,9 +46,7 @@ function startGame() {
 }
 
 function goTo(location) {
-    currentLocation = location;
     document.getElementById('task-title').textContent = `Aufgabe in ${location}`;
-
     const selectedQuestion = questions[location][0];
 
     document.getElementById('question-text').textContent = selectedQuestion.question;
@@ -62,54 +64,4 @@ function goTo(location) {
     document.getElementById('task-screen').style.display = 'block';
 
     startTimer(selectedQuestion.timeLimit);
-}
-
-function startTimer(seconds) {
-    clearInterval(timer);
-    timeLeft = seconds;
-    let timerText = document.getElementById('timer-text');
-    timerText.textContent = `Zeit: ${timeLeft}s`;
-
-    timer = setInterval(() => {
-        timeLeft--;
-        timerText.textContent = `Zeit: ${timeLeft}s`;
-        if (timeLeft <= 0) {
-            clearInterval(timer);
-            alert("Die Zeit ist abgelaufen!");
-            backToMap();
-        }
-    }, 1000);
-}
-
-function checkAnswer(index) {
-    clearInterval(timer);
-    let correctIndex = questions[currentLocation][0].correct;
-
-    if (Array.isArray(correctIndex)) {
-        if (correctIndex.includes(index)) {
-            stars++;
-            document.getElementById('correct-sound').play();
-            alert("Richtig! ⭐ Du hast einen Stern erhalten.");
-        } else {
-            document.getElementById('wrong-sound').play();
-            alert("Falsch! ❌ Versuch es erneut.");
-        }
-    } else {
-        if (index === correctIndex) {
-            stars++;
-            document.getElementById('correct-sound').play();
-            alert("Richtig! ⭐ Du hast einen Stern erhalten.");
-        } else {
-            document.getElementById('wrong-sound').play();
-            alert("Falsch! ❌ Versuch es erneut.");
-        }
-    }
-
-    document.getElementById('stars-count').textContent = stars;
-    setTimeout(backToMap, 1000);
-}
-
-function backToMap() {
-    document.getElementById('task-screen').style.display = 'none';
-    document.getElementById('game-screen').style.display = 'block';
 }
