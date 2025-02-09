@@ -23,15 +23,22 @@
         <button onclick="startGame()">Spiel starten</button>
     </div>
 
-    <!-- Spielübersicht -->
+    <!-- Regionenauswahl -->
     <div id="game-screen" style="display: none;">
         <div id="map-container">
             <h2>Wähle eine Region:</h2>
-            <button id="wald-button" class="button region-button" onclick="goTo('wald')">🌲 Wald</button>
-            <button id="dorf-button" class="button region-button" onclick="goTo('dorf')">🏡 Dorf</button>
-            <button id="fluss-button" class="button region-button" onclick="goTo('fluss')">🌊 Fluss</button>
+            <button class="button region-button" onclick="showSubregions('wald')">🌲 Wald</button>
+            <button class="button region-button" onclick="showSubregions('dorf')">🏡 Dorf</button>
+            <button class="button region-button" onclick="showSubregions('fluss')">🌊 Fluss</button>
         </div>
         <p>Sterne gesammelt: <span id="stars-count">0</span></p>
+    </div>
+
+    <!-- Unterregionen Auswahl -->
+    <div id="subregion-screen" style="display: none;">
+        <h2 id="subregion-title"></h2>
+        <div id="subregion-container"></div>
+        <button onclick="backToRegions()">Zurück</button>
     </div>
 
     <!-- Aufgabenbereich -->
@@ -40,7 +47,7 @@
         <p id="question-text"></p>
         <div id="answers-container"></div>
         <p id="timer-text"></p>
-        <button onclick="backToMap()">Zurück zur Karte</button>
+        <button onclick="backToSubregions()">Zurück</button>
     </div>
 
     <audio id="correct-sound" src="correct.mp3"></audio>
