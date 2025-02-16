@@ -32,12 +32,23 @@ const questions = {
         ],
         correct: 1
     }],
-    "Der Markt": [{
+
+    /* --- "Der Markt" mit ZWEI Aufgaben --- */
+    "Der Markt": [
+      {
         question: "Klicke die drei Stämme von Gallien an.",
         sentence: "Gallia est omnis divisa in partes tres, quarum unam incolunt Belgae, aliam Aquitani, tertiam qui ipsorum lingua Celtae, nostra Galli appellantur.",
         answers: ["Belgae", "Gallia", "Aquitani", "Celtae", "Galli"],
         correct: [0, 2, 3] // Richtige Antworten: Belgae, Aquitani, Celtae
-    }],
+      },
+      {
+        question: "Markiere die beiden Flüsse.",
+        sentence: "Eorum una pars, quam Gallos obtinere dictum est, initium capit a flumine Rhodano, continetur Garumna flumine, Oceano finibus Belgarum",
+        answers: ["Rhodano", "Garumna", "Belgarum", "Aquitani"],
+        correct: [0, 1] // 2 richtige: Rhodano, Garumna
+      }
+    ],
+
     "Fluss aufwärts": [{
         question: "Ordne die Begriffe richtig zu (Orange ↔ Hellblau).",
         pairs: [
@@ -53,8 +64,6 @@ const questions = {
         answers: ["der größte Stamm", "der kleinste Stamm", "der mächtigste Stamm"],
         correct: 2
     }],
-
-    /* FLUSS ABWÄRTS mit Korrektur (5 Antworten) */
     "Fluss abwärts": [{
         question: "Markiere alle Adjektive.",
         sentence: "Sacrificia publica ac privata procurant, religiones interpretantur. Ad hos magnus adulescentium numerus disciplinae causa concurrit magnoque hi sunt apud eos honore. Nam fere de omnibus controversiis publicis privatisque constituunt",
@@ -63,7 +72,7 @@ const questions = {
     }]
 };
 
-/* Navigation + Standard-Logik (unverändert) */
+/* Navigation + Standard-Logik */
 function showIntro() {
     document.getElementById('welcome-screen').style.display = 'none';
     document.getElementById('intro-screen').style.display = 'flex';
@@ -75,19 +84,30 @@ function startGame() {
     updateStars();
 }
 
+/*
+  Neu: "Der Markt" hat 2 Aufgaben => wir brauchen Task-Index
+  Speichern wir in einer Variablen oder in questionsIndex? => wir nutzen selectedAnswers= [] & store "taskIndex"
+*/
+let marketTaskIndex = 0; // Speichert, ob wir bei der 1. oder 2. Aufgabe in "Der Markt" sind
+
 function showSubregions(region) {
     currentRegion = region;
     document.getElementById('game-screen').style.display = 'none';
     document.getElementById('subregion-screen').style.display = 'block';
     
     let container = document.getElementById('subregion-container');
-    container.innerHTML = ""; 
+    container.innerHTML = "";
 
     subregions[region].forEach(sub => {
         let btn = document.createElement("button");
         btn.textContent = sub;
         btn.classList.add("button", "subregion-button");
-        btn.onclick = function () { startTask(sub); };
+        btn.onclick = function () { 
+          if (region === "dorf" && sub === "Der Markt") {
+              marketTaskIndex = 0; // Beim Betreten von "Der Markt" -> Start bei Aufgabe 0
+          }
+          startTask(sub); 
+        };
         container.appendChild(btn);
     });
 }
@@ -96,21 +116,28 @@ function startTask(subregion) {
     currentSubregion = subregion;
     document.getElementById('subregion-screen').style.display = 'none';
     document.getElementById('task-screen').style.display = 'block';
-    document.getElementById('task-title').textContent = `Aufgabe in ${subregion}`;
 
-    let task = questions[subregion][0];
-    if (!task) {
+    /* Bei "Der Markt" => Kann 2 Aufgaben haben => hole question[marketTaskIndex] */
+    let tasks = questions[subregion];
+    if (!tasks) {
         console.error("Fehler: Keine Frage für diese Unterregion gefunden!");
         return;
     }
 
+    let task;
+    if (subregion === "Der Markt") {
+        task = tasks[marketTaskIndex];
+    } else {
+        task = tasks[0]; // Standard (1 Aufgabe)
+    }
+
+    document.getElementById('task-title').textContent = `Aufgabe in ${subregion}`;
     document.getElementById('question-text').textContent = task.question;
 
     let answerContainer = document.getElementById('answers-container');
     answerContainer.innerHTML = "";
     selectedAnswers = [];
 
-    // Falls es einen Satz gibt
     if (task.sentence) {
         let sentenceElement = document.createElement("p");
         sentenceElement.textContent = task.sentence;
@@ -119,33 +146,31 @@ function startTask(subregion) {
         answerContainer.appendChild(sentenceElement);
     }
 
-    // Falls "Fluss aufwärts" => Zuordnungs-Spiel
+    // Fluss aufwärts => Zuordnungs-Spiel
     if (subregion === "Fluss aufwärts") {
         setupMatchingGame(task.pairs);
         return;
     }
 
-    // Standard-Logik: Buttons generieren
+    // Standard: Buttons generieren
     task.answers.forEach((answer, index) => {
         let btn = document.createElement("button");
         btn.textContent = answer;
         btn.classList.add("button", "answer-button");
-        /* Wir leiten die Klicks an handleMultiSelect, 
-           ABER ACHTUNG: "Fluss abwärts" hat 5 korrekte Antworten. */
         btn.onclick = function () { handleSelectAnswers(index, btn, task.correct); };
         answerContainer.appendChild(btn);
     });
 
-    // "Der Markt" => Bestätigen-Button
+    // 1) Falls "Der Markt" => Bestätigen -> checkMarketAnswers
     if (subregion === "Der Markt") {
         let submitBtn = document.createElement("button");
         submitBtn.textContent = "Bestätigen";
         submitBtn.classList.add("button", "submit-button");
-        submitBtn.onclick = function () { checkMultiAnswer(task.correct); };
+        submitBtn.onclick = function () { checkMarketAnswers(task.correct); };
         answerContainer.appendChild(submitBtn);
     }
 
-    // Falls "Fluss abwärts" => ebenfalls einen Bestätigen-Button
+    // 2) Falls "Fluss abwärts" => checkFiveAnswers
     if (subregion === "Fluss abwärts") {
         let submitBtn = document.createElement("button");
         submitBtn.textContent = "Bestätigen";
@@ -155,11 +180,9 @@ function startTask(subregion) {
     }
 }
 
-/* ---- LOGIK FÜR MEHRFACH SELEKTION (DER MARKT + FLUSS ABWÄRTS) ---- */
+/* Mehrfachauswahl (Der Markt / Fluss abwärts) */
 function handleSelectAnswers(index, button, correctAnswers) {
-    // Max 5 Auswahlen für Fluss abwärts, max 3 für Der Markt
-    // Ermitteln wir per correctAnswers.length
-    let maxLen = correctAnswers.length; // 3 (Der Markt) oder 5 (Fluss abwärts)
+    let maxLen = correctAnswers.length; // 3 (1. Aufgabe Der Markt), 2 (2. Aufgabe?), 5 (Fluss abwärts) ...
     if (selectedAnswers.includes(index)) {
         selectedAnswers = selectedAnswers.filter(i => i !== index);
         button.classList.remove("selected");
@@ -175,9 +198,8 @@ function handleSelectAnswers(index, button, correctAnswers) {
     }
 }
 
-/* Prüfen, ob ALLE richtigen Antworten ausgewählt wurden (3 oder 5) */
-function checkMultiAnswer(correctAnswers) {
-    // => Wenn (Der Markt) 3 Richtige
+/* 1) Standard-Mehfachauswahl => Falls "Der Markt" -> WELCHE Aufgabe? */
+function checkMarketAnswers(correctAnswers) {
     selectedAnswers.sort();
     correctAnswers.sort();
     if (JSON.stringify(selectedAnswers) === JSON.stringify(correctAnswers)) {
@@ -185,14 +207,24 @@ function checkMultiAnswer(correctAnswers) {
         updateStars();
         alert("Richtig! ⭐ Du hast einen Stern erhalten.");
     } else {
-        alert("Falsch! ❌ Du musst GENAU drei richtige Antworten auswählen.");
+        alert("Falsch! ❌ Du musst GENAU die richtige Anzahl auswählen.");
     }
-    setTimeout(backToSubregions, 1000);
+
+    // Falls wir in "Der Markt" = 0 => nächste Aufgabe (1)
+    // oder sind wir in "Der Markt" = 1 => backToSubregions
+    if (marketTaskIndex === 0) {
+        // Nächste Aufgabe => index 1
+        marketTaskIndex = 1;
+        // Neu aufrufen von startTask("Der Markt") => 2. Frage
+        setTimeout(() => startTask("Der Markt"), 1000);
+    } else {
+        // War 2. Aufgabe => zurück
+        setTimeout(backToSubregions, 1000);
+    }
 }
 
-/* Neue Funktion checkFiveAnswers für Fluss abwärts */
+/* 2) "Fluss abwärts" => 5 Auswahlen */
 function checkFiveAnswers(correctAnswers) {
-    // => Wenn (Fluss abwärts) 5 Richtige
     selectedAnswers.sort();
     correctAnswers.sort();
     if (JSON.stringify(selectedAnswers) === JSON.stringify(correctAnswers)) {
@@ -205,7 +237,7 @@ function checkFiveAnswers(correctAnswers) {
     setTimeout(backToSubregions, 1000);
 }
 
-/* ----- FLUSS AUFWÄRTS: Zuordnungs-Spiel (Unverändert) ----- */
+/* ----- FLUSS AUFWÄRTS: Zuordnungs-Spiel ----- */
 let selectedTerm = null;
 let selectedMatch = null;
 let selectedPairs = {};
@@ -302,7 +334,7 @@ function checkFlussMatches(pairs) {
     setTimeout(backToSubregions, 1000);
 }
 
-/* Sterne & Navigation (unverändert) */
+/* Sterne & Navigation */
 function updateStars() {
     document.getElementById('stars-count').textContent = stars;
 }
