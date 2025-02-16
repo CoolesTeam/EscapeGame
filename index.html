@@ -1,64 +1,66 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Escape Game Gallien</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <title>Escape Game Gallien</title>
+  <style>
+    /* Minimale Styles, damit man etwas sieht. Passe sie nach Wunsch an. */
+    body { margin: 0; padding: 0; font-family: sans-serif; }
+    .screen {
+      display: none;
+      text-align: center;
+      padding: 20px;
+    }
+    #start-screen, #intro-screen, #game-screen, #subregion-screen, #task-screen {
+      width: 100vw; 
+      height: 100vh; 
+      background: #eee; 
+      box-sizing: border-box;
+    }
+    .button { padding: 10px 20px; margin-top: 20px; }
+  </style>
 </head>
 <body>
 
-    <!-- Willkommensbildschirm -->
-    <div id="welcome-screen">
-        <h1>Willkommen im Escape Game Gallien</h1>
-        <button onclick="showIntro()">Weiter</button>
-    </div>
+  <!-- START-SEITE -->
+  <div id="start-screen" class="screen" style="display: block;">
+    <h1>Willkommen zum Escape Game Gallien!</h1>
+    <button class="button" onclick="goToIntro()">Weiter</button>
+  </div>
 
-    <!-- Neuer Erklärungsbildschirm -->
-    <div id="intro-screen" style="display: none;">
-        <div id="intro-box">
-            <h1>Deine Mission</h1>
-            <p>Du bist im Lateinunterricht und deine Lehrkraft möchte, dass du dein Lateinbuch aufschlägst, wie immer.  
-               Nur dieses Mal scheint da was anders zu sein. Mit deinem Sitznachbar zusammen schaut ihr in das Buch  
-               und ihr seht ein Bild von Obelix, der in den Asterix Comics immer zu finden ist. Das Bild wirkt  
-               auf euch verschwommen und ehe ihr euch verseht, werdet ihr in das Buch hineingezogen.
-               Plötzlich steht ihr vor Asterix, der euch freundlich, aber hektisch empfängt. Er erklärt euch schnell, 
-               dass das Gallische Dorf in großer Gefahr schwebt und sie es nicht schaffen es ungesehen von den Römern 
-               zu verlassen, ihr Zaubertrank neigt sich dummerweise dem Ende zu und Miraculix fehlen ein paar Zutaten, 
-               um einen neuen zu Konzipieren. Ihr willigt ein, ihnen zu helfen, aber da ihr euch gar nicht in der Gegend 
-               auskennt, braucht ihr einen Begleiter. Euch wird Idefix, der kleine Hund als treuen Begleiter zur 
-               Verfügung gestellt und eine kleine Karte mit den Orten zu denen ihr unauffällig kommen müsst. 
-               Los geht die Reise, viel Erfolg!</p>
-            <button onclick="startGame()">Spiel starten</button>
-        </div>
-    </div>
+  <!-- INTRO-SEITE -->
+  <div id="intro-screen" class="screen">
+    <h2>Deine Mission</h2>
+    <p>Intro-Text etc. ...</p>
+    <button class="button" onclick="startGame()">Spiel starten</button>
+  </div>
 
-    <!-- Hauptspiel -->
-    <div id="game-screen" style="display: none;">
-        <h2>Wähle eine Region:</h2>
-        <div id="map-container">
-            <button id="wald-button" class="button region-button" onclick="showSubregions('wald')">🌲 Wald</button>
-            <button id="dorf-button" class="button region-button" onclick="showSubregions('dorf')">🏡 Dorf</button>
-            <button id="fluss-button" class="button region-button" onclick="showSubregions('fluss')">🌊 Fluss</button>
-        </div>
-        <p>Sterne gesammelt: <span id="stars-count">0</span></p>
-    </div>
+  <!-- GAME-SCREEN (Regionen) -->
+  <div id="game-screen" class="screen">
+    <h2>Wähle eine Region:</h2>
+    <p>Sterne: <span id="stars-count">0</span></p>
+    <!-- Hier Buttons für Wald, Dorf, Fluss -->
+    <button class="button" onclick="showSubregions('wald')">Wald</button>
+    <button class="button" onclick="showSubregions('dorf')">Dorf</button>
+    <button class="button" onclick="showSubregions('fluss')">Fluss</button>
+  </div>
 
-    <!-- Unterregionen -->
-    <div id="subregion-screen" style="display: none;">
-        <h2 id="subregion-title"></h2>
-        <div id="subregion-container"></div>
-        <button class="back-button" onclick="backToRegions()">Zurück</button>
-    </div>
+  <!-- SUBREGION-SCREEN -->
+  <div id="subregion-screen" class="screen">
+    <h2>Unterregion wählen</h2>
+    <div id="subregion-container"></div>
+    <button class="button" onclick="backToRegions()">Zurück</button>
+  </div>
 
-    <!-- Fragenbildschirm -->
-    <div id="task-screen" style="display: none;">
-        <h2 id="task-title"></h2>
-        <p id="question-text"></p>
-        <div id="answers-container"></div>
-        <button class="back-button" onclick="backToSubregions()">Zurück</button>
-    </div>
+  <!-- TASK-SCREEN -->
+  <div id="task-screen" class="screen">
+    <h2 id="task-title"></h2>
+    <p id="question-text"></p>
+    <div id="answers-container"></div>
+    <button class="button" onclick="backToSubregions()">Zurück</button>
+  </div>
 
-    <script src="script.js"></script>
+  <!-- SCRIPT -->
+  <script src="script.js"></script>
 </body>
 </html>
