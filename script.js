@@ -9,15 +9,16 @@ const subregions = {
     fluss: ["Fluss aufwärts", "Der Hafen", "Fluss abwärts"]
 };
 
-/* Fragen & Antworten (VOLLSTÄNDIG) */
+/* Fragen & Antworten */
 const questions = {
     "Weg": [{
-        question: "Finde das Reflexivpronomen und klicke es an.",
+        question: "Finde das Reflexivpronomen und markiere es rot.",
         answers: ["Sunt", "item", "quae", "appellantur"],
         correct: 2
     }],
     "Baum": [{
         question: "Suche das Subjekt des Satzes heraus und klicke es an.",
+        sentence: "Est bos cervi figura, cuius a media fronte inter aures unum cornu exsistit excelsius magisque directum his, quae nobis nota sunt, cornibus.",
         answers: ["bos cervi figura", "cornibus", "quae", "nota sunt"],
         correct: 0
     }],
@@ -97,6 +98,15 @@ function startTask(subregion) {
 
     let answerContainer = document.getElementById('answers-container');
     answerContainer.innerHTML = "";
+
+    // Falls der Satz existiert (z.B. für "Baum"), anzeigen
+    if (task.sentence) {
+        let sentenceElement = document.createElement("p");
+        sentenceElement.textContent = task.sentence;
+        sentenceElement.style.fontStyle = "italic";
+        sentenceElement.style.marginBottom = "10px";
+        answerContainer.appendChild(sentenceElement);
+    }
 
     task.answers.forEach((answer, index) => {
         let btn = document.createElement("button");
