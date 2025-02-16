@@ -3,64 +3,51 @@
 <head>
   <meta charset="UTF-8">
   <title>Escape Game Gallien</title>
-  <style>
-    /* Minimale Styles, damit man etwas sieht. Passe sie nach Wunsch an. */
-    body { margin: 0; padding: 0; font-family: sans-serif; }
-    .screen {
-      display: none;
-      text-align: center;
-      padding: 20px;
-    }
-    #start-screen, #intro-screen, #game-screen, #subregion-screen, #task-screen {
-      width: 100vw; 
-      height: 100vh; 
-      background: #eee; 
-      box-sizing: border-box;
-    }
-    .button { padding: 10px 20px; margin-top: 20px; }
-  </style>
+  <!-- Deine alte CSS -->
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!-- START-SEITE -->
-  <div id="start-screen" class="screen" style="display: block;">
+  <!-- START-SEITE (alte ID: welcome-screen) -->
+  <div id="welcome-screen" style="display: block;">
     <h1>Willkommen zum Escape Game Gallien!</h1>
     <button class="button" onclick="showIntro()">Weiter</button>
   </div>
 
   <!-- INTRO-SEITE -->
-  <div id="intro-screen" class="screen">
-    <h2>Deine Mission</h2>
-    <p>Intro-Text etc. ...</p>
-    <button class="button" onclick="startGame()">Spiel starten</button>
+  <div id="intro-screen" style="display: none;">
+    <div id="intro-box">
+      <h2>Deine Mission</h2>
+      <p>Intro-Text etc. ...</p>
+      <button class="button" onclick="startGame()">Spiel starten</button>
+    </div>
   </div>
 
   <!-- GAME-SCREEN (Regionen) -->
-  <div id="game-screen" class="screen">
+  <div id="game-screen" style="display: none;">
     <h2>Wähle eine Region:</h2>
     <p>Sterne: <span id="stars-count">0</span></p>
-    <!-- Hier Buttons für Wald, Dorf, Fluss -->
-    <button class="button" onclick="showSubregions('wald')">Wald</button>
-    <button class="button" onclick="showSubregions('dorf')">Dorf</button>
-    <button class="button" onclick="showSubregions('fluss')">Fluss</button>
+    <button id="wald-button" class="button region-button" onclick="showSubregions('wald')">Wald</button>
+    <button id="dorf-button" class="button region-button" onclick="showSubregions('dorf')">Dorf</button>
+    <button id="fluss-button" class="button region-button" onclick="showSubregions('fluss')">Fluss</button>
   </div>
 
   <!-- SUBREGION-SCREEN -->
-  <div id="subregion-screen" class="screen">
+  <div id="subregion-screen" style="display:none;">
     <h2>Unterregion wählen</h2>
     <div id="subregion-container"></div>
-    <button class="button" onclick="backToRegions()">Zurück</button>
+    <button class="button back-button" onclick="backToRegions()">Zurück</button>
   </div>
 
   <!-- TASK-SCREEN -->
-  <div id="task-screen" class="screen">
+  <div id="task-screen" style="display:none;">
     <h2 id="task-title"></h2>
     <p id="question-text"></p>
     <div id="answers-container"></div>
-    <button class="button" onclick="backToSubregions()">Zurück</button>
+    <button class="button back-button" onclick="backToSubregions()">Zurück</button>
   </div>
 
-  <!-- SCRIPT -->
+  <!-- Dein script.js -->
   <script src="script.js"></script>
 </body>
 </html>
