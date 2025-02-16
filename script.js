@@ -1,134 +1,133 @@
-/*************************************
- *   STARTSEITE => INTRO => SPIEL
- *************************************/
+/***********************************************************
+ *     START/INTRO-FUNKTIONEN (alte IDs: welcome-screen)
+ ***********************************************************/
 function showIntro() {
-  // Startseite (ID: start-screen) ausblenden
-  document.getElementById('start-screen').style.display = 'none';
-  // Intro (ID: intro-screen) einblenden
-  document.getElementById('intro-screen').style.display = 'block';
+  // Startseite (#welcome-screen) ausblenden
+  document.getElementById("welcome-screen").style.display = "none";
+  // Intro (#intro-screen) einblenden
+  document.getElementById("intro-screen").style.display = "flex";
 }
 
 function startGame() {
-  // Intro ausblenden
-  document.getElementById('intro-screen').style.display = 'none';
-  // Spielbildschirm einblenden
-  document.getElementById('game-screen').style.display = 'block';
+  // Intro (#intro-screen) ausblenden
+  document.getElementById("intro-screen").style.display = "none";
+  // Hauptspiel (#game-screen) einblenden
+  document.getElementById("game-screen").style.display = "block";
   updateStars();
 }
 
-/*************************************
+/***********************************************************
  *   GLOBALE VARIABLEN
- *************************************/
+ ***********************************************************/
 let stars = 0;
 let currentRegion = "";
 let currentSubregion = "";
 let selectedAnswers = [];
 
-/* "Die Bewohner" hat 2 Aufgaben */
+/* "Die Bewohner" => 2 Aufgaben */
 let dieBewohnerTaskIndex = 0;
-/* "Der Markt" hat 2 Aufgaben */
+/* "Der Markt" => 2 Aufgaben */
 let marketTaskIndex = 0;
 
-/*************************************
- *   DEFINIERTE UNTERREGIONEN
- *************************************/
+/***********************************************************
+ *   SUBREGION-DEFINITION
+ ***********************************************************/
 const subregions = {
-    wald: ["Weg", "Baum"],
-    dorf: ["Die Bewohner", "Der Markt"],
-    fluss: ["Fluss aufwärts", "Der Hafen", "Fluss abwärts"]
+  wald: ["Weg", "Baum"],
+  dorf: ["Die Bewohner", "Der Markt"],
+  fluss: ["Fluss aufwärts", "Der Hafen", "Fluss abwärts"]
 };
 
-/*************************************
+/***********************************************************
  *   FRAGEN & ANTWORTEN
- *************************************/
+ ***********************************************************/
 const questions = {
-    "Weg": [{
-        question: "Finde das Reflexivpronomen und klicke es an.",
-        answers: ["Sunt", "item", "quae", "appellantur"],
-        correct: 2
-    }],
-    "Baum": [{
-        question: "Suche das Subjekt des Satzes heraus und klicke es an.",
-        sentence: "Est bos cervi figura, cuius a media fronte inter aures unum cornu exsistit excelsius magisque directum his, quae nobis nota sunt, cornibus.",
-        answers: ["bos cervi figura", "cornibus", "quae", "nota sunt"],
-        correct: 0
-    }],
+  "Weg": [{
+    question: "Finde das Reflexivpronomen und klicke es an.",
+    answers: ["Sunt", "item", "quae", "appellantur"],
+    correct: 2
+  }],
+  "Baum": [{
+    question: "Suche das Subjekt des Satzes heraus und klicke es an.",
+    sentence: "Est bos cervi figura, cuius a media fronte inter aures unum cornu exsistit excelsius magisque directum his, quae nobis nota sunt, cornibus.",
+    answers: ["bos cervi figura", "cornibus", "quae", "nota sunt"],
+    correct: 0
+  }],
 
-    /* "Die Bewohner" => 2 Aufgaben */
-    "Die Bewohner": [
-      {
-        question: "Übersetze den Satz: 'Dicebant servos nullis iuribus praeditos esse et penitus a dominis pendere.'",
-        answers: [
-            "Die Sklaven haben keine Rechte und sind abhängig von ihren Herren.",
-            "Sie sagten, dass die Sklaven keinerlei Rechte hätten und vollständig von ihren Herren abhängig sind.",
-            "Die Sklaven sagen, dass sie keine Rechte haben und abhängig von ihren Herren sind."
-        ],
-        correct: 1  // Single Choice
-      },
-      {
-        question: "Gib den AcI Auslöser an.",
-        answers: [
-          "dicebant", // richtig
-          "iuribus",  // falsch
-          "praeditos" // falsch
-        ],
-        correct: 0   // Single Choice
-      }
-    ],
+  /* DIE BEWOHNER => 2 Aufgaben */
+  "Die Bewohner": [
+    {
+      question: "Übersetze den Satz: 'Dicebant servos nullis iuribus praeditos esse et penitus a dominis pendere.'",
+      answers: [
+        "Die Sklaven haben keine Rechte und sind abhängig von ihren Herren.",
+        "Sie sagten, dass die Sklaven keinerlei Rechte hätten und vollständig von ihren Herren abhängig sind.",
+        "Die Sklaven sagen, dass sie keine Rechte haben und abhängig von ihren Herren sind."
+      ],
+      correct: 1 // SingleChoice
+    },
+    {
+      question: "Gib den AcI Auslöser an.",
+      answers: [
+        "dicebant",
+        "iuribus",
+        "praeditos"
+      ],
+      correct: 0 // SingleChoice
+    }
+  ],
 
-    /* "Der Markt" => 2 Aufgaben */
-    "Der Markt": [
-      {
-        question: "Klicke die drei Stämme von Gallien an.",
-        sentence: "Gallia est omnis divisa in partes tres, quarum unam incolunt Belgae, aliam Aquitani, tertiam qui ipsorum lingua Celtae, nostra Galli appellantur.",
-        answers: ["Belgae", "Gallia", "Aquitani", "Celtae", "Galli"],
-        correct: [0, 2, 3] // 3 richtige
-      },
-      {
-        question: "Markiere die beiden Flüsse.",
-        sentence: "Eorum una pars, quam Gallos obtinere dictum est, initium capit a flumine Rhodano, continetur Garumna flumine, Oceano finibus Belgarum",
-        answers: ["Rhodano", "Garumna", "Belgarum", "Aquitani"],
-        correct: [0, 1] // 2 richtige
-      }
-    ],
+  /* DER MARKT => 2 Aufgaben */
+  "Der Markt": [
+    {
+      question: "Klicke die drei Stämme von Gallien an.",
+      sentence: "Gallia est omnis divisa in partes tres, quarum unam incolunt Belgae, aliam Aquitani, tertiam qui ipsorum lingua Celtae, nostra Galli appellantur.",
+      answers: ["Belgae", "Gallia", "Aquitani", "Celtae", "Galli"],
+      correct: [0, 2, 3] // 3 richtige
+    },
+    {
+      question: "Markiere die beiden Flüsse.",
+      sentence: "Eorum una pars, quam Gallos obtinere dictum est, initium capit a flumine Rhodano, continetur Garumna flumine, Oceano finibus Belgarum",
+      answers: ["Rhodano", "Garumna", "Belgarum", "Aquitani"],
+      correct: [0, 1] // 2 richtige
+    }
+  ],
 
-    /* "Fluss aufwärts" => Zuordnungs-Spiel */
-    "Fluss aufwärts": [{
-        question: "Ordne die Begriffe richtig zu (Orange ↔ Hellblau).",
-        pairs: [
-            { term: "caelo",    match: "Himmel" },
-            { term: "sacris",   match: "Opfer" },
-            { term: "deos",     match: "Götter" },
-            { term: "imperium", match: "Macht" }
-        ]
-    }],
+  /* FLUSS AUFWÄRTS => Zuordnungs-Spiel */
+  "Fluss aufwärts": [{
+    question: "Ordne die Begriffe richtig zu (Orange ↔ Hellblau).",
+    pairs: [
+      { term: "caelo",    match: "Himmel" },
+      { term: "sacris",   match: "Opfer" },
+      { term: "deos",     match: "Götter" },
+      { term: "imperium", match: "Macht" }
+    ]
+  }],
 
-    /* "Der Hafen" */
-    "Der Hafen": [{
-        question: "Wie wird dieser Stamm beschrieben?",
-        sentence: "Haec civitas longe plurimum totius Galliae",
-        answers: ["der größte Stamm", "der kleinste Stamm", "der mächtigste Stamm"],
-        correct: 2
-    }],
+  "Der Hafen": [{
+    question: "Wie wird dieser Stamm beschrieben?",
+    sentence: "Haec civitas longe plurimum totius Galliae",
+    answers: ["der größte Stamm", "der kleinste Stamm", "der mächtigste Stamm"],
+    correct: 2
+  }],
 
-    /* "Fluss abwärts" => 5 richtige */
-    "Fluss abwärts": [{
-        question: "Markiere alle Adjektive.",
-        sentence: "Sacrificia publica ac privata procurant, religiones interpretantur. Ad hos magnus adulescentium numerus disciplinae causa concurrit magnoque hi sunt apud eos honore. Nam fere de omnibus controversiis publicis privatisque constituunt",
-        answers: ["publica", "controversiis", "privata", "disciplinae", "magnus", "magno", "omnibus", "interpretantur"],
-        correct: [0, 2, 4, 5, 6]
-    }]
+  /* FLUSS ABWÄRTS => 5 richtige */
+  "Fluss abwärts": [{
+    question: "Markiere alle Adjektive.",
+    sentence: "Sacrificia publica ac privata procurant, religiones interpretantur. Ad hos magnus adulescentium numerus disciplinae causa concurrit magnoque hi sunt apud eos honore. Nam fere de omnibus controversiis publicis privatisque constituunt",
+    answers: ["publica", "controversiis", "privata", "disciplinae", "magnus", "magno", "omnibus", "interpretantur"],
+    correct: [0, 2, 4, 5, 6]
+  }]
 };
 
-/*************************************
- *   showSubregions / startTask
- *************************************/
+/***********************************************************
+ *   showSubregions => Subregionen
+ ***********************************************************/
 function showSubregions(region) {
   currentRegion = region;
-  document.getElementById('game-screen').style.display = 'none';
-  document.getElementById('subregion-screen').style.display = 'block';
+  document.getElementById("game-screen").style.display = "none";
+  document.getElementById("subregion-screen").style.display = "block";
 
-  let container = document.getElementById('subregion-container');
+  let container = document.getElementById("subregion-container");
   container.innerHTML = "";
 
   subregions[region].forEach(sub => {
@@ -136,11 +135,11 @@ function showSubregions(region) {
     btn.textContent = sub;
     btn.classList.add("button", "subregion-button");
     btn.onclick = function() {
-      // "Die Bewohner" => zurück auf 0
+      // "Die Bewohner" => index auf 0
       if (region === "dorf" && sub === "Die Bewohner") {
         dieBewohnerTaskIndex = 0;
       }
-      // "Der Markt" => zurück auf 0
+      // "Der Markt" => index auf 0
       if (region === "dorf" && sub === "Der Markt") {
         marketTaskIndex = 0;
       }
@@ -150,10 +149,13 @@ function showSubregions(region) {
   });
 }
 
+/***********************************************************
+ *   startTask => Aufgabenbildschirm
+ ***********************************************************/
 function startTask(subregion) {
   currentSubregion = subregion;
-  document.getElementById('subregion-screen').style.display = 'none';
-  document.getElementById('task-screen').style.display = 'block';
+  document.getElementById("subregion-screen").style.display = "none";
+  document.getElementById("task-screen").style.display = "block";
 
   let tasks = questions[subregion];
   if (!tasks) {
@@ -169,16 +171,17 @@ function startTask(subregion) {
     task = tasks[marketTaskIndex];
   }
   else {
-    task = tasks[0]; // Standard: 1 Aufgabe
+    task = tasks[0]; // standard
   }
 
-  document.getElementById('task-title').textContent = `Aufgabe in ${subregion}`;
-  document.getElementById('question-text').textContent = task.question;
+  document.getElementById("task-title").textContent = `Aufgabe in ${subregion}`;
+  document.getElementById("question-text").textContent = task.question;
 
-  let answerContainer = document.getElementById('answers-container');
+  let answerContainer = document.getElementById("answers-container");
   answerContainer.innerHTML = "";
   selectedAnswers = [];
 
+  // Falls Satz
   if (task.sentence) {
     let sentenceEl = document.createElement("p");
     sentenceEl.textContent = task.sentence;
@@ -187,13 +190,13 @@ function startTask(subregion) {
     answerContainer.appendChild(sentenceEl);
   }
 
-  // Fluss aufwärts => Zuordnung
+  // Falls "Fluss aufwärts" => Zuordnungs-Spiel
   if (subregion === "Fluss aufwärts") {
     setupMatchingGame(task.pairs);
     return;
   }
 
-  // Sonst => Buttons generieren
+  // Sonst => Buttons
   task.answers.forEach((answer, index) => {
     let btn = document.createElement("button");
     btn.textContent = answer;
@@ -202,7 +205,7 @@ function startTask(subregion) {
     answerContainer.appendChild(btn);
   });
 
-  // "Die Bewohner" => 2 Aufgaben => checkBewohnerAnswers
+  // "Die Bewohner" => 2 Aufgaben => Bestätigen
   if (subregion === "Die Bewohner") {
     let subBtn = document.createElement("button");
     subBtn.textContent = "Bestätigen";
@@ -211,7 +214,7 @@ function startTask(subregion) {
     answerContainer.appendChild(subBtn);
   }
 
-  // "Der Markt" => checkMarketAnswers
+  // "Der Markt" => 2 Aufgaben => Bestätigen
   if (subregion === "Der Markt") {
     let subBtn = document.createElement("button");
     subBtn.textContent = "Bestätigen";
@@ -220,7 +223,7 @@ function startTask(subregion) {
     answerContainer.appendChild(subBtn);
   }
 
-  // "Fluss abwärts" => 5 richtige => checkFiveAnswers
+  // "Fluss abwärts" => 5 korrekte => Bestätigen
   if (subregion === "Fluss abwärts") {
     let subBtn = document.createElement("button");
     subBtn.textContent = "Bestätigen";
@@ -230,12 +233,12 @@ function startTask(subregion) {
   }
 }
 
-/*************************************
- *   handleSelectAnswers => Single/Mehrfach
- *************************************/
+/***********************************************************
+ *  handleSelectAnswers => Single / Mehrfach
+ ***********************************************************/
 function handleSelectAnswers(index, button, correctAnswers) {
   if (Array.isArray(correctAnswers)) {
-    // Mehrfachauswahl
+    // Mehrfach
     let maxLen = correctAnswers.length;
     if (selectedAnswers.includes(index)) {
       selectedAnswers = selectedAnswers.filter(i => i !== index);
@@ -250,8 +253,9 @@ function handleSelectAnswers(index, button, correctAnswers) {
         alert(`Du kannst nur ${maxLen} Antworten auswählen!`);
       }
     }
-  } else {
-    // Single choice => Sofort
+  }
+  else {
+    // Single => sofort
     if (index === correctAnswers) {
       stars++;
       updateStars();
@@ -263,9 +267,9 @@ function handleSelectAnswers(index, button, correctAnswers) {
   }
 }
 
-/*************************************
- *   "Die Bewohner" => 2 Aufgaben
- *************************************/
+/***********************************************************
+ *  Die Bewohner => 2 Aufgaben
+ ***********************************************************/
 function checkBewohnerAnswers(correctAnswers) {
   // Single Choice => selectedAnswers[0] == correctAnswers
   if (!Array.isArray(correctAnswers)) {
@@ -289,9 +293,9 @@ function checkBewohnerAnswers(correctAnswers) {
   }
 }
 
-/*************************************
- *   "Der Markt" => 2 Aufgaben
- *************************************/
+/***********************************************************
+ *  Der Markt => 2 Aufgaben
+ ***********************************************************/
 function checkMarketAnswers(correctAnswers) {
   selectedAnswers.sort();
   correctAnswers.sort();
@@ -311,9 +315,9 @@ function checkMarketAnswers(correctAnswers) {
   }
 }
 
-/*************************************
- *   "Fluss abwärts" => 5 richtige
- *************************************/
+/***********************************************************
+ *  Fluss abwärts => 5 korrekte
+ ***********************************************************/
 function checkFiveAnswers(correctAnswers) {
   selectedAnswers.sort();
   correctAnswers.sort();
@@ -327,15 +331,15 @@ function checkFiveAnswers(correctAnswers) {
   setTimeout(backToSubregions, 1000);
 }
 
-/*************************************
- *   Fluss aufwärts => Zuordnungs-Spiel
- *************************************/
+/***********************************************************
+ *  Fluss aufwärts => Zuordnungs-Spiel
+ ***********************************************************/
 let selectedTerm = null;
 let selectedMatch = null;
 let selectedPairs = {};
 
 function setupMatchingGame(pairs) {
-  let container = document.getElementById('answers-container');
+  let container = document.getElementById("answers-container");
   container.innerHTML = "<p>Verbinde Orange (Fragen) mit Hellblau (Antworten) per Klick!</p>";
 
   selectedPairs = {};
@@ -426,19 +430,20 @@ function checkFlussMatches(pairs) {
   setTimeout(backToSubregions, 1000);
 }
 
-/*************************************
+/***********************************************************
  *   Sterne & Navigation
- *************************************/
+ ***********************************************************/
 function updateStars() {
-  document.getElementById('stars-count').textContent = stars;
+  let scEl = document.getElementById("stars-count");
+  if (scEl) scEl.textContent = stars;
 }
 
 function backToRegions() {
-  document.getElementById('subregion-screen').style.display = 'none';
-  document.getElementById('game-screen').style.display = 'block';
+  document.getElementById("subregion-screen").style.display = "none";
+  document.getElementById("game-screen").style.display = "block";
 }
 
 function backToSubregions() {
-  document.getElementById('task-screen').style.display = 'none';
-  document.getElementById('subregion-screen').style.display = 'block';
+  document.getElementById("task-screen").style.display = "none";
+  document.getElementById("subregion-screen").style.display = "block";
 }
