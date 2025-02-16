@@ -36,7 +36,7 @@ const questions = {
         question: "Klicke die drei Stämme von Gallien an.",
         sentence: "Gallia est omnis divisa in partes tres, quarum unam incolunt Belgae, aliam Aquitani, tertiam qui ipsorum lingua Celtae, nostra Galli appellantur.",
         answers: ["Belgae", "Aquitani", "Celtae", "Romani"],
-        correct: [0, 1, 2] // Richtig: Belgae, Aquitani, Celtae
+        correct: [0, 1, 2] // Richtige Antworten: Belgae, Aquitani, Celtae
     }],
     "Fluss aufwärts": [{
         question: "Bringe diese lateinischen Begriffe in die richtige Reihenfolge.",
@@ -135,14 +135,19 @@ function handleMultiSelect(index, button, correctAnswers) {
         selectedAnswers = selectedAnswers.filter(i => i !== index);
         button.classList.remove("selected");
     } else {
-        selectedAnswers.push(index);
-        button.classList.add("selected");
+        if (selectedAnswers.length < 3) {
+            selectedAnswers.push(index);
+            button.classList.add("selected");
+        } else {
+            alert("Du kannst nur drei Antworten auswählen!");
+        }
     }
 }
 
 /* Prüfen, ob alle drei richtigen Antworten ausgewählt wurden */
 function checkMultiAnswer(correctAnswers) {
     selectedAnswers.sort();
+    correctAnswers.sort();
     if (JSON.stringify(selectedAnswers) === JSON.stringify(correctAnswers)) {
         stars++;
         updateStars();
@@ -150,28 +155,6 @@ function checkMultiAnswer(correctAnswers) {
     } else {
         alert("Falsch! ❌ Du musst genau drei richtige Antworten auswählen.");
     }
-    setTimeout(backToSubregions, 1000);
-}
-
-function checkAnswer(selectedIndex, correctIndex, button) {
-    if (Array.isArray(correctIndex)) {
-        if (correctIndex.includes(selectedIndex)) {
-            stars++;
-            updateStars();
-            button.classList.add("correct");
-        } else {
-            button.classList.add("wrong");
-        }
-    } else {
-        if (selectedIndex === correctIndex) {
-            stars++;
-            updateStars();
-            button.classList.add("correct");
-        } else {
-            button.classList.add("wrong");
-        }
-    }
-
     setTimeout(backToSubregions, 1000);
 }
 
