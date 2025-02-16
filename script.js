@@ -59,8 +59,8 @@ const questions = {
     "Fluss abwärts": [{
         question: "Markiere alle Adjektive.",
         sentence:"Sacrificia publica ac privata procurant, religiones interpretantur. Ad hos magnus adulescentium numerus disciplinae causa concurrit magnoque hi sunt apud eos honore. Nam fere de omnibus controversiis publicis privatisque constituunt",
-        answers: ["publica", "privata", "magnus", "magno", "omnibus"],
-        correct: [0, 1, 2, 3, 4]
+        answers: ["publica", "controversiis", "privata", "disciplinae", "magnus", "magno", "omnibus", "interprentantur",],
+        correct: [0, 2, 4, 5, 6]
     }]
 };
 
