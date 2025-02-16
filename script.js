@@ -2,7 +2,7 @@ let stars = 0;
 let currentRegion = "";
 let currentSubregion = "";
 let selectedAnswers = [];
-let connections = {}; // Speichert die Zuordnungen für Drag & Drop
+let currentPairs = {}; // Speichert die Zuordnungen für Drag & Drop
 
 /* Regionen und Unterregionen */
 const subregions = {
@@ -23,32 +23,6 @@ const questions = {
         sentence: "Est bos cervi figura, cuius a media fronte inter aures unum cornu exsistit excelsius magisque directum his, quae nobis nota sunt, cornibus.",
         answers: ["bos cervi figura", "cornibus", "quae", "nota sunt"],
         correct: 0
-    }],
-    "Die Bewohner": [{
-        question: "Übersetze den Satz: 'Dicebant servos nullis iuribus praeditos esse et penitus a dominis pendere.'",
-        answers: [
-            "Die Sklaven haben keine Rechte und sind abhängig von ihren Herren.",
-            "Sie sagten, dass die Sklaven keinerlei Rechte hätten und vollständig von ihren Herren abhängig sind.",
-            "Die Sklaven sagen, dass sie keine Rechte haben und abhängig von ihren Herren sind."
-        ],
-        correct: 1
-    }],
-    "Der Markt": [{
-        question: "Klicke die drei Stämme von Gallien an.",
-        sentence: "Gallia est omnis divisa in partes tres, quarum unam incolunt Belgae, aliam Aquitani, tertiam qui ipsorum lingua Celtae, nostra Galli appellantur.",
-        answers: ["Belgae", "Aquitani", "Celtae", "Romani"],
-        correct: [0, 1, 2] 
-    }],
-    "Fluss aufwärts": [{
-        question: "Bringe diese lateinischen Begriffe in die richtige Reihenfolge.",
-        answers: ["caelo - Himmel", "sacris - Opfer", "deos - Götter", "imperium - Macht"],
-        correct: [0, 1, 2, 3]
-    }],
-    "Der Hafen": [{
-        question: "Wie wird dieser Stamm beschrieben?",
-        sentence: "Haec civitas longe plurimum totius Galliae",
-        answers: ["der größte Stamm", "der kleinste Stamm", "der mächtigste Stamm"],
-        correct: 2
     }],
     "Fluss abwärts": [{
         question: "Ordne die Begriffe richtig zu.",
@@ -125,6 +99,8 @@ function setupDragAndDrop(pairs) {
     let container = document.getElementById('answers-container');
     container.innerHTML = `<p>Ziehe die Begriffe in die richtigen Felder:</p>`;
 
+    currentPairs = {}; // Reset für neue Aufgabe
+
     let terms = pairs.map(p => p.term);
     let matches = pairs.map(p => p.match);
 
@@ -132,23 +108,25 @@ function setupDragAndDrop(pairs) {
     terms.sort(() => Math.random() - 0.5);
     matches.sort(() => Math.random() - 0.5);
 
-    let termList = document.createElement("ul");
-    termList.classList.add("drag-list");
+    let termList = document.createElement("div");
+    termList.classList.add("drag-container");
 
-    let matchList = document.createElement("ul");
-    matchList.classList.add("drag-list");
+    let matchList = document.createElement("div");
+    matchList.classList.add("drag-container");
 
     terms.forEach(term => {
-        let item = document.createElement("li");
+        let item = document.createElement("div");
         item.textContent = term;
+        item.classList.add("drag-item", "drag-term");
         item.draggable = true;
         item.ondragstart = dragStart;
         termList.appendChild(item);
     });
 
     matches.forEach(match => {
-        let item = document.createElement("li");
+        let item = document.createElement("div");
         item.textContent = match;
+        item.classList.add("drag-item", "drag-match");
         item.ondrop = drop;
         item.ondragover = allowDrop;
         matchList.appendChild(item);
@@ -177,15 +155,15 @@ function drop(event) {
     event.preventDefault();
     let draggedText = event.dataTransfer.getData("text");
     event.target.textContent = draggedText;
+    currentPairs[event.target.textContent] = draggedText;
 }
 
 /* Überprüfung der Zuordnung */
 function checkPairs(pairs) {
-    let items = document.querySelectorAll(".drag-list li");
     let isCorrect = true;
 
-    items.forEach((item, index) => {
-        if (pairs[index].term !== item.textContent) {
+    pairs.forEach(pair => {
+        if (currentPairs[pair.match] !== pair.term) {
             isCorrect = false;
         }
     });
