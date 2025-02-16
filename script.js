@@ -2,6 +2,7 @@ let stars = 0;
 let currentRegion = "";
 let currentSubregion = "";
 let selectedAnswers = [];
+let connections = {}; // Speichert die Zuordnungen für Drag & Drop
 
 /* Regionen und Unterregionen */
 const subregions = {
@@ -36,7 +37,7 @@ const questions = {
         question: "Klicke die drei Stämme von Gallien an.",
         sentence: "Gallia est omnis divisa in partes tres, quarum unam incolunt Belgae, aliam Aquitani, tertiam qui ipsorum lingua Celtae, nostra Galli appellantur.",
         answers: ["Belgae", "Aquitani", "Celtae", "Romani"],
-        correct: [0, 1, 2] // Richtige Antworten: Belgae, Aquitani, Celtae
+        correct: [0, 1, 2] 
     }],
     "Fluss aufwärts": [{
         question: "Bringe diese lateinischen Begriffe in die richtige Reihenfolge.",
@@ -50,9 +51,13 @@ const questions = {
         correct: 2
     }],
     "Fluss abwärts": [{
-        question: "Markiere alle Adjektive.",
-        answers: ["publica", "privata", "magnus", "magno", "omnibus"],
-        correct: [0, 1, 2, 3, 4]
+        question: "Ordne die Begriffe richtig zu.",
+        pairs: [
+            { term: "caelo", match: "Himmel" },
+            { term: "sacris", match: "Opfer" },
+            { term: "deos", match: "Götter" },
+            { term: "imperium", match: "Macht" }
+        ]
     }]
 };
 
@@ -92,71 +97,107 @@ function startTask(subregion) {
     document.getElementById('task-title').textContent = `Aufgabe in ${subregion}`;
 
     let task = questions[subregion][0];
+    let answerContainer = document.getElementById('answers-container');
+    answerContainer.innerHTML = "";
+
     if (!task) {
         console.error("Fehler: Keine Frage für diese Unterregion gefunden!");
         return;
     }
 
-    document.getElementById('question-text').textContent = task.question;
-
-    let answerContainer = document.getElementById('answers-container');
-    answerContainer.innerHTML = "";
-    selectedAnswers = [];
-
-    // Falls ein Satz existiert, anzeigen
-    if (task.sentence) {
-        let sentenceElement = document.createElement("p");
-        sentenceElement.textContent = task.sentence;
-        sentenceElement.style.fontStyle = "italic";
-        sentenceElement.style.marginBottom = "10px";
-        answerContainer.appendChild(sentenceElement);
+    if (subregion === "Fluss abwärts") {
+        setupDragAndDrop(task.pairs);
+        return;
     }
 
+    document.getElementById('question-text').textContent = task.question;
     task.answers.forEach((answer, index) => {
         let btn = document.createElement("button");
         btn.textContent = answer;
         btn.classList.add("button", "answer-button");
-        btn.onclick = function () { handleMultiSelect(index, btn, task.correct); };
+        btn.onclick = function () { checkAnswer(index, task.correct, btn); };
         answerContainer.appendChild(btn);
     });
-
-    if (subregion === "Der Markt") {
-        let submitBtn = document.createElement("button");
-        submitBtn.textContent = "Bestätigen";
-        submitBtn.classList.add("button", "submit-button");
-        submitBtn.onclick = function () { checkMultiAnswer(task.correct); };
-        answerContainer.appendChild(submitBtn);
-    }
 }
 
-/* Mehrfachauswahl für "Der Markt" */
-function handleMultiSelect(index, button, correctAnswers) {
-    if (selectedAnswers.includes(index)) {
-        selectedAnswers = selectedAnswers.filter(i => i !== index);
-        button.classList.remove("selected");
-        button.style.backgroundColor = ""; // Setzt die Farbe zurück
-    } else {
-        if (selectedAnswers.length < 3) {
-            selectedAnswers.push(index);
-            button.classList.add("selected");
-            button.style.backgroundColor = "orange"; // Setzt den Button auf Orange
-        } else {
-            alert("Du kannst nur drei Antworten auswählen!");
+/* Drag-&-Drop für "Fluss abwärts" */
+function setupDragAndDrop(pairs) {
+    let container = document.getElementById('answers-container');
+    container.innerHTML = `<p>Ziehe die Begriffe in die richtigen Felder:</p>`;
+
+    let terms = pairs.map(p => p.term);
+    let matches = pairs.map(p => p.match);
+
+    // Zufällige Reihenfolge generieren
+    terms.sort(() => Math.random() - 0.5);
+    matches.sort(() => Math.random() - 0.5);
+
+    let termList = document.createElement("ul");
+    termList.classList.add("drag-list");
+
+    let matchList = document.createElement("ul");
+    matchList.classList.add("drag-list");
+
+    terms.forEach(term => {
+        let item = document.createElement("li");
+        item.textContent = term;
+        item.draggable = true;
+        item.ondragstart = dragStart;
+        termList.appendChild(item);
+    });
+
+    matches.forEach(match => {
+        let item = document.createElement("li");
+        item.textContent = match;
+        item.ondrop = drop;
+        item.ondragover = allowDrop;
+        matchList.appendChild(item);
+    });
+
+    container.appendChild(termList);
+    container.appendChild(matchList);
+
+    let submitBtn = document.createElement("button");
+    submitBtn.textContent = "Überprüfen";
+    submitBtn.classList.add("button", "submit-button");
+    submitBtn.onclick = function () { checkPairs(pairs); };
+    container.appendChild(submitBtn);
+}
+
+/* Drag-&-Drop-Events */
+function dragStart(event) {
+    event.dataTransfer.setData("text", event.target.textContent);
+}
+
+function allowDrop(event) {
+    event.preventDefault();
+}
+
+function drop(event) {
+    event.preventDefault();
+    let draggedText = event.dataTransfer.getData("text");
+    event.target.textContent = draggedText;
+}
+
+/* Überprüfung der Zuordnung */
+function checkPairs(pairs) {
+    let items = document.querySelectorAll(".drag-list li");
+    let isCorrect = true;
+
+    items.forEach((item, index) => {
+        if (pairs[index].term !== item.textContent) {
+            isCorrect = false;
         }
-    }
-}
+    });
 
-/* Prüfen, ob alle drei richtigen Antworten ausgewählt wurden */
-function checkMultiAnswer(correctAnswers) {
-    selectedAnswers.sort();
-    correctAnswers.sort();
-    if (JSON.stringify(selectedAnswers) === JSON.stringify(correctAnswers)) {
+    if (isCorrect) {
         stars++;
         updateStars();
         alert("Richtig! ⭐ Du hast einen Stern erhalten.");
     } else {
-        alert("Falsch! ❌ Du musst genau drei richtige Antworten auswählen.");
+        alert("Falsch! ❌ Versuche es noch einmal.");
     }
+
     setTimeout(backToSubregions, 1000);
 }
 
