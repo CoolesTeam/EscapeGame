@@ -1,6 +1,7 @@
 let stars = 0;
 let currentRegion = "";
 let currentSubregion = "";
+let selectedAnswers = [];
 
 /* Regionen und Unterregionen */
 const subregions = {
@@ -33,9 +34,9 @@ const questions = {
     }],
     "Der Markt": [{
         question: "Klicke die drei Stämme von Gallien an.",
-        sentence:"Gallia est omnis divisa in partes tres, quarum unam incolunt Belgae, aliam Aquitani, tertiam qui ipsorum lingua Celtae, nostra Galli appellantur.",
+        sentence: "Gallia est omnis divisa in partes tres, quarum unam incolunt Belgae, aliam Aquitani, tertiam qui ipsorum lingua Celtae, nostra Galli appellantur.",
         answers: ["Belgae", "Aquitani", "Celtae", "Romani"],
-        correct: [0, 1, 2] 
+        correct: [0, 1, 2] // Richtig: Belgae, Aquitani, Celtae
     }],
     "Fluss aufwärts": [{
         question: "Bringe diese lateinischen Begriffe in die richtige Reihenfolge.",
@@ -44,7 +45,7 @@ const questions = {
     }],
     "Der Hafen": [{
         question: "Wie wird dieser Stamm beschrieben?",
-        sentence:"Haec civitas longe plurimum totius Galliae",
+        sentence: "Haec civitas longe plurimum totius Galliae",
         answers: ["der größte Stamm", "der kleinste Stamm", "der mächtigste Stamm"],
         correct: 2
     }],
@@ -100,8 +101,9 @@ function startTask(subregion) {
 
     let answerContainer = document.getElementById('answers-container');
     answerContainer.innerHTML = "";
+    selectedAnswers = [];
 
-    // Falls der Satz existiert (z.B. für "Baum"), anzeigen
+    // Falls ein Satz existiert, anzeigen
     if (task.sentence) {
         let sentenceElement = document.createElement("p");
         sentenceElement.textContent = task.sentence;
@@ -114,9 +116,41 @@ function startTask(subregion) {
         let btn = document.createElement("button");
         btn.textContent = answer;
         btn.classList.add("button", "answer-button");
-        btn.onclick = function () { checkAnswer(index, task.correct, btn); };
+        btn.onclick = function () { handleMultiSelect(index, btn, task.correct); };
         answerContainer.appendChild(btn);
     });
+
+    if (subregion === "Der Markt") {
+        let submitBtn = document.createElement("button");
+        submitBtn.textContent = "Bestätigen";
+        submitBtn.classList.add("button", "submit-button");
+        submitBtn.onclick = function () { checkMultiAnswer(task.correct); };
+        answerContainer.appendChild(submitBtn);
+    }
+}
+
+/* Mehrfachauswahl für "Der Markt" */
+function handleMultiSelect(index, button, correctAnswers) {
+    if (selectedAnswers.includes(index)) {
+        selectedAnswers = selectedAnswers.filter(i => i !== index);
+        button.classList.remove("selected");
+    } else {
+        selectedAnswers.push(index);
+        button.classList.add("selected");
+    }
+}
+
+/* Prüfen, ob alle drei richtigen Antworten ausgewählt wurden */
+function checkMultiAnswer(correctAnswers) {
+    selectedAnswers.sort();
+    if (JSON.stringify(selectedAnswers) === JSON.stringify(correctAnswers)) {
+        stars++;
+        updateStars();
+        alert("Richtig! ⭐ Du hast einen Stern erhalten.");
+    } else {
+        alert("Falsch! ❌ Du musst genau drei richtige Antworten auswählen.");
+    }
+    setTimeout(backToSubregions, 1000);
 }
 
 function checkAnswer(selectedIndex, correctIndex, button) {
