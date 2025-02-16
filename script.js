@@ -12,12 +12,13 @@ const subregions = {
 /* Fragen & Antworten (VOLLSTÄNDIG) */
 const questions = {
     "Weg": [{
-        question: "Finde das Reflexivpronomen und markiere es rot.",
+        question: "Finde das Reflexivpronomen und klicke es an.",
         answers: ["Sunt", "item", "quae", "appellantur"],
         correct: 2
     }],
     "Baum": [{
-        question: "Suche das Subjekt des Satzes heraus und ziehe es in die Lücke.",
+        question: "Suche das Subjekt des Satzes heraus und klicke es an.
+            „Est bos cervi figura, cuius a media fronte inter aures unum cornu exsistit excelsius magisque directum his, quae nobis nota sunt, cornibus.”",
         answers: ["bos cervi figura", "cornibus", "quae", "nota sunt"],
         correct: 0
     }],
