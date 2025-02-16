@@ -36,13 +36,12 @@ const questions = {
         question: "Klicke die drei Stämme von Gallien an.",
         sentence: "Gallia est omnis divisa in partes tres, quarum unam incolunt Belgae, aliam Aquitani, tertiam qui ipsorum lingua Celtae, nostra Galli appellantur.",
         answers: ["Belgae", "Aquitani", "Celtae", "Romani"],
-        correct: [0, 1, 2] // Richtige Antworten: Belgae, Aquitani, Celtae
+        correct: [0, 1, 2]
     }],
 
-    /* HIER DER NEUE INHALT FÜR "FLUSS AUFWÄRTS" */
+    /* -------- GEÄNDERTER BEREICH "Fluss aufwärts" -------- */
     "Fluss aufwärts": [{
         question: "Ordne die Begriffe richtig zu.",
-        /* Wir speichern die Paare, die verbunden werden müssen */
         pairs: [
             { term: "caelo",    match: "Himmel" },
             { term: "sacris",   match: "Opfer" },
@@ -50,6 +49,7 @@ const questions = {
             { term: "imperium", match: "Macht" }
         ]
     }],
+    /* ----------------------------------------------------- */
 
     "Der Hafen": [{
         question: "Wie wird dieser Stamm beschrieben?",
@@ -64,7 +64,7 @@ const questions = {
     }]
 };
 
-/* --- Navigation / Spielablauf-Funktionen (unverändert) --- */
+/* Navigation / Spielablauf */
 function showIntro() {
     document.getElementById('welcome-screen').style.display = 'none';
     document.getElementById('intro-screen').style.display = 'flex';
@@ -111,7 +111,7 @@ function startTask(subregion) {
     answerContainer.innerHTML = "";
     selectedAnswers = [];
 
-    // Falls ein Satz existiert (z. B. "Baum", "Der Markt", etc.)
+    // Satz einblenden (z.B. bei "Baum" oder "Der Markt")
     if (task.sentence) {
         let sentenceElement = document.createElement("p");
         sentenceElement.textContent = task.sentence;
@@ -120,13 +120,13 @@ function startTask(subregion) {
         answerContainer.appendChild(sentenceElement);
     }
 
-    /* Wenn wir "Fluss aufwärts" haben, laden wir stattdessen unser Zuordnungsspiel */
+    // Nur wenn es sich um "Fluss aufwärts" handelt, bauen wir das Zuordnungsspiel
     if (subregion === "Fluss aufwärts") {
         setupMatchingGame(task.pairs);
         return;
     }
 
-    /* Standard: Einzel-/Mehrfachauswahl */
+    // Ansonsten Standard: Mehrfachauswahl etc.
     task.answers.forEach((answer, index) => {
         let btn = document.createElement("button");
         btn.textContent = answer;
@@ -144,23 +144,24 @@ function startTask(subregion) {
     }
 }
 
-/* --- Mehrfachauswahl-Funktion (unverändert, nur für "Der Markt") --- */
+/* Mehrfachauswahl (unverändert) */
 function handleMultiSelect(index, button, correctAnswers) {
     if (selectedAnswers.includes(index)) {
         selectedAnswers = selectedAnswers.filter(i => i !== index);
         button.classList.remove("selected");
-        button.style.backgroundColor = ""; // Farbe zurücksetzen
+        button.style.backgroundColor = "";
     } else {
         if (selectedAnswers.length < 3) {
             selectedAnswers.push(index);
             button.classList.add("selected");
-            button.style.backgroundColor = "orange"; // Markierung
+            button.style.backgroundColor = "orange";
         } else {
             alert("Du kannst nur drei Antworten auswählen!");
         }
     }
 }
 
+/* Prüfen, ob alle drei richtigen Antworten ausgewählt wurden (nur „Der Markt“) */
 function checkMultiAnswer(correctAnswers) {
     selectedAnswers.sort();
     correctAnswers.sort();
@@ -174,85 +175,92 @@ function checkMultiAnswer(correctAnswers) {
     setTimeout(backToSubregions, 1000);
 }
 
-/* --- Zuordnungs-Spiel für "Fluss aufwärts" --- */
+/* ------------------- AB HIER: FLUSS AUFWÄRTS ------------------- */
 let selectedTerm = null;
 let selectedMatch = null;
 let selectedPairs = {};
 
+/* Zuordnungs-Spiel (Fluss aufwärts) */
 function setupMatchingGame(pairs) {
     let container = document.getElementById('answers-container');
-    container.innerHTML = "<p>Verbinde die Begriffe per Klick:</p>";
+    container.innerHTML = "<p>Verbinde die Begriffe per Klick (Orange ↔ Hellblau):</p>";
 
     selectedPairs = {};
 
-    /* Links: Orange Buttons (term) = caelo, sacris, deos, imperium */
-    /* Rechts: Hellblau Buttons (match) = Himmel, Opfer, Götter, Macht */
+    // LEFT: Orange (caelo, sacris, deos, imperium)
+    // RIGHT: Hellblau (Himmel, Opfer, Götter, Macht)
     let leftDiv  = document.createElement("div");
     let rightDiv = document.createElement("div");
     leftDiv.classList.add("matching-container");
     rightDiv.classList.add("matching-container");
 
-    /* Links: die Begriffe in Orange */
+    // Orangen Buttons (term)
     pairs.forEach(pair => {
         let btn = document.createElement("button");
         btn.textContent = pair.term;
         btn.classList.add("button", "orange-button");
-        btn.onclick = function() { selectMatch(pair.term, btn, "term"); };
+        btn.onclick = function() { selectFlussMatch(pair.term, btn, "term"); };
         leftDiv.appendChild(btn);
     });
 
-    /* Rechts: die Antworten in Hellblau */
+    // Hellblaue Buttons (match)
     pairs.forEach(pair => {
         let btn = document.createElement("button");
         btn.textContent = pair.match;
         btn.classList.add("button", "blue-button");
-        btn.onclick = function() { selectMatch(pair.match, btn, "match"); };
+        btn.onclick = function() { selectFlussMatch(pair.match, btn, "match"); };
         rightDiv.appendChild(btn);
     });
 
     container.appendChild(leftDiv);
     container.appendChild(rightDiv);
 
-    /* Button zum Überprüfen */
+    // Button zum Überprüfen
     let checkBtn = document.createElement("button");
     checkBtn.textContent = "Überprüfen";
     checkBtn.classList.add("button", "submit-button");
-    checkBtn.onclick = function() { checkMatchingAnswers(pairs); };
+    checkBtn.onclick = function() { checkFlussMatches(pairs); };
     container.appendChild(checkBtn);
 }
 
-/* Begriff auswählen */
-function selectMatch(value, button, type) {
+/* Klick-Logik bei Fluss aufwärts */
+function selectFlussMatch(value, button, type) {
     if (type === "term") {
         selectedTerm = value;
-        highlightButton(button);
+        highlightSelected(button);
     } else {
         selectedMatch = value;
-        highlightButton(button);
+        highlightSelected(button);
     }
 
-    /* Wenn wir beides haben, machen wir eine Zuordnung */
     if (selectedTerm && selectedMatch) {
+        // Speichere Zuordnung
         selectedPairs[selectedTerm] = selectedMatch;
+        drawLine(selectedTerm, selectedMatch); // optional, falls du Striche willst
         selectedTerm  = null;
         selectedMatch = null;
     }
 }
 
 /* Visuelles Hervorheben */
-function highlightButton(button) {
+function highlightSelected(button) {
     button.classList.add("selected");
     setTimeout(() => {
         button.classList.remove("selected");
     }, 400);
 }
 
-/* Überprüfung aller Zuordnungen */
-function checkMatchingAnswers(pairs) {
-    let correct = true;
+/* Evtl. Striche zeichnen (vereinfachte Version) */
+function drawLine(term, match) {
+    // Dies erfordert ein komplexeres Layout, 
+    // deshalb nur eine symbolische Meldung:
+    console.log(`Verbindung gezeichnet: ${term} ↔ ${match}`);
+}
 
+/* Überprüfung bei "Fluss aufwärts" */
+function checkFlussMatches(pairs) {
+    let correct = true;
     for (let pair of pairs) {
-        /* Wenn eine Zuordnung fehlt oder nicht stimmt */
         if (!selectedPairs[pair.term] || selectedPairs[pair.term] !== pair.match) {
             correct = false;
             break;
@@ -270,8 +278,9 @@ function checkMatchingAnswers(pairs) {
 
     setTimeout(backToSubregions, 1000);
 }
+/* ------------------------------------------------------------- */
 
-/* --- Sterne & Navigation (unverändert) --- */
+/* Sterne & Navigation (unverändert) */
 function updateStars() {
     document.getElementById('stars-count').textContent = stars;
 }
