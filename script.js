@@ -18,7 +18,7 @@ const questions = {
     }],
     "Baum": [{
         question: "Suche das Subjekt des Satzes heraus und klicke es an.
-            „Est bos cervi figura, cuius a media fronte inter aures unum cornu exsistit excelsius magisque directum his, quae nobis nota sunt, cornibus.”",
+            Est bos cervi figura, cuius a media fronte inter aures unum cornu exsistit excelsius magisque directum his, quae nobis nota sunt, cornibus.",
         answers: ["bos cervi figura", "cornibus", "quae", "nota sunt"],
         correct: 0
     }],
