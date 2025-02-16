@@ -13,7 +13,7 @@ const subregions = {
 /* Fragen & Antworten */
 const questions = {
     "Weg": [{
-        question: "Finde das Reflexivpronomen und markiere es rot.",
+        question: "Finde das Reflexivpronomen und klicke es an.",
         answers: ["Sunt", "item", "quae", "appellantur"],
         correct: 2
     }],
@@ -35,8 +35,8 @@ const questions = {
     "Der Markt": [{
         question: "Klicke die drei Stämme von Gallien an.",
         sentence: "Gallia est omnis divisa in partes tres, quarum unam incolunt Belgae, aliam Aquitani, tertiam qui ipsorum lingua Celtae, nostra Galli appellantur.",
-        answers: ["Belgae", "Aquitani", "Celtae", "Romani"],
-        correct: [0, 1, 2] // Richtige Antworten: Belgae, Aquitani, Celtae
+        answers: ["Belgae", "Gallia", "Aquitani", "Celtae", "Galli"],
+        correct: [0, 2, 3] // Richtige Antworten: Belgae, Aquitani, Celtae
     }],
     "Fluss aufwärts": [{
         question: "Ordne die Begriffe richtig zu (Orange ↔ Hellblau).",
