@@ -36,17 +36,21 @@ const questions = {
         question: "Klicke die drei Stämme von Gallien an.",
         sentence: "Gallia est omnis divisa in partes tres, quarum unam incolunt Belgae, aliam Aquitani, tertiam qui ipsorum lingua Celtae, nostra Galli appellantur.",
         answers: ["Belgae", "Aquitani", "Celtae", "Romani"],
-        correct: [0, 1, 2]
+        correct: [0, 1, 2] // Richtige Antworten: Belgae, Aquitani, Celtae
     }],
+
+    /* HIER DER NEUE INHALT FÜR "FLUSS AUFWÄRTS" */
     "Fluss aufwärts": [{
         question: "Ordne die Begriffe richtig zu.",
+        /* Wir speichern die Paare, die verbunden werden müssen */
         pairs: [
-            { term: "caelo", match: "Himmel" },
-            { term: "sacris", match: "Opfer" },
-            { term: "deos", match: "Götter" },
+            { term: "caelo",    match: "Himmel" },
+            { term: "sacris",   match: "Opfer" },
+            { term: "deos",     match: "Götter" },
             { term: "imperium", match: "Macht" }
         ]
     }],
+
     "Der Hafen": [{
         question: "Wie wird dieser Stamm beschrieben?",
         sentence: "Haec civitas longe plurimum totius Galliae",
@@ -60,7 +64,7 @@ const questions = {
     }]
 };
 
-/* Navigation */
+/* --- Navigation / Spielablauf-Funktionen (unverändert) --- */
 function showIntro() {
     document.getElementById('welcome-screen').style.display = 'none';
     document.getElementById('intro-screen').style.display = 'flex';
@@ -96,82 +100,178 @@ function startTask(subregion) {
     document.getElementById('task-title').textContent = `Aufgabe in ${subregion}`;
 
     let task = questions[subregion][0];
-    let answerContainer = document.getElementById('answers-container');
-    answerContainer.innerHTML = "";
-
     if (!task) {
         console.error("Fehler: Keine Frage für diese Unterregion gefunden!");
         return;
     }
 
+    document.getElementById('question-text').textContent = task.question;
+
+    let answerContainer = document.getElementById('answers-container');
+    answerContainer.innerHTML = "";
+    selectedAnswers = [];
+
+    // Falls ein Satz existiert (z. B. "Baum", "Der Markt", etc.)
+    if (task.sentence) {
+        let sentenceElement = document.createElement("p");
+        sentenceElement.textContent = task.sentence;
+        sentenceElement.style.fontStyle = "italic";
+        sentenceElement.style.marginBottom = "10px";
+        answerContainer.appendChild(sentenceElement);
+    }
+
+    /* Wenn wir "Fluss aufwärts" haben, laden wir stattdessen unser Zuordnungsspiel */
     if (subregion === "Fluss aufwärts") {
         setupMatchingGame(task.pairs);
         return;
     }
-}
 
-/* Zuordnungs-Spiel für "Fluss aufwärts" */
-function setupMatchingGame(pairs) {
-    let container = document.getElementById('answers-container');
-    container.innerHTML = `<p>Verbinde die Begriffe:</p>`;
-
-    let terms = pairs.map(p => p.term);
-    let matches = pairs.map(p => p.match);
-
-    let termContainer = document.createElement("div");
-    termContainer.classList.add("matching-container");
-
-    let matchContainer = document.createElement("div");
-    matchContainer.classList.add("matching-container");
-
-    terms.forEach(term => {
+    /* Standard: Einzel-/Mehrfachauswahl */
+    task.answers.forEach((answer, index) => {
         let btn = document.createElement("button");
-        btn.textContent = term;
-        btn.classList.add("match-button", "orange-button");
-        btn.onclick = function () { selectMatch(term, btn, "term"); };
-        termContainer.appendChild(btn);
+        btn.textContent = answer;
+        btn.classList.add("button", "answer-button");
+        btn.onclick = function () { handleMultiSelect(index, btn, task.correct); };
+        answerContainer.appendChild(btn);
     });
 
-    matches.forEach(match => {
-        let btn = document.createElement("button");
-        btn.textContent = match;
-        btn.classList.add("match-button", "blue-button");
-        btn.onclick = function () { selectMatch(match, btn, "match"); };
-        matchContainer.appendChild(btn);
-    });
-
-    container.appendChild(termContainer);
-    container.appendChild(matchContainer);
-
-    let submitBtn = document.createElement("button");
-    submitBtn.textContent = "Überprüfen";
-    submitBtn.classList.add("button", "submit-button");
-    submitBtn.onclick = function () { checkMatches(pairs); };
-    container.appendChild(submitBtn);
+    if (subregion === "Der Markt") {
+        let submitBtn = document.createElement("button");
+        submitBtn.textContent = "Bestätigen";
+        submitBtn.classList.add("button", "submit-button");
+        submitBtn.onclick = function () { checkMultiAnswer(task.correct); };
+        answerContainer.appendChild(submitBtn);
+    }
 }
 
-/* Überprüfung der Zuordnungen */
-function checkMatches(pairs) {
-    let selectedPairs = {};
-    let isCorrect = true;
-
-    pairs.forEach(pair => {
-        if (selectedPairs[pair.term] !== pair.match) {
-            isCorrect = false;
+/* --- Mehrfachauswahl-Funktion (unverändert, nur für "Der Markt") --- */
+function handleMultiSelect(index, button, correctAnswers) {
+    if (selectedAnswers.includes(index)) {
+        selectedAnswers = selectedAnswers.filter(i => i !== index);
+        button.classList.remove("selected");
+        button.style.backgroundColor = ""; // Farbe zurücksetzen
+    } else {
+        if (selectedAnswers.length < 3) {
+            selectedAnswers.push(index);
+            button.classList.add("selected");
+            button.style.backgroundColor = "orange"; // Markierung
+        } else {
+            alert("Du kannst nur drei Antworten auswählen!");
         }
-    });
+    }
+}
 
-    if (isCorrect) {
+function checkMultiAnswer(correctAnswers) {
+    selectedAnswers.sort();
+    correctAnswers.sort();
+    if (JSON.stringify(selectedAnswers) === JSON.stringify(correctAnswers)) {
         stars++;
         updateStars();
         alert("Richtig! ⭐ Du hast einen Stern erhalten.");
     } else {
-        alert("Falsch! ❌ Versuche es noch einmal.");
+        alert("Falsch! ❌ Du musst genau drei richtige Antworten auswählen.");
+    }
+    setTimeout(backToSubregions, 1000);
+}
+
+/* --- Zuordnungs-Spiel für "Fluss aufwärts" --- */
+let selectedTerm = null;
+let selectedMatch = null;
+let selectedPairs = {};
+
+function setupMatchingGame(pairs) {
+    let container = document.getElementById('answers-container');
+    container.innerHTML = "<p>Verbinde die Begriffe per Klick:</p>";
+
+    selectedPairs = {};
+
+    /* Links: Orange Buttons (term) = caelo, sacris, deos, imperium */
+    /* Rechts: Hellblau Buttons (match) = Himmel, Opfer, Götter, Macht */
+    let leftDiv  = document.createElement("div");
+    let rightDiv = document.createElement("div");
+    leftDiv.classList.add("matching-container");
+    rightDiv.classList.add("matching-container");
+
+    /* Links: die Begriffe in Orange */
+    pairs.forEach(pair => {
+        let btn = document.createElement("button");
+        btn.textContent = pair.term;
+        btn.classList.add("button", "orange-button");
+        btn.onclick = function() { selectMatch(pair.term, btn, "term"); };
+        leftDiv.appendChild(btn);
+    });
+
+    /* Rechts: die Antworten in Hellblau */
+    pairs.forEach(pair => {
+        let btn = document.createElement("button");
+        btn.textContent = pair.match;
+        btn.classList.add("button", "blue-button");
+        btn.onclick = function() { selectMatch(pair.match, btn, "match"); };
+        rightDiv.appendChild(btn);
+    });
+
+    container.appendChild(leftDiv);
+    container.appendChild(rightDiv);
+
+    /* Button zum Überprüfen */
+    let checkBtn = document.createElement("button");
+    checkBtn.textContent = "Überprüfen";
+    checkBtn.classList.add("button", "submit-button");
+    checkBtn.onclick = function() { checkMatchingAnswers(pairs); };
+    container.appendChild(checkBtn);
+}
+
+/* Begriff auswählen */
+function selectMatch(value, button, type) {
+    if (type === "term") {
+        selectedTerm = value;
+        highlightButton(button);
+    } else {
+        selectedMatch = value;
+        highlightButton(button);
+    }
+
+    /* Wenn wir beides haben, machen wir eine Zuordnung */
+    if (selectedTerm && selectedMatch) {
+        selectedPairs[selectedTerm] = selectedMatch;
+        selectedTerm  = null;
+        selectedMatch = null;
+    }
+}
+
+/* Visuelles Hervorheben */
+function highlightButton(button) {
+    button.classList.add("selected");
+    setTimeout(() => {
+        button.classList.remove("selected");
+    }, 400);
+}
+
+/* Überprüfung aller Zuordnungen */
+function checkMatchingAnswers(pairs) {
+    let correct = true;
+
+    for (let pair of pairs) {
+        /* Wenn eine Zuordnung fehlt oder nicht stimmt */
+        if (!selectedPairs[pair.term] || selectedPairs[pair.term] !== pair.match) {
+            correct = false;
+            break;
+        }
+    }
+
+    if (correct) {
+        stars++;
+        updateStars();
+        alert("Richtig! ⭐ Du hast einen Stern erhalten.");
+    } else {
+        alert("Falsch! ❌ Bitte versuche es erneut.");
+        selectedPairs = {};
     }
 
     setTimeout(backToSubregions, 1000);
 }
 
+/* --- Sterne & Navigation (unverändert) --- */
 function updateStars() {
     document.getElementById('stars-count').textContent = stars;
 }
