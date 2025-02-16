@@ -39,9 +39,9 @@ const questions = {
         correct: [0, 1, 2]
     }],
 
-    /* -------- GEÄNDERTER BEREICH "Fluss aufwärts" -------- */
+    /* NUR DIESER TEIL IST FÜR "FLUSS AUFWÄRTS" GEÄNDERT WORDEN */
     "Fluss aufwärts": [{
-        question: "Ordne die Begriffe richtig zu.",
+        question: "Ordne die Begriffe richtig zu (Orange ↔ Hellblau).",
         pairs: [
             { term: "caelo",    match: "Himmel" },
             { term: "sacris",   match: "Opfer" },
@@ -49,7 +49,6 @@ const questions = {
             { term: "imperium", match: "Macht" }
         ]
     }],
-    /* ----------------------------------------------------- */
 
     "Der Hafen": [{
         question: "Wie wird dieser Stamm beschrieben?",
@@ -64,7 +63,7 @@ const questions = {
     }]
 };
 
-/* Navigation / Spielablauf */
+/* Navigation */
 function showIntro() {
     document.getElementById('welcome-screen').style.display = 'none';
     document.getElementById('intro-screen').style.display = 'flex';
@@ -111,7 +110,7 @@ function startTask(subregion) {
     answerContainer.innerHTML = "";
     selectedAnswers = [];
 
-    // Satz einblenden (z.B. bei "Baum" oder "Der Markt")
+    // Satz einblenden
     if (task.sentence) {
         let sentenceElement = document.createElement("p");
         sentenceElement.textContent = task.sentence;
@@ -120,13 +119,13 @@ function startTask(subregion) {
         answerContainer.appendChild(sentenceElement);
     }
 
-    // Nur wenn es sich um "Fluss aufwärts" handelt, bauen wir das Zuordnungsspiel
+    // Spezialfall: "Fluss aufwärts"
     if (subregion === "Fluss aufwärts") {
         setupMatchingGame(task.pairs);
         return;
     }
 
-    // Ansonsten Standard: Mehrfachauswahl etc.
+    // Standard: Einzel-/Mehrfachauswahl
     task.answers.forEach((answer, index) => {
         let btn = document.createElement("button");
         btn.textContent = answer;
@@ -144,7 +143,7 @@ function startTask(subregion) {
     }
 }
 
-/* Mehrfachauswahl (unverändert) */
+/* Mehrfachauswahl (nur "Der Markt") */
 function handleMultiSelect(index, button, correctAnswers) {
     if (selectedAnswers.includes(index)) {
         selectedAnswers = selectedAnswers.filter(i => i !== index);
@@ -161,7 +160,6 @@ function handleMultiSelect(index, button, correctAnswers) {
     }
 }
 
-/* Prüfen, ob alle drei richtigen Antworten ausgewählt wurden (nur „Der Markt“) */
 function checkMultiAnswer(correctAnswers) {
     selectedAnswers.sort();
     correctAnswers.sort();
@@ -175,89 +173,83 @@ function checkMultiAnswer(correctAnswers) {
     setTimeout(backToSubregions, 1000);
 }
 
-/* ------------------- AB HIER: FLUSS AUFWÄRTS ------------------- */
+/* ------------------ FLUSS AUFWÄRTS: Zuordnungs-Spiel ------------------ */
 let selectedTerm = null;
 let selectedMatch = null;
 let selectedPairs = {};
 
-/* Zuordnungs-Spiel (Fluss aufwärts) */
 function setupMatchingGame(pairs) {
     let container = document.getElementById('answers-container');
-    container.innerHTML = "<p>Verbinde die Begriffe per Klick (Orange ↔ Hellblau):</p>";
+    container.innerHTML = `<p>Verbinde Orange (Frage) mit Hellblau (Antwort) per Klick!</p>`;
 
     selectedPairs = {};
 
-    // LEFT: Orange (caelo, sacris, deos, imperium)
-    // RIGHT: Hellblau (Himmel, Opfer, Götter, Macht)
+    // LEFT (Orange): caelo, sacris, deos, imperium
+    // RIGHT (Hellblau): Himmel, Opfer, Götter, Macht
     let leftDiv  = document.createElement("div");
     let rightDiv = document.createElement("div");
-    leftDiv.classList.add("matching-container");
-    rightDiv.classList.add("matching-container");
+    leftDiv.style.display  = "inline-block";
+    leftDiv.style.marginRight = "50px";
+    rightDiv.style.display = "inline-block";
 
-    // Orangen Buttons (term)
     pairs.forEach(pair => {
-        let btn = document.createElement("button");
-        btn.textContent = pair.term;
-        btn.classList.add("button", "orange-button");
-        btn.onclick = function() { selectFlussMatch(pair.term, btn, "term"); };
-        leftDiv.appendChild(btn);
+        let leftBtn = document.createElement("button");
+        leftBtn.textContent = pair.term;
+        leftBtn.style.backgroundColor = "orange";
+        leftBtn.style.color = "white";
+        leftBtn.style.margin = "5px";
+        leftBtn.onclick = () => selectFlussItem(pair.term, leftBtn, "term");
+        leftDiv.appendChild(leftBtn);
     });
 
-    // Hellblaue Buttons (match)
     pairs.forEach(pair => {
-        let btn = document.createElement("button");
-        btn.textContent = pair.match;
-        btn.classList.add("button", "blue-button");
-        btn.onclick = function() { selectFlussMatch(pair.match, btn, "match"); };
-        rightDiv.appendChild(btn);
+        let rightBtn = document.createElement("button");
+        rightBtn.textContent = pair.match;
+        rightBtn.style.backgroundColor = "lightblue";
+        rightBtn.style.color = "black";
+        rightBtn.style.margin = "5px";
+        rightBtn.onclick = () => selectFlussItem(pair.match, rightBtn, "match");
+        rightDiv.appendChild(rightBtn);
     });
 
     container.appendChild(leftDiv);
     container.appendChild(rightDiv);
 
-    // Button zum Überprüfen
     let checkBtn = document.createElement("button");
     checkBtn.textContent = "Überprüfen";
-    checkBtn.classList.add("button", "submit-button");
-    checkBtn.onclick = function() { checkFlussMatches(pairs); };
+    checkBtn.classList.add("button");
+    checkBtn.style.marginTop = "20px";
+    checkBtn.onclick = () => checkFlussMatches(pairs);
+    container.appendChild(document.createElement("br"));
     container.appendChild(checkBtn);
 }
 
-/* Klick-Logik bei Fluss aufwärts */
-function selectFlussMatch(value, button, type) {
+/* Klick-Logik */
+function selectFlussItem(value, button, type) {
     if (type === "term") {
         selectedTerm = value;
-        highlightSelected(button);
+        highlightButton(button);
     } else {
         selectedMatch = value;
-        highlightSelected(button);
+        highlightButton(button);
     }
-
     if (selectedTerm && selectedMatch) {
-        // Speichere Zuordnung
         selectedPairs[selectedTerm] = selectedMatch;
-        drawLine(selectedTerm, selectedMatch); // optional, falls du Striche willst
+        console.log(`Verbinde: ${selectedTerm} ↔ ${selectedMatch}`);
         selectedTerm  = null;
         selectedMatch = null;
     }
 }
 
-/* Visuelles Hervorheben */
-function highlightSelected(button) {
-    button.classList.add("selected");
+/* Kurzes Hervorheben */
+function highlightButton(btn) {
+    btn.style.border = "3px solid red";
     setTimeout(() => {
-        button.classList.remove("selected");
+        btn.style.border = "none";
     }, 400);
 }
 
-/* Evtl. Striche zeichnen (vereinfachte Version) */
-function drawLine(term, match) {
-    // Dies erfordert ein komplexeres Layout, 
-    // deshalb nur eine symbolische Meldung:
-    console.log(`Verbindung gezeichnet: ${term} ↔ ${match}`);
-}
-
-/* Überprüfung bei "Fluss aufwärts" */
+/* "Überprüfen"-Funktion */
 function checkFlussMatches(pairs) {
     let correct = true;
     for (let pair of pairs) {
@@ -266,19 +258,17 @@ function checkFlussMatches(pairs) {
             break;
         }
     }
-
     if (correct) {
         stars++;
         updateStars();
         alert("Richtig! ⭐ Du hast einen Stern erhalten.");
     } else {
-        alert("Falsch! ❌ Bitte versuche es erneut.");
+        alert("Falsch! ❌ Bitte versuche es nochmal.");
         selectedPairs = {};
     }
-
     setTimeout(backToSubregions, 1000);
 }
-/* ------------------------------------------------------------- */
+/* ---------------------------------------------------------- */
 
 /* Sterne & Navigation (unverändert) */
 function updateStars() {
