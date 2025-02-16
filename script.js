@@ -1,8 +1,9 @@
 let stars = 0;
 let currentRegion = "";
 let currentSubregion = "";
-let selectedAnswers = [];
-let selectedPairs = {}; // Speichert Zuordnungen für Fluss abwärts
+let selectedPairs = {}; // Speichert die Zuordnungen für Fluss aufwärts
+let selectedTerm = null;
+let selectedMatch = null;
 
 /* Regionen und Unterregionen */
 const subregions = {
@@ -13,7 +14,7 @@ const subregions = {
 
 /* Fragen & Antworten */
 const questions = {
-    "Fluss abwärts": [{
+    "Fluss aufwärts": [{
         question: "Ordne die Begriffe richtig zu.",
         pairs: [
             { term: "caelo", match: "Himmel" },
@@ -68,13 +69,13 @@ function startTask(subregion) {
         return;
     }
 
-    if (subregion === "Fluss abwärts") {
+    if (subregion === "Fluss aufwärts") {
         setupMatchingGame(task.pairs);
         return;
     }
 }
 
-/* Zuordnungs-Spiel für "Fluss abwärts" */
+/* Zuordnungs-Spiel für "Fluss aufwärts" */
 function setupMatchingGame(pairs) {
     let container = document.getElementById('answers-container');
     container.innerHTML = `<p>Verbinde die Begriffe:</p>`;
@@ -93,7 +94,7 @@ function setupMatchingGame(pairs) {
     terms.forEach(term => {
         let btn = document.createElement("button");
         btn.textContent = term;
-        btn.classList.add("match-button", "term-button");
+        btn.classList.add("match-button", "orange-button");
         btn.onclick = function () { selectMatch(term, btn, "term"); };
         termContainer.appendChild(btn);
     });
@@ -101,7 +102,7 @@ function setupMatchingGame(pairs) {
     matches.forEach(match => {
         let btn = document.createElement("button");
         btn.textContent = match;
-        btn.classList.add("match-button", "match-button-lightblue");
+        btn.classList.add("match-button", "blue-button");
         btn.onclick = function () { selectMatch(match, btn, "match"); };
         matchContainer.appendChild(btn);
     });
@@ -117,9 +118,6 @@ function setupMatchingGame(pairs) {
 }
 
 /* Auswahl der Begriffe */
-let selectedTerm = null;
-let selectedMatch = null;
-
 function selectMatch(value, button, type) {
     if (type === "term") {
         selectedTerm = value;
@@ -131,24 +129,8 @@ function selectMatch(value, button, type) {
 
     if (selectedTerm && selectedMatch) {
         selectedPairs[selectedTerm] = selectedMatch;
-        drawConnection(selectedTerm, selectedMatch);
         selectedTerm = null;
         selectedMatch = null;
-    }
-}
-
-/* Visuelle Verbindungslinien */
-function drawConnection(term, match) {
-    let termButton = document.querySelector(`.match-button:contains("${term}")`);
-    let matchButton = document.querySelector(`.match-button:contains("${match}")`);
-
-    if (termButton && matchButton) {
-        let line = document.createElement("div");
-        line.classList.add("connection-line");
-        line.style.top = (termButton.offsetTop + termButton.offsetHeight / 2) + "px";
-        line.style.left = (termButton.offsetLeft + termButton.offsetWidth) + "px";
-        line.style.width = (matchButton.offsetLeft - termButton.offsetLeft - termButton.offsetWidth) + "px";
-        document.getElementById("answers-container").appendChild(line);
     }
 }
 
