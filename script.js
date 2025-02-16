@@ -36,10 +36,8 @@ const questions = {
         question: "Klicke die drei Stämme von Gallien an.",
         sentence: "Gallia est omnis divisa in partes tres, quarum unam incolunt Belgae, aliam Aquitani, tertiam qui ipsorum lingua Celtae, nostra Galli appellantur.",
         answers: ["Belgae", "Aquitani", "Celtae", "Romani"],
-        correct: [0, 1, 2]
+        correct: [0, 1, 2] // Richtige Antworten: Belgae, Aquitani, Celtae
     }],
-
-    /* NUR HIER "Fluss aufwärts" GEÄNDERT */
     "Fluss aufwärts": [{
         question: "Ordne die Begriffe richtig zu (Orange ↔ Hellblau).",
         pairs: [
@@ -49,18 +47,19 @@ const questions = {
             { term: "imperium", match: "Macht" }
         ]
     }],
-
     "Der Hafen": [{
         question: "Wie wird dieser Stamm beschrieben?",
         sentence: "Haec civitas longe plurimum totius Galliae",
         answers: ["der größte Stamm", "der kleinste Stamm", "der mächtigste Stamm"],
         correct: 2
     }],
+
+    /* FLUSS ABWÄRTS mit Korrektur (5 Antworten) */
     "Fluss abwärts": [{
         question: "Markiere alle Adjektive.",
-        sentence:"Sacrificia publica ac privata procurant, religiones interpretantur. Ad hos magnus adulescentium numerus disciplinae causa concurrit magnoque hi sunt apud eos honore. Nam fere de omnibus controversiis publicis privatisque constituunt",
-        answers: ["publica", "controversiis", "privata", "disciplinae", "magnus", "magno", "omnibus", "interprentantur",],
-        correct: [0, 2, 4, 5, 6]
+        sentence: "Sacrificia publica ac privata procurant, religiones interpretantur. Ad hos magnus adulescentium numerus disciplinae causa concurrit magnoque hi sunt apud eos honore. Nam fere de omnibus controversiis publicis privatisque constituunt",
+        answers: ["publica", "controversiis", "privata", "disciplinae", "magnus", "magno", "omnibus", "interpretantur"],
+        correct: [0, 2, 4, 5, 6] // GENAU 5 korrekte Antworten
     }]
 };
 
@@ -111,7 +110,7 @@ function startTask(subregion) {
     answerContainer.innerHTML = "";
     selectedAnswers = [];
 
-    // Falls es einen Satz gibt (z.B. "Der Markt")
+    // Falls es einen Satz gibt
     if (task.sentence) {
         let sentenceElement = document.createElement("p");
         sentenceElement.textContent = task.sentence;
@@ -120,22 +119,24 @@ function startTask(subregion) {
         answerContainer.appendChild(sentenceElement);
     }
 
-    // FLUSS AUFWÄRTS => Zuordnungs-Spiel
+    // Falls "Fluss aufwärts" => Zuordnungs-Spiel
     if (subregion === "Fluss aufwärts") {
         setupMatchingGame(task.pairs);
         return;
     }
 
-    // Alle anderen Aufgaben: Standard
+    // Standard-Logik: Buttons generieren
     task.answers.forEach((answer, index) => {
         let btn = document.createElement("button");
         btn.textContent = answer;
         btn.classList.add("button", "answer-button");
-        btn.onclick = function () { handleMultiSelect(index, btn, task.correct); };
+        /* Wir leiten die Klicks an handleMultiSelect, 
+           ABER ACHTUNG: "Fluss abwärts" hat 5 korrekte Antworten. */
+        btn.onclick = function () { handleSelectAnswers(index, btn, task.correct); };
         answerContainer.appendChild(btn);
     });
 
-    // Bei "Der Markt" => Bestätigen-Button
+    // "Der Markt" => Bestätigen-Button
     if (subregion === "Der Markt") {
         let submitBtn = document.createElement("button");
         submitBtn.textContent = "Bestätigen";
@@ -143,26 +144,40 @@ function startTask(subregion) {
         submitBtn.onclick = function () { checkMultiAnswer(task.correct); };
         answerContainer.appendChild(submitBtn);
     }
+
+    // Falls "Fluss abwärts" => ebenfalls einen Bestätigen-Button
+    if (subregion === "Fluss abwärts") {
+        let submitBtn = document.createElement("button");
+        submitBtn.textContent = "Bestätigen";
+        submitBtn.classList.add("button", "submit-button");
+        submitBtn.onclick = function () { checkFiveAnswers(task.correct); };
+        answerContainer.appendChild(submitBtn);
+    }
 }
 
-/* Mehrfachauswahl (nur Der Markt) */
-function handleMultiSelect(index, button, correctAnswers) {
+/* ---- LOGIK FÜR MEHRFACH SELEKTION (DER MARKT + FLUSS ABWÄRTS) ---- */
+function handleSelectAnswers(index, button, correctAnswers) {
+    // Max 5 Auswahlen für Fluss abwärts, max 3 für Der Markt
+    // Ermitteln wir per correctAnswers.length
+    let maxLen = correctAnswers.length; // 3 (Der Markt) oder 5 (Fluss abwärts)
     if (selectedAnswers.includes(index)) {
         selectedAnswers = selectedAnswers.filter(i => i !== index);
         button.classList.remove("selected");
         button.style.backgroundColor = "";
     } else {
-        if (selectedAnswers.length < 3) {
+        if (selectedAnswers.length < maxLen) {
             selectedAnswers.push(index);
             button.classList.add("selected");
             button.style.backgroundColor = "orange";
         } else {
-            alert("Du kannst nur drei Antworten auswählen!");
+            alert(`Du kannst nur ${maxLen} Antworten auswählen!`);
         }
     }
 }
 
+/* Prüfen, ob ALLE richtigen Antworten ausgewählt wurden (3 oder 5) */
 function checkMultiAnswer(correctAnswers) {
+    // => Wenn (Der Markt) 3 Richtige
     selectedAnswers.sort();
     correctAnswers.sort();
     if (JSON.stringify(selectedAnswers) === JSON.stringify(correctAnswers)) {
@@ -170,12 +185,27 @@ function checkMultiAnswer(correctAnswers) {
         updateStars();
         alert("Richtig! ⭐ Du hast einen Stern erhalten.");
     } else {
-        alert("Falsch! ❌ Du musst genau drei richtige Antworten auswählen.");
+        alert("Falsch! ❌ Du musst GENAU drei richtige Antworten auswählen.");
     }
     setTimeout(backToSubregions, 1000);
 }
 
-/* ----- FLUSS AUFWÄRTS: Zuordnungs-Spiel ----- */
+/* Neue Funktion checkFiveAnswers für Fluss abwärts */
+function checkFiveAnswers(correctAnswers) {
+    // => Wenn (Fluss abwärts) 5 Richtige
+    selectedAnswers.sort();
+    correctAnswers.sort();
+    if (JSON.stringify(selectedAnswers) === JSON.stringify(correctAnswers)) {
+        stars++;
+        updateStars();
+        alert("Richtig! ⭐ Du hast einen Stern erhalten.");
+    } else {
+        alert("Falsch! ❌ Du musst GENAU fünf richtige Antworten auswählen.");
+    }
+    setTimeout(backToSubregions, 1000);
+}
+
+/* ----- FLUSS AUFWÄRTS: Zuordnungs-Spiel (Unverändert) ----- */
 let selectedTerm = null;
 let selectedMatch = null;
 let selectedPairs = {};
@@ -186,7 +216,6 @@ function setupMatchingGame(pairs) {
 
     selectedPairs = {};
 
-    /* Layout: linke Spalte = Orange, rechte Spalte = Hellblau */
     let leftDiv  = document.createElement("div");
     let rightDiv = document.createElement("div");
     leftDiv.style.display  = "inline-block";
@@ -195,7 +224,6 @@ function setupMatchingGame(pairs) {
     rightDiv.style.display = "inline-block";
     rightDiv.style.verticalAlign = "top";
 
-    /* Linke (Orange) Buttons => caelo, sacris, deos, imperium */
     pairs.forEach(pair => {
         let leftBtn = document.createElement("button");
         leftBtn.textContent = pair.term;
@@ -208,7 +236,6 @@ function setupMatchingGame(pairs) {
         leftDiv.appendChild(leftBtn);
     });
 
-    /* Rechte (Hellblau) Buttons => Himmel, Opfer, Götter, Macht */
     pairs.forEach(pair => {
         let rightBtn = document.createElement("button");
         rightBtn.textContent = pair.match;
@@ -224,7 +251,6 @@ function setupMatchingGame(pairs) {
     container.appendChild(leftDiv);
     container.appendChild(rightDiv);
 
-    // Überprüfen-Button
     let checkBtn = document.createElement("button");
     checkBtn.textContent = "Überprüfen";
     checkBtn.classList.add("button");
@@ -234,7 +260,6 @@ function setupMatchingGame(pairs) {
     container.appendChild(checkBtn);
 }
 
-/* Klick-Logik */
 function selectFlussItem(value, button, type) {
     if (type === "term") {
         selectedTerm = value;
@@ -243,7 +268,6 @@ function selectFlussItem(value, button, type) {
         selectedMatch = value;
         highlightButton(button);
     }
-
     if (selectedTerm && selectedMatch) {
         selectedPairs[selectedTerm] = selectedMatch;
         console.log(`Verbindung: ${selectedTerm} ↔ ${selectedMatch}`);
@@ -252,7 +276,6 @@ function selectFlussItem(value, button, type) {
     }
 }
 
-/* Kurzes Hervorheben */
 function highlightButton(btn) {
     btn.style.border = "3px solid red";
     setTimeout(() => {
@@ -260,13 +283,9 @@ function highlightButton(btn) {
     }, 400);
 }
 
-/* "Überprüfen" bei "Fluss aufwärts" */
 function checkFlussMatches(pairs) {
     let correct = true;
     for (let pair of pairs) {
-        // pair.term => z.B. "caelo"
-        // pair.match => "Himmel"
-        // => selectedPairs["caelo"] === "Himmel"
         if (!selectedPairs[pair.term] || selectedPairs[pair.term] !== pair.match) {
             correct = false;
             break;
@@ -277,7 +296,7 @@ function checkFlussMatches(pairs) {
         updateStars();
         alert("Richtig! ⭐ Du hast einen Stern erhalten.");
     } else {
-        alert("Falsch! ❌ Bitte versuche es noch einmal.");
+        alert("Falsch! ❌ Bitte versuche es nochmal.");
         selectedPairs = {};
     }
     setTimeout(backToSubregions, 1000);
