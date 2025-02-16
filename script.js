@@ -39,14 +39,14 @@ const questions = {
         correct: [0, 1, 2]
     }],
 
-    /* NUR DIESER TEIL IST FÜR "FLUSS AUFWÄRTS" GEÄNDERT WORDEN */
+    /* FLUSS AUFWÄRTS mit Korrekturen */
     "Fluss aufwärts": [{
         question: "Ordne die Begriffe richtig zu (Orange ↔ Hellblau).",
         pairs: [
-            { term: "caelo",    match: "Himmel" },
-            { term: "sacris",   match: "Opfer" },
-            { term: "deos",     match: "Götter" },
-            { term: "imperium", match: "Macht" }
+            { term: "caeleo",    match: "Himmel" },
+            { term: "sacris",    match: "Opfer" },
+            { term: "deos",      match: "Götter" },
+            { term: "imperium",  match: "Macht" }
         ]
     }],
 
@@ -63,7 +63,7 @@ const questions = {
     }]
 };
 
-/* Navigation */
+/* --- Navigation + Standard-Logik (Unverändert) --- */
 function showIntro() {
     document.getElementById('welcome-screen').style.display = 'none';
     document.getElementById('intro-screen').style.display = 'flex';
@@ -110,7 +110,7 @@ function startTask(subregion) {
     answerContainer.innerHTML = "";
     selectedAnswers = [];
 
-    // Satz einblenden
+    // Satz einblenden (z.B. bei "Baum" oder "Der Markt")
     if (task.sentence) {
         let sentenceElement = document.createElement("p");
         sentenceElement.textContent = task.sentence;
@@ -119,13 +119,13 @@ function startTask(subregion) {
         answerContainer.appendChild(sentenceElement);
     }
 
-    // Spezialfall: "Fluss aufwärts"
+    // FLUSS AUFWÄRTS => unser Zuordnungsspiel
     if (subregion === "Fluss aufwärts") {
         setupMatchingGame(task.pairs);
         return;
     }
 
-    // Standard: Einzel-/Mehrfachauswahl
+    // Standard: Einzel-/Mehrfachauswahl (z.B. Weg, Baum, etc.)
     task.answers.forEach((answer, index) => {
         let btn = document.createElement("button");
         btn.textContent = answer;
@@ -143,17 +143,17 @@ function startTask(subregion) {
     }
 }
 
-/* Mehrfachauswahl (nur "Der Markt") */
+/* --- "Der Markt" Mehrfachauswahl (unverändert) --- */
 function handleMultiSelect(index, button, correctAnswers) {
     if (selectedAnswers.includes(index)) {
         selectedAnswers = selectedAnswers.filter(i => i !== index);
         button.classList.remove("selected");
-        button.style.backgroundColor = "";
+        button.style.backgroundColor = ""; 
     } else {
         if (selectedAnswers.length < 3) {
             selectedAnswers.push(index);
             button.classList.add("selected");
-            button.style.backgroundColor = "orange";
+            button.style.backgroundColor = "orange"; 
         } else {
             alert("Du kannst nur drei Antworten auswählen!");
         }
@@ -173,40 +173,45 @@ function checkMultiAnswer(correctAnswers) {
     setTimeout(backToSubregions, 1000);
 }
 
-/* ------------------ FLUSS AUFWÄRTS: Zuordnungs-Spiel ------------------ */
+/* --- Fluss Aufwärts: Zuordnungs-Spiel --- */
 let selectedTerm = null;
 let selectedMatch = null;
 let selectedPairs = {};
 
 function setupMatchingGame(pairs) {
     let container = document.getElementById('answers-container');
-    container.innerHTML = `<p>Verbinde Orange (Frage) mit Hellblau (Antwort) per Klick!</p>`;
+    container.innerHTML = "<p>Verbinde Orange (Frage) mit Hellblau (Antwort) per Klick!</p>";
 
     selectedPairs = {};
 
-    // LEFT (Orange): caelo, sacris, deos, imperium
-    // RIGHT (Hellblau): Himmel, Opfer, Götter, Macht
+    // Layout: linke Spalte = Orange, rechte Spalte = Hellblau
     let leftDiv  = document.createElement("div");
     let rightDiv = document.createElement("div");
     leftDiv.style.display  = "inline-block";
     leftDiv.style.marginRight = "50px";
     rightDiv.style.display = "inline-block";
 
+    // Orange-Buttons => caeleo, sacris, deos, imperium
     pairs.forEach(pair => {
         let leftBtn = document.createElement("button");
         leftBtn.textContent = pair.term;
         leftBtn.style.backgroundColor = "orange";
         leftBtn.style.color = "white";
+        leftBtn.style.padding = "20px 30px";
+        leftBtn.style.fontSize = "16px";
         leftBtn.style.margin = "5px";
         leftBtn.onclick = () => selectFlussItem(pair.term, leftBtn, "term");
         leftDiv.appendChild(leftBtn);
     });
 
+    // Hellblau-Buttons => Himmel, Opfer, Götter, Macht
     pairs.forEach(pair => {
         let rightBtn = document.createElement("button");
         rightBtn.textContent = pair.match;
         rightBtn.style.backgroundColor = "lightblue";
         rightBtn.style.color = "black";
+        rightBtn.style.padding = "20px 30px";
+        rightBtn.style.fontSize = "16px";
         rightBtn.style.margin = "5px";
         rightBtn.onclick = () => selectFlussItem(pair.match, rightBtn, "match");
         rightDiv.appendChild(rightBtn);
@@ -215,6 +220,7 @@ function setupMatchingGame(pairs) {
     container.appendChild(leftDiv);
     container.appendChild(rightDiv);
 
+    // Überprüfen-Button
     let checkBtn = document.createElement("button");
     checkBtn.textContent = "Überprüfen";
     checkBtn.classList.add("button");
@@ -235,7 +241,7 @@ function selectFlussItem(value, button, type) {
     }
     if (selectedTerm && selectedMatch) {
         selectedPairs[selectedTerm] = selectedMatch;
-        console.log(`Verbinde: ${selectedTerm} ↔ ${selectedMatch}`);
+        console.log(`Verbindung: ${selectedTerm} ↔ ${selectedMatch}`);
         selectedTerm  = null;
         selectedMatch = null;
     }
@@ -249,10 +255,12 @@ function highlightButton(btn) {
     }, 400);
 }
 
-/* "Überprüfen"-Funktion */
+/* "Überprüfen" bei Fluss aufwärts */
 function checkFlussMatches(pairs) {
     let correct = true;
     for (let pair of pairs) {
+        // pair.term z.B. "caeleo", pair.match z.B. "Himmel"
+        // Muss in selectedPairs übereinstimmen
         if (!selectedPairs[pair.term] || selectedPairs[pair.term] !== pair.match) {
             correct = false;
             break;
@@ -268,7 +276,6 @@ function checkFlussMatches(pairs) {
     }
     setTimeout(backToSubregions, 1000);
 }
-/* ---------------------------------------------------------- */
 
 /* Sterne & Navigation (unverändert) */
 function updateStars() {
