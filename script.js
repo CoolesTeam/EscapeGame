@@ -44,6 +44,7 @@ const questions = {
     }],
     "Der Hafen": [{
         question: "Wie wird dieser Stamm beschrieben?",
+        sentence:"Haec civitas longe plurimum totius Galliae",
         answers: ["der größte Stamm", "der kleinste Stamm", "der mächtigste Stamm"],
         correct: 2
     }],
