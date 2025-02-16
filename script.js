@@ -89,7 +89,7 @@ function startTask(subregion) {
     currentSubregion = subregion;
     document.getElementById('subregion-screen').style.display = 'none';
     document.getElementById('task-screen').style.display = 'block';
-    document.getElementById('task-title').textContent = Aufgabe in ${subregion};
+    document.getElementById('task-title').textContent = `Aufgabe in ${subregion}`;
 
     let task = questions[subregion][0];
     if (!task) {
@@ -172,4 +172,4 @@ function backToRegions() {
 function backToSubregions() {
     document.getElementById('task-screen').style.display = 'none';
     document.getElementById('subregion-screen').style.display = 'block';
-} 
+}
