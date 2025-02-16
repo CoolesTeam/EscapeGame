@@ -1,4 +1,4 @@
-et stars = 0;
+let stars = 0;
 let currentRegion = "";
 let currentSubregion = "";
 let selectedAnswers = [];
@@ -172,4 +172,4 @@ function backToRegions() {
 function backToSubregions() {
     document.getElementById('task-screen').style.display = 'none';
     document.getElementById('subregion-screen').style.display = 'block';
-}  
+} 
