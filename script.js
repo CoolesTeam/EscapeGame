@@ -2,6 +2,9 @@ let stars = 0;
 let currentRegion = "";
 let currentSubregion = "";
 let selectedAnswers = [];
+let selectedPairs = {}; // Speichert Zuordnungen für Fluss aufwärts
+let selectedTerm = null;
+let selectedMatch = null;
 
 /* Regionen und Unterregionen */
 const subregions = {
@@ -12,47 +15,14 @@ const subregions = {
 
 /* Fragen & Antworten */
 const questions = {
-    "Weg": [{
-        question: "Finde das Reflexivpronomen und markiere es rot.",
-        answers: ["Sunt", "item", "quae", "appellantur"],
-        correct: 2
-    }],
-    "Baum": [{
-        question: "Suche das Subjekt des Satzes heraus und klicke es an.",
-        sentence: "Est bos cervi figura, cuius a media fronte inter aures unum cornu exsistit excelsius magisque directum his, quae nobis nota sunt, cornibus.",
-        answers: ["bos cervi figura", "cornibus", "quae", "nota sunt"],
-        correct: 0
-    }],
-    "Die Bewohner": [{
-        question: "Übersetze den Satz: 'Dicebant servos nullis iuribus praeditos esse et penitus a dominis pendere.'",
-        answers: [
-            "Die Sklaven haben keine Rechte und sind abhängig von ihren Herren.",
-            "Sie sagten, dass die Sklaven keinerlei Rechte hätten und vollständig von ihren Herren abhängig sind.",
-            "Die Sklaven sagen, dass sie keine Rechte haben und abhängig von ihren Herren sind."
-        ],
-        correct: 1
-    }],
-    "Der Markt": [{
-        question: "Klicke die drei Stämme von Gallien an.",
-        sentence: "Gallia est omnis divisa in partes tres, quarum unam incolunt Belgae, aliam Aquitani, tertiam qui ipsorum lingua Celtae, nostra Galli appellantur.",
-        answers: ["Belgae", "Aquitani", "Celtae", "Romani"],
-        correct: [0, 1, 2] // Richtige Antworten: Belgae, Aquitani, Celtae
-    }],
     "Fluss aufwärts": [{
-        question: "Bringe diese lateinischen Begriffe in die richtige Reihenfolge.",
-        answers: ["caelo - Himmel", "sacris - Opfer", "deos - Götter", "imperium - Macht"],
-        correct: [0, 1, 2, 3]
-    }],
-    "Der Hafen": [{
-        question: "Wie wird dieser Stamm beschrieben?",
-        sentence: "Haec civitas longe plurimum totius Galliae",
-        answers: ["der größte Stamm", "der kleinste Stamm", "der mächtigste Stamm"],
-        correct: 2
-    }],
-    "Fluss abwärts": [{
-        question: "Markiere alle Adjektive.",
-        answers: ["publica", "privata", "magnus", "magno", "omnibus"],
-        correct: [0, 1, 2, 3, 4]
+        question: "Ordne die Begriffe richtig zu.",
+        pairs: [
+            { term: "caelo", match: "Himmel" },
+            { term: "sacris", match: "Opfer" },
+            { term: "deos", match: "Götter" },
+            { term: "imperium", match: "Macht" }
+        ]
     }]
 };
 
@@ -92,71 +62,122 @@ function startTask(subregion) {
     document.getElementById('task-title').textContent = `Aufgabe in ${subregion}`;
 
     let task = questions[subregion][0];
+    let answerContainer = document.getElementById('answers-container');
+    answerContainer.innerHTML = "";
+
     if (!task) {
         console.error("Fehler: Keine Frage für diese Unterregion gefunden!");
         return;
     }
 
-    document.getElementById('question-text').textContent = task.question;
-
-    let answerContainer = document.getElementById('answers-container');
-    answerContainer.innerHTML = "";
-    selectedAnswers = [];
-
-    // Falls ein Satz existiert, anzeigen
-    if (task.sentence) {
-        let sentenceElement = document.createElement("p");
-        sentenceElement.textContent = task.sentence;
-        sentenceElement.style.fontStyle = "italic";
-        sentenceElement.style.marginBottom = "10px";
-        answerContainer.appendChild(sentenceElement);
+    if (subregion === "Fluss aufwärts") {
+        setupMatchingGame(task.pairs);
+        return;
     }
+}
 
-    task.answers.forEach((answer, index) => {
+/* Zuordnungs-Spiel für "Fluss aufwärts" */
+function setupMatchingGame(pairs) {
+    let container = document.getElementById('answers-container');
+    container.innerHTML = `<p>Verbinde die Begriffe:</p>`;
+
+    selectedPairs = {}; // Reset für neue Aufgabe
+
+    let terms = pairs.map(p => p.term);
+    let matches = pairs.map(p => p.match);
+
+    let termContainer = document.createElement("div");
+    termContainer.classList.add("matching-container");
+
+    let matchContainer = document.createElement("div");
+    matchContainer.classList.add("matching-container");
+
+    terms.forEach(term => {
         let btn = document.createElement("button");
-        btn.textContent = answer;
-        btn.classList.add("button", "answer-button");
-        btn.onclick = function () { handleMultiSelect(index, btn, task.correct); };
-        answerContainer.appendChild(btn);
+        btn.textContent = term;
+        btn.classList.add("match-button", "orange-button");
+        btn.onclick = function () { selectMatch(term, btn, "term"); };
+        termContainer.appendChild(btn);
     });
 
-    if (subregion === "Der Markt") {
-        let submitBtn = document.createElement("button");
-        submitBtn.textContent = "Bestätigen";
-        submitBtn.classList.add("button", "submit-button");
-        submitBtn.onclick = function () { checkMultiAnswer(task.correct); };
-        answerContainer.appendChild(submitBtn);
-    }
+    matches.forEach(match => {
+        let btn = document.createElement("button");
+        btn.textContent = match;
+        btn.classList.add("match-button", "blue-button");
+        btn.onclick = function () { selectMatch(match, btn, "match"); };
+        matchContainer.appendChild(btn);
+    });
+
+    container.appendChild(termContainer);
+    container.appendChild(matchContainer);
+
+    let submitBtn = document.createElement("button");
+    submitBtn.textContent = "Überprüfen";
+    submitBtn.classList.add("button", "submit-button");
+    submitBtn.onclick = function () { checkMatches(pairs); };
+    container.appendChild(submitBtn);
 }
 
-/* Mehrfachauswahl für "Der Markt" */
-function handleMultiSelect(index, button, correctAnswers) {
-    if (selectedAnswers.includes(index)) {
-        selectedAnswers = selectedAnswers.filter(i => i !== index);
-        button.classList.remove("selected");
-        button.style.backgroundColor = ""; // Setzt die Farbe zurück
+/* Auswahl der Begriffe */
+function selectMatch(value, button, type) {
+    if (type === "term") {
+        selectedTerm = value;
+        highlightSelected(button);
     } else {
-        if (selectedAnswers.length < 3) {
-            selectedAnswers.push(index);
-            button.classList.add("selected");
-            button.style.backgroundColor = "orange"; // Setzt den Button auf Orange
-        } else {
-            alert("Du kannst nur drei Antworten auswählen!");
-        }
+        selectedMatch = value;
+        highlightSelected(button);
+    }
+
+    if (selectedTerm && selectedMatch) {
+        selectedPairs[selectedTerm] = selectedMatch;
+        drawConnection(selectedTerm, selectedMatch);
+        selectedTerm = null;
+        selectedMatch = null;
     }
 }
 
-/* Prüfen, ob alle drei richtigen Antworten ausgewählt wurden */
-function checkMultiAnswer(correctAnswers) {
-    selectedAnswers.sort();
-    correctAnswers.sort();
-    if (JSON.stringify(selectedAnswers) === JSON.stringify(correctAnswers)) {
+/* Visuelle Verbindungslinien */
+function drawConnection(term, match) {
+    let termButton = document.querySelector(`.match-button.orange-button:contains("${term}")`);
+    let matchButton = document.querySelector(`.match-button.blue-button:contains("${match}")`);
+
+    if (termButton && matchButton) {
+        let line = document.createElement("div");
+        line.classList.add("connection-line");
+        line.style.top = (termButton.offsetTop + termButton.offsetHeight / 2) + "px";
+        line.style.left = (termButton.offsetLeft + termButton.offsetWidth) + "px";
+        line.style.width = (matchButton.offsetLeft - termButton.offsetLeft - termButton.offsetWidth) + "px";
+        document.getElementById("answers-container").appendChild(line);
+    }
+}
+
+/* Visuelles Highlight */
+function highlightSelected(button) {
+    button.classList.add("selected");
+    setTimeout(() => {
+        button.classList.remove("selected");
+    }, 500);
+}
+
+/* Überprüfung der Zuordnungen */
+function checkMatches(pairs) {
+    let isCorrect = true;
+
+    pairs.forEach(pair => {
+        if (selectedPairs[pair.term] !== pair.match) {
+            isCorrect = false;
+        }
+    });
+
+    if (isCorrect) {
         stars++;
         updateStars();
         alert("Richtig! ⭐ Du hast einen Stern erhalten.");
     } else {
-        alert("Falsch! ❌ Du musst genau drei richtige Antworten auswählen.");
+        alert("Falsch! ❌ Versuche es noch einmal.");
+        selectedPairs = {};
     }
+
     setTimeout(backToSubregions, 1000);
 }
 
