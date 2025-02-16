@@ -2,7 +2,7 @@ let stars = 0;
 let currentRegion = "";
 let currentSubregion = "";
 let selectedAnswers = [];
-let currentPairs = {}; // Speichert die Zuordnungen für Drag & Drop
+let currentPairs = {}; // Speichert die aktuellen Drag-&-Drop-Zuordnungen
 
 /* Regionen und Unterregionen */
 const subregions = {
@@ -13,17 +13,6 @@ const subregions = {
 
 /* Fragen & Antworten */
 const questions = {
-    "Weg": [{
-        question: "Finde das Reflexivpronomen und markiere es rot.",
-        answers: ["Sunt", "item", "quae", "appellantur"],
-        correct: 2
-    }],
-    "Baum": [{
-        question: "Suche das Subjekt des Satzes heraus und klicke es an.",
-        sentence: "Est bos cervi figura, cuius a media fronte inter aures unum cornu exsistit excelsius magisque directum his, quae nobis nota sunt, cornibus.",
-        answers: ["bos cervi figura", "cornibus", "quae", "nota sunt"],
-        correct: 0
-    }],
     "Fluss abwärts": [{
         question: "Ordne die Begriffe richtig zu.",
         pairs: [
@@ -83,15 +72,6 @@ function startTask(subregion) {
         setupDragAndDrop(task.pairs);
         return;
     }
-
-    document.getElementById('question-text').textContent = task.question;
-    task.answers.forEach((answer, index) => {
-        let btn = document.createElement("button");
-        btn.textContent = answer;
-        btn.classList.add("button", "answer-button");
-        btn.onclick = function () { checkAnswer(index, task.correct, btn); };
-        answerContainer.appendChild(btn);
-    });
 }
 
 /* Drag-&-Drop für "Fluss abwärts" */
@@ -115,7 +95,7 @@ function setupDragAndDrop(pairs) {
     matchList.classList.add("drag-container");
 
     terms.forEach(term => {
-        let item = document.createElement("div");
+        let item = document.createElement("button");
         item.textContent = term;
         item.classList.add("drag-item", "drag-term");
         item.draggable = true;
@@ -124,7 +104,7 @@ function setupDragAndDrop(pairs) {
     });
 
     matches.forEach(match => {
-        let item = document.createElement("div");
+        let item = document.createElement("button");
         item.textContent = match;
         item.classList.add("drag-item", "drag-match");
         item.ondrop = drop;
