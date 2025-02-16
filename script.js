@@ -134,10 +134,12 @@ function handleMultiSelect(index, button, correctAnswers) {
     if (selectedAnswers.includes(index)) {
         selectedAnswers = selectedAnswers.filter(i => i !== index);
         button.classList.remove("selected");
+        button.style.backgroundColor = ""; // Setzt die Farbe zurück
     } else {
         if (selectedAnswers.length < 3) {
             selectedAnswers.push(index);
             button.classList.add("selected");
+            button.style.backgroundColor = "orange"; // Setzt den Button auf Orange
         } else {
             alert("Du kannst nur drei Antworten auswählen!");
         }
