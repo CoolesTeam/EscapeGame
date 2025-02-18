@@ -2,21 +2,22 @@
 body {
     font-family: Arial, sans-serif;
     text-align: center;
+    /* Hintergrundbild, falls vorhanden */
     background: url("background.jpg") no-repeat center center fixed;
     background-size: cover;
+
     margin: 0;
     height: 100vh;
     overflow: hidden;
-    color: black; /* Schriftfarbe außerhalb der Buttons */
+    color: black; /* Schriftfarbe für normale Texte */
 }
 
-/* Willkommensbildschirm */
+/* Willkommensbildschirm (Startseite) */
 #welcome-screen {
     position: absolute;
     width: 100%;
     height: 100%;
-
-    /* 1) Transparenz erhöht -> 0.5 statt 0.8 */
+    /* Mehr Transparenz => 0.5 */
     background: rgba(0, 0, 0, 0.5);
 
     display: flex;
@@ -25,17 +26,16 @@ body {
     align-items: center;
 }
 
-/* Erklärungsbildschirm */
+/* Erklärungsbildschirm (Intro) */
 #intro-screen {
     position: absolute;
     width: 100%;
     height: 100%;
-
-    /* Weiterhin 0.7 */
     background: rgba(0, 0, 0, 0.7);
 
-    /* 2) Box & Inhalt wieder mittig */
+    /* Box zentrieren */
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
 }
@@ -49,7 +49,7 @@ body {
     max-width: 600px;
     text-align: center;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
-    animation: fadeIn 0.8s ease-in-out;
+    /* Du kannst hier optional margin: 0 auto; ergänzen */
 }
 
 /* Buttons */
@@ -63,7 +63,7 @@ body {
     border-radius: 8px;
 }
 
-/* Frei positionierbare Buttons */
+/* Frei positionierbare Region-Buttons */
 .region-button {
     position: absolute;
     background-color: rgba(0, 123, 255, 0.8);
@@ -71,9 +71,19 @@ body {
 }
 
 /* Beispiel-Positionen – kannst du anpassen */
-#wald-button { top: 30%; left: 10%; }
-#dorf-button { top: 50%; left: 45%; transform: translate(-50%, -50%); }
-#fluss-button { top: 70%; left: 80%; }
+#wald-button {
+    top: 30%;
+    left: 10%;
+}
+#dorf-button {
+    top: 50%;
+    left: 45%;
+    transform: translate(-50%, -50%);
+}
+#fluss-button {
+    top: 70%;
+    left: 80%;
+}
 
 /* Antwort-Buttons */
 .answer-button {
@@ -81,8 +91,12 @@ body {
     color: white;
 }
 
-.correct { background-color: green !important; }
-.wrong { background-color: red !important; }
+.correct {
+    background-color: green !important;
+}
+.wrong {
+    background-color: red !important;
+}
 
 /* Zurück-Buttons */
 .back-button {
