@@ -156,7 +156,7 @@ function showSubregions(region) {
 function startTask(subregion) {
     let taskScreen = document.getElementById("task-screen");
 
-    // Hintergrundbild direkt per JavaScript setzen
+    // Hintergrundbild setzen & korrekt skalieren
     if (subregion === "Weg" || subregion === "Baum") {
         taskScreen.style.backgroundImage = "url('Wald.jpg')";
     } 
@@ -164,8 +164,13 @@ function startTask(subregion) {
         taskScreen.style.backgroundImage = "url('Fluss.jpg')";
     } 
     else {
-        taskScreen.style.backgroundImage = "url('Standard.jpg')"; // Falls kein anderer Bereich zutrifft
+        taskScreen.style.backgroundImage = "url('Standard.jpg')";
     }
+
+    // Stile setzen, damit das Bild vollständig angezeigt wird
+    taskScreen.style.backgroundSize = "cover";  // Skaliert das Bild, damit es den gesamten Bereich füllt
+    taskScreen.style.backgroundPosition = "center"; // Zentriert das Bild
+    taskScreen.style.backgroundRepeat = "no-repeat"; // Verhindert Wiederholung des Bilde
     // Subregion-Screen ausblenden
     document.getElementById("subregion-screen").style.display = "none";
     // Task-Screen einblenden
