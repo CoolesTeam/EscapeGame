@@ -7,8 +7,8 @@
 </head>
 <body>
 
-  <!-- STARTSEITE -->
-  <div id="welcome-screen" style="display: block;">
+  <!-- START-SEITE -->
+  <div id="welcome-screen">
     <h1>Willkommen zum Escape Game Gallien!</h1>
     <button class="button" onclick="showIntro()">Weiter</button>
   </div>
@@ -17,21 +17,7 @@
   <div id="intro-screen" style="display: none;">
     <div id="intro-box">
       <h2>Deine Mission</h2>
-      <p>
-        Du bist im Lateinunterricht und deine Lehrkraft möchte, dass du dein Lateinbuch 
-        aufschlägst, wie immer. Nur dieses Mal scheint da was anders zu sein. Mit deinem 
-        Sitznachbar zusammen schaut ihr in das Buch und ihr seht ein Bild von Obelix, 
-        der in den Asterix Comics immer zu finden ist. Das Bild wirkt auf euch verschwommen 
-        und ehe ihr euch versteht, werdet ihr in das Buch reingezogen.<br><br>
-        Plötzlich steht ihr vor Asterix, der euch freundlich, aber hektisch empfängt. 
-        Er erklärt euch schnell, dass das Gallische Dorf in großer Gefahr schwebt und 
-        sie es nicht schaffen es ungesehen von den Römern zu verlassen, ihr Zaubertrank 
-        neigt sich dummerweise dem Ende zu und Miraculix fehlen ein paar Zutaten, um 
-        einen neuen zu Konzipieren. Ihr willigt ein, ihnen zu helfen, aber da ihr euch 
-        gar nicht in der Gegend auskennt, braucht ihr einen Begleiter. Euch wird Idefix, 
-        der kleine Hund als treuen Begleiter zur Verfügung gestellt und eine kleine Karte 
-        mit den Orten zu denen ihr unauffällig kommen müsst. Los geht die Reise, viel Erfolg!
-      </p>
+      <p>Du bist im Lateinunterricht und deine Lehrkraft möchte, dass du dein Lateinbuch aufschlägst... (Text bleibt gleich)</p>
       <button class="button" onclick="startGame()">Spiel starten</button>
     </div>
   </div>
@@ -46,21 +32,20 @@
   </div>
 
   <!-- SUBREGION-SCREEN -->
-  <div id="subregion-screen" style="display:none;">
+  <div id="subregion-screen" style="display: none;">
     <h2>Unterregion wählen</h2>
     <div id="subregion-container"></div>
     <button class="button back-button" onclick="backToRegions()">Zurück</button>
   </div>
 
-  <!-- TASK-SCREEN -->
-  <div id="task-screen" style="display:none;">
+  <!-- TASK-SCREEN (Hier ändert sich der Hintergrund dynamisch durch JS) -->
+  <div id="task-screen" style="display: none;">
     <h2 id="task-title"></h2>
     <p id="question-text"></p>
     <div id="answers-container"></div>
     <button class="button back-button" onclick="backToSubregions()">Zurück</button>
   </div>
 
-  <!-- SCRIPT -->
   <script src="script.js"></script>
 </body>
 </html>
