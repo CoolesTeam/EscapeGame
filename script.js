@@ -170,11 +170,32 @@ function startTask(subregion) {
     // Stile setzen, damit das Bild vollständig angezeigt wird
     taskScreen.style.backgroundSize = "cover";  // Skaliert das Bild, damit es den gesamten Bereich füllt
     taskScreen.style.backgroundPosition = "center"; // Zentriert das Bild
-    taskScreen.style.backgroundRepeat = "no-repeat"; // Verhindert Wiederholung des Bilde
-    // Subregion-Screen ausblenden
+    taskScreen.style.backgroundRepeat = "no-repeat"; // Verhindert Wiederholung des Bildes
+
+    // *** Standard-Logik bleibt gleich ***
     document.getElementById("subregion-screen").style.display = "none";
-    // Task-Screen einblenden
     document.getElementById("task-screen").style.display = "block";
+
+    let task = questions[subregion][0];
+    if (!task) {
+        console.error("Fehler: Keine Frage für diese Unterregion gefunden!");
+        return;
+    }
+
+    document.getElementById("task-title").textContent = `Aufgabe in ${subregion}`;
+    document.getElementById("question-text").textContent = task.question;
+
+    let answerContainer = document.getElementById("answers-container");
+    answerContainer.innerHTML = "";
+
+    task.answers.forEach((answer, index) => {
+        let btn = document.createElement("button");
+        btn.textContent = answer;
+        btn.classList.add("button", "answer-button");
+        btn.onclick = () => handleSelectAnswers(index, btn, task.correct);
+        answerContainer.appendChild(btn);
+    });
+}
 
     let tasks = questions[subregion];
     if (!tasks) {
