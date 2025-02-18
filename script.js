@@ -33,33 +33,27 @@ const subregions = {
 };
 
 /***********************************************************
- *  FRAGEN & ANTWORTEN
+ *  HINTERGRUNDBILD JE NACH REGION SETZEN
  ***********************************************************/
-const questions = {
-    "Weg": [{
-        question: "Finde das Relativpronomen und klicke es an.",
-        answers: ["Sunt", "item", "quae", "appellantur"],
-        correct: 2
-    }],
-    "Baum": [{
-        question: "Suche das Subjekt des Satzes heraus und klicke es an.",
-        sentence: "Est bos cervi figura, cuius a media fronte inter aures unum cornu exsistit excelsius magisque directum his, quae nobis nota sunt, cornibus.",
-        answers: ["bos", "cervi figura", "cornibus", "quae", "nota sunt"],
-        correct: 0
-    }],
-    "Fluss aufwärts": [{
-        question: "Ordne die Begriffe richtig zu (Orange ↔ Hellblau).",
-        pairs: [
-            { term: "caelo", match: "Himmel" },
-            { term: "sacris", match: "Opfer" },
-            { term: "deos", match: "Götter" },
-            { term: "imperium", match: "Macht" }
-        ]
-    }],
-};
+function setBackgroundForRegion(region) {
+    let gameScreen = document.getElementById("game-screen");
+
+    if (region === "wald") {
+        gameScreen.style.backgroundImage = "url('Wald.jpg')";
+    } else if (region === "fluss") {
+        gameScreen.style.backgroundImage = "url('Fluss.jpg')";
+    } else {
+        gameScreen.style.backgroundImage = "url('Standard.jpg')";
+    }
+
+    // Stile setzen, um das Bild korrekt anzuzeigen
+    gameScreen.style.backgroundSize = "cover";
+    gameScreen.style.backgroundPosition = "center";
+    gameScreen.style.backgroundRepeat = "no-repeat";
+}
 
 /***********************************************************
- *  FUNKTION: Hintergrundbild je nach Region setzen
+ *  FUNKTION: Hintergrundbild für Aufgaben setzen
  ***********************************************************/
 function setBackgroundForTask(subregion) {
     let taskScreen = document.getElementById("task-screen");
@@ -79,11 +73,43 @@ function setBackgroundForTask(subregion) {
 }
 
 /***********************************************************
+ *  Region -> Subregion
+ ***********************************************************/
+function showSubregions(region) {
+    currentRegion = region;
+
+    // Hintergrundbild sofort für die gewählte Region setzen
+    setBackgroundForRegion(region);
+
+    // Game-Screen ausblenden
+    document.getElementById("game-screen").style.display = "none";
+    // Subregion-Screen einblenden
+    document.getElementById("subregion-screen").style.display = "block";
+
+    let container = document.getElementById("subregion-container");
+    container.innerHTML = "";
+
+    // Erzeuge Buttons für jede Subregion
+    subregions[region].forEach(sub => {
+        let btn = document.createElement("button");
+        btn.textContent = sub;
+        btn.classList.add("button", "subregion-button");
+        btn.onclick = function () {
+            startTask(sub);
+        };
+        container.appendChild(btn);
+    });
+}
+
+/***********************************************************
  *  startTask -> Anzeige der Frage/Aufgabe
  ***********************************************************/
 function startTask(subregion) {
     currentSubregion = subregion;
+
+    // Subregion-Screen ausblenden
     document.getElementById("subregion-screen").style.display = "none";
+    // Task-Screen einblenden
     document.getElementById("task-screen").style.display = "block";
 
     // Hintergrundbild setzen
