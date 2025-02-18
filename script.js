@@ -43,7 +43,7 @@ const subregions = {
  ***********************************************************/
 const questions = {
   "Weg": [{
-    question: "Finde das Reflexivpronomen und klicke es an.",
+    question: "Finde das Relativpronomen und klicke es an.",
     answers: ["Sunt", "item", "quae", "appellantur"],
     correct: 2
   }],
