@@ -154,7 +154,18 @@ function showSubregions(region) {
  *  startTask -> Anzeige der Frage/Aufgabe
  ***********************************************************/
 function startTask(subregion) {
-    currentSubregion = subregion;
+    let taskScreen = document.getElementById("task-screen");
+
+    // Hintergrundbild direkt per JavaScript setzen
+    if (subregion === "Weg" || subregion === "Baum") {
+        taskScreen.style.backgroundImage = "url('Wald.jpg')";
+    } 
+    else if (subregion === "Fluss aufwärts" || subregion === "Der Hafen" || subregion === "Fluss abwärts") {
+        taskScreen.style.backgroundImage = "url('Fluss.jpg')";
+    } 
+    else {
+        taskScreen.style.backgroundImage = "url('Standard.jpg')"; // Falls kein anderer Bereich zutrifft
+    }
     // Subregion-Screen ausblenden
     document.getElementById("subregion-screen").style.display = "none";
     // Task-Screen einblenden
