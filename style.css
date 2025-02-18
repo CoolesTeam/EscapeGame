@@ -2,14 +2,12 @@
 body {
     font-family: Arial, sans-serif;
     text-align: center;
-    /* Hintergrundbild, falls vorhanden */
     background: url("background.jpg") no-repeat center center fixed;
     background-size: cover;
-
     margin: 0;
     height: 100vh;
     overflow: hidden;
-    color: black; /* Schriftfarbe für normale Texte */
+    color: black; /* Schriftfarbe für Texte */
 }
 
 /* Willkommensbildschirm (Startseite) */
@@ -17,7 +15,7 @@ body {
     position: absolute;
     width: 100%;
     height: 100%;
-    /* Mehr Transparenz => 0.5 */
+    /* Halbtransparentes Schwarz */
     background: rgba(0, 0, 0, 0.5);
 
     display: flex;
@@ -33,23 +31,28 @@ body {
     height: 100%;
     background: rgba(0, 0, 0, 0.7);
 
-    /* Box zentrieren */
+    /* Box zentrieren, 
+       horizontal & vertikal */
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
 }
 
+/* Intro-Box selbst */
 #intro-box {
+    /* 
+       Box-Einstellungen für 
+       zentrierte Darstellung 
+    */
     background: rgba(255, 255, 255, 0.95);
     color: black;
     padding: 25px;
     border-radius: 10px;
     width: 60%;
     max-width: 600px;
-    text-align: center;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
-    /* Du kannst hier optional margin: 0 auto; ergänzen */
+    text-align: center;
+    margin: 0 auto;
 }
 
 /* Buttons */
@@ -70,20 +73,10 @@ body {
     color: white;
 }
 
-/* Beispiel-Positionen – kannst du anpassen */
-#wald-button {
-    top: 30%;
-    left: 10%;
-}
-#dorf-button {
-    top: 50%;
-    left: 45%;
-    transform: translate(-50%, -50%);
-}
-#fluss-button {
-    top: 70%;
-    left: 80%;
-}
+/* Beispiel-Positionen */
+#wald-button { top: 30%; left: 10%; }
+#dorf-button { top: 50%; left: 45%; transform: translate(-50%, -50%); }
+#fluss-button { top: 70%; left: 80%; }
 
 /* Antwort-Buttons */
 .answer-button {
@@ -91,12 +84,8 @@ body {
     color: white;
 }
 
-.correct {
-    background-color: green !important;
-}
-.wrong {
-    background-color: red !important;
-}
+.correct { background-color: green !important; }
+.wrong { background-color: red !important; }
 
 /* Zurück-Buttons */
 .back-button {
