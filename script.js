@@ -1,45 +1,59 @@
+/***********************************************************
+ *  FUNKTIONEN FÜR START- & INTRO-SEITE
+ ***********************************************************/
 function showIntro() {
-  // Startseite ausblenden
-  document.getElementById('welcome-screen').style.display = 'none';
+  // Willkommensbildschirm ausblenden
+  document.getElementById("welcome-screen").style.display = "none";
   // Intro einblenden
-  document.getElementById('intro-screen').style.display = 'block';
+  document.getElementById("intro-screen").style.display = "block";
 }
 
 function startGame() {
   // Intro ausblenden
-  document.getElementById('intro-screen').style.display = 'none';
-  // Haupt-Spiel einblenden
-  document.getElementById('game-screen').style.display = 'block';
+  document.getElementById("intro-screen").style.display = "none";
+  // Hauptspiel einblenden
+  document.getElementById("game-screen").style.display = "block";
   updateStars();
 }
 
-let stars = 0;
-let currentRegion = "";
-let currentSubregion = "";
-let selectedAnswers = [];
-let dieBewohnerTaskIndex = 0;
+/***********************************************************
+ *  GLOBALE VARIABLEN
+ ***********************************************************/
+let stars = 0;               // Anzahl gesammelter Sterne
+let currentRegion = "";      // Wald, Dorf oder Fluss
+let currentSubregion = "";   // z.B. Weg, Baum, Die Bewohner ...
+let selectedAnswers = [];    // Zwischenspeicher bei Mehrfachauswahl
+
+// Indizes für Mehrfach-Aufgaben
+let dieBewohnerTaskIndex = 0; 
 let marketTaskIndex = 0;
 
-/* Subregionen */
+/***********************************************************
+ *  SUBREGIONEN
+ ***********************************************************/
 const subregions = {
     wald: ["Weg", "Baum"],
     dorf: ["Die Bewohner", "Der Markt"],
     fluss: ["Fluss aufwärts", "Der Hafen", "Fluss abwärts"]
 };
 
-/* Fragen & Antworten */
+/***********************************************************
+ *  FRAGEN & ANTWORTEN
+ ***********************************************************/
 const questions = {
     "Weg": [{
         question: "Finde das Relativpronomen und klicke es an.",
         answers: ["Sunt", "item", "quae", "appellantur"],
-        correct: 2
+        correct: 2 // Single Choice
     }],
     "Baum": [{
         question: "Suche das Subjekt des Satzes heraus und klicke es an.",
         sentence: "Est bos cervi figura, cuius a media fronte inter aures unum cornu exsistit excelsius magisque directum his, quae nobis nota sunt, cornibus.",
         answers: ["bos", "cervi figura", "cornibus", "quae", "nota sunt"],
-        correct: 0
+        correct: 0 // Single Choice
     }],
+
+    // "Die Bewohner" => 2 Aufgaben => Single-Choice
     "Die Bewohner": [
       {
         question: "Übersetze den Satz: 'Dicebant servos nullis iuribus praeditos esse et penitus a dominis pendere.'",
@@ -48,7 +62,7 @@ const questions = {
             "Sie sagten, dass die Sklaven keinerlei Rechte hätten und vollständig von ihren Herren abhängig sind.",
             "Die Sklaven sagen, dass sie keine Rechte haben und abhängig von ihren Herren sind."
         ],
-        correct: 1
+        correct: 1 
       },
       {
         question: "Gib den AcI Auslöser an.",
@@ -60,20 +74,24 @@ const questions = {
         correct: 0
       }
     ],
+
+    // "Der Markt" => 2 Aufgaben => Mehrfachauswahl
     "Der Markt": [
       {
         question: "Klicke die drei Stämme von Gallien an.",
         sentence: "Gallia est omnis divisa in partes tres, quarum unam incolunt Belgae, aliam Aquitani, tertiam qui ipsorum lingua Celtae, nostra Galli appellantur.",
         answers: ["Belgae", "Gallia", "Aquitani", "Celtae", "Galli"],
-        correct: [0, 2, 3]
+        correct: [0, 2, 3] // 3 richtige
       },
       {
         question: "Markiere die beiden Flüsse.",
         sentence: "Eorum una pars, quam Gallos obtinere dictum est, initium capit a flumine Rhodano, continetur Garumna flumine, Oceano finibus Belgarum",
         answers: ["Rhodano", "Garumna", "Belgarum", "Aquitani"],
-        correct: [0, 1]
+        correct: [0, 1] // 2 richtige
       }
     ],
+
+    // "Fluss aufwärts" => Zuordnungs-Spiel
     "Fluss aufwärts": [{
         question: "Ordne die Begriffe richtig zu (Orange ↔ Hellblau).",
         pairs: [
@@ -83,12 +101,15 @@ const questions = {
             { term: "imperium", match: "Macht" }
         ]
     }],
+
     "Der Hafen": [{
         question: "Wie wird dieser Stamm beschrieben?",
         sentence: "Haec civitas longe plurimum totius Galliae",
         answers: ["der größte Stamm", "der kleinste Stamm", "der mächtigste Stamm"],
-        correct: 2
+        correct: 2 // Single Choice
     }],
+
+    // "Fluss abwärts" => 5-fach Mehrfachauswahl
     "Fluss abwärts": [{
         question: "Markiere alle Adjektive.",
         sentence: "Sacrificia publica ac privata procurant, religiones interpretantur. Ad hos magnus adulescentium numerus disciplinae causa concurrit magnoque hi sind apud eos honore. Nam fere de omnibus controversiis publicis privatisque constituunt",
@@ -97,23 +118,26 @@ const questions = {
     }]
 };
 
-/*******************************
- * showSubregions / startTask
- *******************************/
+/***********************************************************
+ *  Region -> Subregion
+ ***********************************************************/
 function showSubregions(region) {
     currentRegion = region;
-    document.getElementById('game-screen').style.display = 'none';
-    document.getElementById('subregion-screen').style.display = 'block';
+    // Game-Screen ausblenden
+    document.getElementById("game-screen").style.display = "none";
+    // Subregion-Screen einblenden
+    document.getElementById("subregion-screen").style.display = "block";
     
-    let container = document.getElementById('subregion-container');
+    let container = document.getElementById("subregion-container");
     container.innerHTML = "";
 
+    // Erzeuge Buttons für jede Subregion
     subregions[region].forEach(sub => {
         let btn = document.createElement("button");
         btn.textContent = sub;
         btn.classList.add("button", "subregion-button");
         btn.onclick = function () {
-          // Reset Indizes
+          // Reset Indizes falls wir "Die Bewohner" / "Der Markt" auswählen
           if (region === "dorf" && sub === "Die Bewohner") {
               dieBewohnerTaskIndex = 0;
           }
@@ -126,10 +150,15 @@ function showSubregions(region) {
     });
 }
 
+/***********************************************************
+ *  startTask -> Anzeige der Frage/Aufgabe
+ ***********************************************************/
 function startTask(subregion) {
     currentSubregion = subregion;
-    document.getElementById('subregion-screen').style.display = 'none';
-    document.getElementById('task-screen').style.display = 'block';
+    // Subregion-Screen ausblenden
+    document.getElementById("subregion-screen").style.display = "none";
+    // Task-Screen einblenden
+    document.getElementById("task-screen").style.display = "block";
 
     let tasks = questions[subregion];
     if (!tasks) {
@@ -138,23 +167,28 @@ function startTask(subregion) {
     }
 
     let task;
+    // "Die Bewohner" => 2 Aufgaben => Index
     if (subregion === "Die Bewohner") {
         task = tasks[dieBewohnerTaskIndex];
     }
+    // "Der Markt" => 2 Aufgaben => Index
     else if (subregion === "Der Markt") {
         task = tasks[marketTaskIndex];
     }
     else {
+        // Standard: 1 Aufgabe
         task = tasks[0];
     }
 
-    document.getElementById('task-title').textContent = `Aufgabe in ${subregion}`;
-    document.getElementById('question-text').textContent = task.question;
+    document.getElementById("task-title").textContent = `Aufgabe in ${subregion}`;
+    document.getElementById("question-text").textContent = task.question;
 
-    let answerContainer = document.getElementById('answers-container');
+    // Container für Antworten leeren
+    let answerContainer = document.getElementById("answers-container");
     answerContainer.innerHTML = "";
     selectedAnswers = [];
 
+    // Falls ein Satz existiert (z.B. Der Markt, Die Bewohner)
     if (task.sentence) {
         let sentenceElement = document.createElement("p");
         sentenceElement.textContent = task.sentence;
@@ -169,16 +203,17 @@ function startTask(subregion) {
         return;
     }
 
-    // Standard: Buttons
+    // Standard: Erzeuge Buttons für die Antworten
     task.answers.forEach((answer, index) => {
         let btn = document.createElement("button");
         btn.textContent = answer;
         btn.classList.add("button", "answer-button");
+        // Klick -> Single/Mehrfach-Logik
         btn.onclick = () => handleSelectAnswers(index, btn, task.correct);
         answerContainer.appendChild(btn);
     });
 
-    // "Die Bewohner" => checkBewohnerAnswers
+    // 1) "Die Bewohner" => 2 Aufgaben, Single Choice -> checkBewohnerAnswers
     if (subregion === "Die Bewohner") {
         let submitBtn = document.createElement("button");
         submitBtn.textContent = "Bestätigen";
@@ -187,7 +222,7 @@ function startTask(subregion) {
         answerContainer.appendChild(submitBtn);
     }
 
-    // "Der Markt" => checkMarketAnswers
+    // 2) "Der Markt" => 2 Aufgaben, Multi Choice -> checkMarketAnswers
     if (subregion === "Der Markt") {
         let submitBtn = document.createElement("button");
         submitBtn.textContent = "Bestätigen";
@@ -196,7 +231,7 @@ function startTask(subregion) {
         answerContainer.appendChild(submitBtn);
     }
 
-    // "Fluss abwärts" => 5 richtige
+    // 3) "Fluss abwärts" => 5 richtige -> checkFiveAnswers
     if (subregion === "Fluss abwärts") {
         let submitBtn = document.createElement("button");
         submitBtn.textContent = "Bestätigen";
@@ -206,14 +241,15 @@ function startTask(subregion) {
     }
 }
 
-/*******************************
- * handleSelectAnswers => Single/Mehrfach
- *******************************/
+/***********************************************************
+ *  Single vs. Multi Choice
+ ***********************************************************/
 function handleSelectAnswers(index, button, correctAnswers) {
-    // Multi-Choice => Array
+    // Falls Array => Mehrfachauswahl
     if (Array.isArray(correctAnswers)) {
         let maxLen = correctAnswers.length;
         if (selectedAnswers.includes(index)) {
+            // Button wurde abgewählt
             selectedAnswers = selectedAnswers.filter(i => i !== index);
             button.classList.remove("selected");
             button.style.backgroundColor = "";
@@ -227,7 +263,7 @@ function handleSelectAnswers(index, button, correctAnswers) {
             }
         }
     } else {
-        // Single => sofort
+        // Single => Sofort auswerten
         if (index === correctAnswers) {
             stars++;
             updateStars();
@@ -235,15 +271,16 @@ function handleSelectAnswers(index, button, correctAnswers) {
         } else {
             alert("Falsch! ❌ Versuch es nochmal.");
         }
+        // Zurück zur Subregion
         setTimeout(backToSubregions, 1000);
     }
 }
 
-/*******************************
- * "Die Bewohner" => 2 Aufgaben
- *******************************/
+/***********************************************************
+ *  "Die Bewohner" => 2 Aufgaben (Single Choice)
+ ***********************************************************/
 function checkBewohnerAnswers(correctAnswers) {
-    // SingleChoice => check selectedAnswers[0]
+    // Single Choice => selectedAnswers[0] == correctAnswers
     if (!Array.isArray(correctAnswers)) {
         if (selectedAnswers.length === 1 && selectedAnswers[0] === correctAnswers) {
             stars++;
@@ -256,6 +293,7 @@ function checkBewohnerAnswers(correctAnswers) {
         alert("Fehler: 'Die Bewohner' hat single choice!");
     }
 
+    // Nächste Aufgabe oder zurück
     if (dieBewohnerTaskIndex === 0) {
         dieBewohnerTaskIndex = 1;
         setTimeout(() => startTask("Die Bewohner"), 1000);
@@ -264,10 +302,11 @@ function checkBewohnerAnswers(correctAnswers) {
     }
 }
 
-/*******************************
- * "Der Markt" => 2 Aufgaben
- *******************************/
+/***********************************************************
+ *  "Der Markt" => 2 Aufgaben (Multi Choice)
+ ***********************************************************/
 function checkMarketAnswers(correctAnswers) {
+    // Sortiere Arrays & vergleiche
     selectedAnswers.sort();
     correctAnswers.sort();
     if (JSON.stringify(selectedAnswers) === JSON.stringify(correctAnswers)) {
@@ -286,9 +325,9 @@ function checkMarketAnswers(correctAnswers) {
     }
 }
 
-/*******************************
- * "Fluss abwärts" => 5 richtige
- *******************************/
+/***********************************************************
+ *  "Fluss abwärts" => 5 korrekte (Multi Choice)
+ ***********************************************************/
 function checkFiveAnswers(correctAnswers) {
     selectedAnswers.sort();
     correctAnswers.sort();
@@ -302,9 +341,9 @@ function checkFiveAnswers(correctAnswers) {
     setTimeout(backToSubregions, 1000);
 }
 
-/*******************************
- * Fluss aufwärts => Zuordnungs-Spiel
- *******************************/
+/***********************************************************
+ *  FLUSS AUFWÄRTS => Zuordnungs-Spiel
+ ***********************************************************/
 let selectedTerm = null;
 let selectedMatch = null;
 let selectedPairs = {};
@@ -323,6 +362,7 @@ function setupMatchingGame(pairs) {
     rightDiv.style.display = "inline-block";
     rightDiv.style.verticalAlign = "top";
 
+    // Linke Buttons (Orange)
     pairs.forEach(pair => {
         let leftBtn = document.createElement("button");
         leftBtn.textContent = pair.term;
@@ -335,6 +375,7 @@ function setupMatchingGame(pairs) {
         leftDiv.appendChild(leftBtn);
     });
 
+    // Rechte Buttons (Hellblau)
     pairs.forEach(pair => {
         let rightBtn = document.createElement("button");
         rightBtn.textContent = pair.match;
@@ -350,6 +391,7 @@ function setupMatchingGame(pairs) {
     container.appendChild(leftDiv);
     container.appendChild(rightDiv);
 
+    // Überprüfen-Button
     let checkBtn = document.createElement("button");
     checkBtn.textContent = "Überprüfen";
     checkBtn.classList.add("button");
@@ -367,6 +409,7 @@ function selectFlussItem(value, button, type) {
         selectedMatch = value;
         highlightButton(button);
     }
+    // Wenn wir ein term + match haben -> Zuordnung
     if (selectedTerm && selectedMatch) {
         selectedPairs[selectedTerm] = selectedMatch;
         console.log(`Verbindung: ${selectedTerm} ↔ ${selectedMatch}`);
@@ -375,6 +418,7 @@ function selectFlussItem(value, button, type) {
     }
 }
 
+// Kurz rotes Highlight
 function highlightButton(btn) {
     btn.style.border = "3px solid red";
     setTimeout(() => {
@@ -401,9 +445,9 @@ function checkFlussMatches(pairs) {
     setTimeout(backToSubregions, 1000);
 }
 
-/*******************************
- * Sterne & Navigation
- *******************************/
+/***********************************************************
+ *  STERNE & NAVIGATION
+ ***********************************************************/
 function updateStars() {
     document.getElementById("stars-count").textContent = stars;
 }
