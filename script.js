@@ -46,7 +46,6 @@ function setBackgroundForRegion(region) {
         gameScreen.style.backgroundImage = "url('Standard.jpg')";
     }
 
-    // Stile setzen, um das Bild korrekt anzuzeigen
     gameScreen.style.backgroundSize = "cover";
     gameScreen.style.backgroundPosition = "center";
     gameScreen.style.backgroundRepeat = "no-repeat";
@@ -66,7 +65,6 @@ function setBackgroundForTask(subregion) {
         taskScreen.style.backgroundImage = "url('Standard.jpg')";
     }
 
-    // Stile setzen, um das Bild korrekt darzustellen
     taskScreen.style.backgroundSize = "cover";
     taskScreen.style.backgroundPosition = "center";
     taskScreen.style.backgroundRepeat = "no-repeat";
@@ -78,18 +76,15 @@ function setBackgroundForTask(subregion) {
 function showSubregions(region) {
     currentRegion = region;
 
-    // Hintergrundbild sofort für die gewählte Region setzen
+    // Hintergrundbild für die gewählte Region setzen
     setBackgroundForRegion(region);
 
-    // Game-Screen ausblenden
     document.getElementById("game-screen").style.display = "none";
-    // Subregion-Screen einblenden
     document.getElementById("subregion-screen").style.display = "block";
 
     let container = document.getElementById("subregion-container");
     container.innerHTML = "";
 
-    // Erzeuge Buttons für jede Subregion
     subregions[region].forEach(sub => {
         let btn = document.createElement("button");
         btn.textContent = sub;
@@ -107,12 +102,10 @@ function showSubregions(region) {
 function startTask(subregion) {
     currentSubregion = subregion;
 
-    // Subregion-Screen ausblenden
     document.getElementById("subregion-screen").style.display = "none";
-    // Task-Screen einblenden
     document.getElementById("task-screen").style.display = "block";
 
-    // Hintergrundbild setzen
+    // Hintergrundbild für die Aufgabe setzen
     setBackgroundForTask(subregion);
 
     let tasks = questions[subregion];
@@ -147,7 +140,7 @@ function startTask(subregion) {
 }
 
 /***********************************************************
- *  HILFSFUNKTIONEN
+ *  STERNE & NAVIGATION
  ***********************************************************/
 function updateStars() {
     document.getElementById("stars-count").textContent = stars;
