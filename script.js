@@ -1,402 +1,98 @@
-function showIntro() {
-  document.getElementById('welcome-screen').style.display = 'none';
-  document.getElementById('intro-screen').style.display = 'block';
+/* Allgemeine Stile */
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background: url("background.jpg") no-repeat center center fixed;
+    background-size: cover;
+    margin: 0;
+    height: 100vh;
+    overflow: hidden;
+    color: black; /* Schriftfarbe der Texte außerhalb der Buttons */
 }
 
-function startGame() {
-  document.getElementById('intro-screen').style.display = 'none';
-  document.getElementById('game-screen').style.display = 'block';
-  updateStars();
+/* Willkommensbildschirm */
+#welcome-screen {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+
+    /* Schwarz halbtransparent => 0.5 */
+    background: rgba(0, 0, 0, 0.5);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
-let stars = 0;
-let currentRegion = "";
-let currentSubregion = "";
-let selectedAnswers = [];
-let dieBewohnerTaskIndex = 0;
-let marketTaskIndex = 0;
+/* Erklärungsbildschirm */
+#intro-screen {
+    position: absolute;
+    width: 100%;
+    height: 100%;
 
-const subregions = {
-    wald: ["Weg", "Baum"],
-    dorf: ["Die Bewohner", "Der Markt"],
-    fluss: ["Fluss aufwärts", "Der Hafen", "Fluss abwärts"]
-};
+    /* Weiterhin leicht dunkel => 0.7 */
+    background: rgba(0, 0, 0, 0.7);
 
-const questions = {
-    "Weg": [{
-        question: "Finde das Relativpronomen und klicke es an.",
-        answers: ["Sunt", "item", "quae", "appellantur"],
-        correct: 2
-    }],
-    "Baum": [{
-        question: "Suche das Subjekt des Satzes heraus und klicke es an.",
-        sentence: "Est bos cervi figura, cuius a media fronte inter aures unum cornu exsistit excelsius magisque directum his, quae nobis nota sunt, cornibus.",
-        answers: ["bos", "cervi figura", "cornibus", "quae", "nota sunt"],
-        correct: 0
-    }],
-
-    "Die Bewohner": [
-      {
-        question: "Übersetze den Satz: 'Dicebant servos nullis iuribus praeditos esse et penitus a dominis pendere.'",
-        answers: [
-            "Die Sklaven haben keine Rechte und sind abhängig von ihren Herren.",
-            "Sie sagten, dass die Sklaven keinerlei Rechte hätten und vollständig von ihren Herren abhängig sind.",
-            "Die Sklaven sagen, dass sie keine Rechte haben und abhängig von ihren Herren sind."
-        ],
-        correct: 1
-      },
-      {
-        question: "Gib den AcI Auslöser an.",
-        answers: [
-          "dicebant",
-          "iuribus",
-          "praeditos"
-        ],
-        correct: 0
-      }
-    ],
-
-    "Der Markt": [
-      {
-        question: "Klicke die drei Stämme von Gallien an.",
-        sentence: "Gallia est omnis divisa in partes tres, quarum unam incolunt Belgae, aliam Aquitani, tertiam qui ipsorum lingua Celtae, nostra Galli appellantur.",
-        answers: ["Belgae", "Gallia", "Aquitani", "Celtae", "Galli"],
-        correct: [0, 2, 3]
-      },
-      {
-        question: "Markiere die beiden Flüsse.",
-        sentence: "Eorum una pars, quam Gallos obtinere dictum est, initium capit a flumine Rhodano, continetur Garumna flumine, Oceano finibus Belgarum",
-        answers: ["Rhodano", "Garumna", "Belgarum", "Aquitani"],
-        correct: [0, 1]
-      }
-    ],
-
-    "Fluss aufwärts": [{
-        question: "Ordne die Begriffe richtig zu (Orange ↔ Hellblau).",
-        pairs: [
-            { term: "caelo",    match: "Himmel" },
-            { term: "sacris",   match: "Opfer" },
-            { term: "deos",     match: "Götter" },
-            { term: "imperium", match: "Macht" }
-        ]
-    }],
-
-    "Der Hafen": [{
-        question: "Wie wird dieser Stamm beschrieben?",
-        sentence: "Haec civitas longe plurimum totius Galliae",
-        answers: ["der größte Stamm", "der kleinste Stamm", "der mächtigste Stamm"],
-        correct: 2
-    }],
-
-    "Fluss abwärts": [{
-        question: "Markiere alle Adjektive.",
-        sentence: "Sacrificia publica ac privata procurant, religiones interpretantur. Ad hos magnus adulescentium numerus disciplinae causa concurrit magnoque hi sunt apud eos honore. Nam fere de omnibus controversiis publicis privatisque constituunt",
-        answers: ["publica", "controversiis", "privata", "disciplinae", "magnus", "magno", "omnibus", "interpretantur"],
-        correct: [0, 2, 4, 5, 6]
-    }]
-};
-
-function showSubregions(region) {
-    currentRegion = region;
-    document.getElementById('game-screen').style.display = 'none';
-    document.getElementById('subregion-screen').style.display = 'block';
-    
-    let container = document.getElementById('subregion-container');
-    container.innerHTML = "";
-
-    subregions[region].forEach(sub => {
-        let btn = document.createElement("button");
-        btn.textContent = sub;
-        btn.classList.add("button", "subregion-button");
-        btn.onclick = function () {
-          if (region === "dorf" && sub === "Die Bewohner") {
-              dieBewohnerTaskIndex = 0;
-          }
-          if (region === "dorf" && sub === "Der Markt") {
-              marketTaskIndex = 0;
-          }
-          startTask(sub); 
-        };
-        container.appendChild(btn);
-    });
+    /* FLEX => Mitte horizontal und vertikal */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
-function startTask(subregion) {
-    currentSubregion = subregion;
-    document.getElementById('subregion-screen').style.display = 'none';
-    document.getElementById('task-screen').style.display = 'block';
+#intro-box {
+    background: rgba(255, 255, 255, 0.95);
+    color: black;
 
-    let tasks = questions[subregion];
-    if (!tasks) {
-        console.error("Fehler: Keine Frage für diese Unterregion gefunden!");
-        return;
-    }
-
-    let task;
-    if (subregion === "Die Bewohner") {
-        task = tasks[dieBewohnerTaskIndex];
-    }
-    else if (subregion === "Der Markt") {
-        task = tasks[marketTaskIndex];
-    }
-    else {
-        task = tasks[0];
-    }
-
-    document.getElementById('task-title').textContent = `Aufgabe in ${subregion}`;
-    document.getElementById('question-text').textContent = task.question;
-
-    let answerContainer = document.getElementById('answers-container');
-    answerContainer.innerHTML = "";
-    selectedAnswers = [];
-
-    if (task.sentence) {
-        let sentenceElement = document.createElement("p");
-        sentenceElement.textContent = task.sentence;
-        sentenceElement.style.fontStyle = "italic";
-        sentenceElement.style.marginBottom = "10px";
-        answerContainer.appendChild(sentenceElement);
-    }
-
-    // Fluss aufwärts => Zuordnungs-Spiel
-    if (subregion === "Fluss aufwärts") {
-        setupMatchingGame(task.pairs);
-        return;
-    }
-
-    // Standard: Buttons
-    task.answers.forEach((answer, index) => {
-        let btn = document.createElement("button");
-        btn.textContent = answer;
-        btn.classList.add("button", "answer-button");
-        btn.onclick = () => handleSelectAnswers(index, btn, task.correct);
-        answerContainer.appendChild(btn);
-    });
-
-    // "Die Bewohner" => checkBewohnerAnswers
-    if (subregion === "Die Bewohner") {
-        let submitBtn = document.createElement("button");
-        submitBtn.textContent = "Bestätigen";
-        submitBtn.classList.add("button", "submit-button");
-        submitBtn.onclick = () => checkBewohnerAnswers(task.correct);
-        answerContainer.appendChild(submitBtn);
-    }
-
-    // "Der Markt" => checkMarketAnswers
-    if (subregion === "Der Markt") {
-        let submitBtn = document.createElement("button");
-        submitBtn.textContent = "Bestätigen";
-        submitBtn.classList.add("button", "submit-button");
-        submitBtn.onclick = () => checkMarketAnswers(task.correct);
-        answerContainer.appendChild(submitBtn);
-    }
-
-    // "Fluss abwärts" => 5 richtige => checkFiveAnswers
-    if (subregion === "Fluss abwärts") {
-        let submitBtn = document.createElement("button");
-        submitBtn.textContent = "Bestätigen";
-        submitBtn.classList.add("button", "submit-button");
-        submitBtn.onclick = () => checkFiveAnswers(task.correct);
-        answerContainer.appendChild(submitBtn);
-    }
+    /* Box-Einstellungen, margin auto + Breite */
+    margin: 0 auto;
+    padding: 25px;
+    border-radius: 10px;
+    width: 60%;
+    max-width: 600px;
+    text-align: center;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+    animation: fadeIn 0.8s ease-in-out;
 }
 
-/* Single Choice vs Multi Choice */
-function handleSelectAnswers(index, button, correctAnswers) {
-    if (Array.isArray(correctAnswers)) {
-        // Mehrfach
-        let maxLen = correctAnswers.length;
-        if (selectedAnswers.includes(index)) {
-            selectedAnswers = selectedAnswers.filter(i => i !== index);
-            button.classList.remove("selected");
-            button.style.backgroundColor = "";
-        } else {
-            if (selectedAnswers.length < maxLen) {
-                selectedAnswers.push(index);
-                button.classList.add("selected");
-                button.style.backgroundColor = "orange";
-            } else {
-                alert(`Du kannst nur ${maxLen} Antworten auswählen!`);
-            }
-        }
-    } else {
-        // Single => Sofort
-        if (index === correctAnswers) {
-            stars++;
-            updateStars();
-            alert("Richtig! ⭐ Du hast einen Stern erhalten.");
-        } else {
-            alert("Falsch! ❌ Versuch es nochmal.");
-        }
-        setTimeout(backToSubregions, 1000);
-    }
+/* Buttons */
+.button {
+    padding: 15px 30px;
+    font-size: 18px;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s;
+    margin: 10px;
+    border-radius: 8px;
 }
 
-/* "Die Bewohner" => 2 Aufgaben */
-function checkBewohnerAnswers(correctAnswers) {
-    // Single Choice => selectedAnswers[0] == correctAnswers
-    if (!Array.isArray(correctAnswers)) {
-        if (selectedAnswers.length === 1 && selectedAnswers[0] === correctAnswers) {
-            stars++;
-            updateStars();
-            alert("Richtig! ⭐ Du hast einen Stern erhalten.");
-        } else {
-            alert("Falsch! ❌ Versuch es nochmal.");
-        }
-    } else {
-        alert("Fehler: 'Die Bewohner' hat single choice!");
-    }
-
-    if (dieBewohnerTaskIndex === 0) {
-        dieBewohnerTaskIndex = 1;
-        setTimeout(() => startTask("Die Bewohner"), 1000);
-    } else {
-        setTimeout(backToSubregions, 1000);
-    }
+/* Frei positionierbare Buttons */
+.region-button {
+    position: absolute;
+    background-color: rgba(0, 123, 255, 0.8);
+    color: white;
 }
 
-/* "Der Markt" => 2 Aufgaben */
-function checkMarketAnswers(correctAnswers) {
-    selectedAnswers.sort();
-    correctAnswers.sort();
-    if (JSON.stringify(selectedAnswers) === JSON.stringify(correctAnswers)) {
-        stars++;
-        updateStars();
-        alert("Richtig! ⭐ Du hast einen Stern erhalten.");
-    } else {
-        alert("Falsch! ❌ Du musst GENAU die richtige Anzahl auswählen.");
-    }
+/* Positionen kannst du anpassen */
+#wald-button { top: 30%; left: 10%; }
+#dorf-button { top: 50%; left: 45%; transform: translate(-50%, -50%); }
+#fluss-button { top: 70%; left: 80%; }
 
-    if (marketTaskIndex === 0) {
-        marketTaskIndex = 1;
-        setTimeout(() => startTask("Der Markt"), 1000);
-    } else {
-        setTimeout(backToSubregions, 1000);
-    }
+/* Antwort-Buttons */
+.answer-button {
+    background-color: rgba(0, 123, 255, 0.8);
+    color: white;
 }
 
-/* "Fluss abwärts" => 5 korrekte */
-function checkFiveAnswers(correctAnswers) {
-    selectedAnswers.sort();
-    correctAnswers.sort();
-    if (JSON.stringify(selectedAnswers) === JSON.stringify(correctAnswers)) {
-        stars++;
-        updateStars();
-        alert("Richtig! ⭐ Du hast einen Stern erhalten.");
-    } else {
-        alert("Falsch! ❌ Du musst GENAU fünf richtige Antworten auswählen.");
-    }
-    setTimeout(backToSubregions, 1000);
-}
+.correct { background-color: green !important; }
+.wrong { background-color: red !important; }
 
-/* Fluss aufwärts => Zuordnungs-Spiel */
-let selectedTerm = null;
-let selectedMatch = null;
-let selectedPairs = {};
-
-function setupMatchingGame(pairs) {
-    let container = document.getElementById("answers-container");
-    container.innerHTML = "<p>Verbinde Orange (Fragen) mit Hellblau (Antworten) per Klick!</p>";
-
-    selectedPairs = {};
-
-    let leftDiv  = document.createElement("div");
-    let rightDiv = document.createElement("div");
-    leftDiv.style.display  = "inline-block";
-    leftDiv.style.marginRight = "50px";
-    leftDiv.style.verticalAlign = "top";
-    rightDiv.style.display = "inline-block";
-    rightDiv.style.verticalAlign = "top";
-
-    pairs.forEach(pair => {
-        let leftBtn = document.createElement("button");
-        leftBtn.textContent = pair.term;
-        leftBtn.style.backgroundColor = "orange";
-        leftBtn.style.color = "white";
-        leftBtn.style.padding = "20px 30px";
-        leftBtn.style.fontSize = "16px";
-        leftBtn.style.margin = "5px";
-        leftBtn.onclick = () => selectFlussItem(pair.term, leftBtn, "term");
-        leftDiv.appendChild(leftBtn);
-    });
-
-    pairs.forEach(pair => {
-        let rightBtn = document.createElement("button");
-        rightBtn.textContent = pair.match;
-        rightBtn.style.backgroundColor = "lightblue";
-        rightBtn.style.color = "black";
-        rightBtn.style.padding = "20px 30px";
-        rightBtn.style.fontSize = "16px";
-        rightBtn.style.margin = "5px";
-        rightBtn.onclick = () => selectFlussItem(pair.match, rightBtn, "match");
-        rightDiv.appendChild(rightBtn);
-    });
-
-    container.appendChild(leftDiv);
-    container.appendChild(rightDiv);
-
-    let checkBtn = document.createElement("button");
-    checkBtn.textContent = "Überprüfen";
-    checkBtn.classList.add("button");
-    checkBtn.style.marginTop = "20px";
-    checkBtn.onclick = () => checkFlussMatches(pairs);
-    container.appendChild(document.createElement("br"));
-    container.appendChild(checkBtn);
-}
-
-function selectFlussItem(value, button, type) {
-    if (type === "term") {
-        selectedTerm = value;
-        highlightButton(button);
-    } else {
-        selectedMatch = value;
-        highlightButton(button);
-    }
-    if (selectedTerm && selectedMatch) {
-        selectedPairs[selectedTerm] = selectedMatch;
-        console.log(`Verbindung: ${selectedTerm} ↔ ${selectedMatch}`);
-        selectedTerm  = null;
-        selectedMatch = null;
-    }
-}
-
-function highlightButton(btn) {
-    btn.style.border = "3px solid red";
-    setTimeout(() => {
-        btn.style.border = "none";
-    }, 400);
-}
-
-function checkFlussMatches(pairs) {
-    let correct = true;
-    for (let pair of pairs) {
-        if (!selectedPairs[pair.term] || selectedPairs[pair.term] !== pair.match) {
-            correct = false;
-            break;
-        }
-    }
-    if (correct) {
-        stars++;
-        updateStars();
-        alert("Richtig! ⭐ Du hast einen Stern erhalten.");
-    } else {
-        alert("Falsch! ❌ Bitte versuche es nochmal.");
-        selectedPairs = {};
-    }
-    setTimeout(backToSubregions, 1000);
-}
-
-/* Sterne & Navigation */
-function updateStars() {
-    document.getElementById("stars-count").textContent = stars;
-}
-
-function backToRegions() {
-    document.getElementById("subregion-screen").style.display = "none";
-    document.getElementById("game-screen").style.display = "block";
-}
-
-function backToSubregions() {
-    document.getElementById("task-screen").style.display = "none";
-    document.getElementById("subregion-screen").style.display = "block";
+/* Zurück-Buttons */
+.back-button {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 10px;
+    border: 2px solid white;
+    border-radius: 5px;
 }
