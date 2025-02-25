@@ -76,7 +76,8 @@ body {
     border-radius: 8px;
 }
 
-/* Vier Farbklassen (Blau, Gelb, Rosa, Grün) */
+/* Vier Farbklassen (Blau, Gelb, Rosa, Grün) 
+   -> für Mehrfachauswahl (Fluss abwärts) */
 .matching-blue {
     background-color: blue !important;
     color: white !important;
