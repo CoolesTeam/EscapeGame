@@ -23,7 +23,7 @@ let dieBewohnerTaskIndex = 0;
 let marketTaskIndex = 0;       
 
 /***********************************************************
- *  SUBREGIONEN
+ *  SUBREGIONEN (Wald, Dorf, Fluss)
  ***********************************************************/
 const subregions = {
     wald: ["Weg", "Baum"],
@@ -32,9 +32,14 @@ const subregions = {
 };
 
 /***********************************************************
- *  FRAGEN & ANTWORTEN (Beispiel)
+ *  FRAGEN & ANTWORTEN
+ *
+ *  Hier ist wieder die ORIGINAL-Zuordnung:
+ *  - "Fluss aufwärts" => Zuordnungs-Spiel
+ *  - "Fluss abwärts" => 5-fach Mehrfachauswahl
  ***********************************************************/
 const questions = {
+    // Wald
     "Weg": [{
         question: "Finde das Relativpronomen und klicke es an.",
         answers: ["Sunt", "item", "quae", "appellantur"],
@@ -47,13 +52,14 @@ const questions = {
         correct: 0
     }],
 
+    // Dorf
     "Die Bewohner": [
       {
         question: "Übersetze den Satz: 'Dicebant servos nullis iuribus praeditos esse...'",
         answers: [
             "Die Sklaven haben keine Rechte und sind abhängig von ihren Herren.",
-            "Sie sagten, dass die Sklaven keinerlei Rechte hätten...",
-            "Die Sklaven sagen, dass sie keine Rechte haben..."
+            "Sie sagten, dass die Sklaven keinerlei Rechte hätten und vollständig von ihren Herren abhängig sind.",
+            "Die Sklaven sagen, dass sie keine Rechte haben und abhängig von ihren Herren sind."
         ],
         correct: 1
       },
@@ -79,20 +85,8 @@ const questions = {
     ],
 
     // Fluss
+    /* FLUSS AUFWÄRTS => Zuordnungs-Spiel (Paare) */
     "Fluss aufwärts": [{
-        question: "Markiere alle Adjektive.",
-        sentence: "Sacrificia publica ac privata procurant...",
-        answers: ["publica", "controversiis", "privata", "disciplinae", "magnus", "magno", "omnibus", "interpretantur"],
-        correct: [0, 2, 4, 5, 6]
-    }],
-    "Der Hafen": [{
-        question: "Wie wird dieser Stamm beschrieben?",
-        sentence: "Haec civitas longe plurimum totius Galliae",
-        answers: ["der größte Stamm", "der kleinste Stamm", "der mächtigste Stamm"],
-        correct: 2
-    }],
-    // -> HIER Das Zuordnungs-Spiel
-    "Fluss abwärts": [{
         question: "Ordne die Begriffe richtig zu (Orange ↔ Hellblau).",
         pairs: [
             { term: "caelo",    match: "Himmel" },
@@ -100,6 +94,22 @@ const questions = {
             { term: "deos",     match: "Götter" },
             { term: "imperium", match: "Macht" }
         ]
+    }],
+
+    /* Der Hafen => Single Choice */
+    "Der Hafen": [{
+        question: "Wie wird dieser Stamm beschrieben?",
+        sentence: "Haec civitas longe plurimum totius Galliae",
+        answers: ["der größte Stamm", "der kleinste Stamm", "der mächtigste Stamm"],
+        correct: 2
+    }],
+
+    /* FLUSS ABWÄRTS => Mehrfachauswahl mit 5 richtigen (Farbig) */
+    "Fluss abwärts": [{
+        question: "Markiere alle Adjektive.",
+        sentence: "Sacrificia publica ac privata procurant, religiones interpretantur...",
+        answers: ["publica", "controversiis", "privata", "disciplinae", "magnus", "magno", "omnibus", "interpretantur"],
+        correct: [0, 2, 4, 5, 6]
     }]
 };
 
@@ -109,10 +119,10 @@ const questions = {
 function showSubregions(region) {
     currentRegion = region;
 
-    // Entferne alte Hintergründe
+    // Hintergründe entfernen
     document.body.classList.remove("wald-background", "fluss-background");
 
-    // Füge ggf. Wald-/Fluss-Hintergrund hinzu
+    // Passenden Hintergrund hinzufügen
     if (region === "wald") {
         document.body.classList.add("wald-background");
     } else if (region === "fluss") {
@@ -131,7 +141,7 @@ function showSubregions(region) {
         btn.textContent = sub;
         btn.classList.add("button", "subregion-button");
         btn.onclick = function () {
-            // Falls "Die Bewohner" / "Der Markt" => Index zurücksetzen
+            // Reset-Index für Mehrfach-Aufgaben
             if (region === "dorf" && sub === "Die Bewohner") {
                 dieBewohnerTaskIndex = 0;
             }
@@ -158,12 +168,12 @@ function startTask(subregion) {
         return;
     }
 
-    // Mehrfach-Aufgaben "Die Bewohner" / "Der Markt"
+    // Mehrfach-Aufgaben in "Die Bewohner" / "Der Markt"
     let task;
     if (subregion === "Die Bewohner") {
         task = tasks[dieBewohnerTaskIndex];
         if (!task) {
-            alert("Alle Aufgaben in 'Die Bewohner' erledigt!");
+            alert("Du hast alle Aufgaben in 'Die Bewohner' erledigt!");
             backToSubregions();
             return;
         }
@@ -171,13 +181,12 @@ function startTask(subregion) {
     else if (subregion === "Der Markt") {
         task = tasks[marketTaskIndex];
         if (!task) {
-            alert("Alle Aufgaben im Markt erledigt!");
+            alert("Du hast alle Aufgaben im Markt erledigt!");
             backToSubregions();
             return;
         }
-    }
-    else {
-        // Standard: Nur eine Aufgabe
+    } else {
+        // Standard: nur eine Aufgabe
         task = tasks[0];
     }
 
@@ -189,7 +198,7 @@ function startTask(subregion) {
     answerContainer.innerHTML = "";
     selectedAnswers = [];
 
-    // Falls Satz vorhanden
+    // Satz anzeigen (falls vorhanden)
     if (task.sentence) {
         let sentenceP = document.createElement("p");
         sentenceP.style.fontStyle = "italic";
@@ -198,14 +207,22 @@ function startTask(subregion) {
     }
 
     // Spezialfälle:
-    // 1) Fluss aufwärts => Farbiges Mehrfachauswahl
+    // 1) FLUSS AUFWÄRTS => Zuordnungs-Spiel
     if (subregion === "Fluss aufwärts") {
+        setupMatchingGame(task.pairs);
+        return;
+    }
+
+    // 2) FLUSS ABWÄRTS => Farbiges Mehrfachauswahl-Spiel
+    if (subregion === "Fluss abwärts") {
+        // Button zum Bestätigen
         let submitBtn = document.createElement("button");
         submitBtn.textContent = "Bestätigen";
         submitBtn.classList.add("button", "submit-button");
         submitBtn.onclick = () => checkFiveAnswers(task.correct);
         answerContainer.appendChild(submitBtn);
 
+        // Antworten -> farbige Auswahl
         task.answers.forEach((answer, index) => {
             let btn = document.createElement("button");
             btn.textContent = answer;
@@ -216,13 +233,7 @@ function startTask(subregion) {
         return;
     }
 
-    // 2) Fluss abwärts => Zuordnungs-Spiel
-    if (subregion === "Fluss abwärts") {
-        setupMatchingGame(task.pairs);
-        return;
-    }
-
-    // 3) Ansonsten Single/Mehrfach
+    // 3) Sonstige Aufgaben (Single oder Multi)
     task.answers.forEach((answer, index) => {
         let btn = document.createElement("button");
         btn.textContent = answer;
@@ -249,56 +260,17 @@ function startTask(subregion) {
 }
 
 /***********************************************************
- *  FLUSS AUFWÄRTS => Farbiges Mehrfachauswahl
+ *  FLUSS AUFWÄRTS => Zuordnungs-Spiel (Orange ↔ Hellblau)
  ***********************************************************/
-function setMatchingColors(index, button) {
-    const colors = ["matching-blue", "matching-yellow", "matching-pink", "matching-green"];
-
-    button.classList.remove(...colors);
-
-    if (selectedAnswers.includes(index)) {
-        // Abwählen
-        selectedAnswers = selectedAnswers.filter(i => i !== index);
-    } else {
-        // Neu auswählen
-        selectedAnswers.push(index);
-        // Farbklasse anhand der Anzahl bereits ausgewählter
-        let colorClass = colors[selectedAnswers.length % colors.length];
-        button.classList.add(colorClass);
-    }
-}
-
-function checkFiveAnswers(correctAnswers) {
-    selectedAnswers.sort();
-    correctAnswers.sort();
-    if (JSON.stringify(selectedAnswers) === JSON.stringify(correctAnswers)) {
-        stars++;
-        updateStars();
-        alert("Richtig! ⭐ Du hast einen Stern erhalten.");
-        setTimeout(backToSubregions, 1000);
-    } else {
-        alert("Falsch! ❌ Du musst GENAU fünf richtige Antworten auswählen.");
-    }
-}
-
-/***********************************************************
- *  FLUSS ABWÄRTS => Zuordnungs-Spiel mit Farben, 
- *  die bleiben bis zur Korrektur
- ***********************************************************/
-
-/* 1) Wir definieren vier Farbklassen für die Paarung. */
 const pairColors = ["matching-blue", "matching-yellow", "matching-pink", "matching-green"];
-let colorIndex = 0; // globale Laufvariable pro Paar
+let colorIndex = 0; // Nur relevant, falls du pro Paar unterschiedliche Farben haben willst
+                   // Hier kannst du es aber weglassen, wenn du IMMER die gleiche Farbe
+                   // für jedes neue Paar nimmst.
 
-/* 
-   - selectedTerm / selectedMatch: aktiver Klick, 
-   - selectedPairs: Dictionary { term -> match }, 
-   - colorMap: Dictionary { "caelo": "matching-blue", "Himmel": "matching-blue", ... } 
-*/
 let selectedTerm = null;
 let selectedMatch = null;
 let selectedPairs = {};
-let colorMap = {}; // Speichert, welche Farbe gerade auf einem Term/Match liegt
+let colorMap = {};
 
 function setupMatchingGame(pairs) {
     let container = document.getElementById("answers-container");
@@ -319,7 +291,7 @@ function setupMatchingGame(pairs) {
     rightDiv.style.display = "inline-block";
     rightDiv.style.verticalAlign = "top";
 
-    // Linke Seite (Orange Buttons: term)
+    // Linke Seite (Orange)
     pairs.forEach(pair => {
         let leftBtn = document.createElement("button");
         leftBtn.textContent = pair.term;
@@ -332,7 +304,7 @@ function setupMatchingGame(pairs) {
         leftDiv.appendChild(leftBtn);
     });
 
-    // Rechte Seite (Hellblau Buttons: match)
+    // Rechte Seite (Hellblau)
     pairs.forEach(pair => {
         let rightBtn = document.createElement("button");
         rightBtn.textContent = pair.match;
@@ -348,7 +320,6 @@ function setupMatchingGame(pairs) {
     container.appendChild(leftDiv);
     container.appendChild(rightDiv);
 
-    // Überprüfen-Button
     let checkBtn = document.createElement("button");
     checkBtn.textContent = "Überprüfen";
     checkBtn.classList.add("button");
@@ -362,53 +333,40 @@ function setupMatchingGame(pairs) {
  * Klick auf Term oder Match
  */
 function selectFlussItem(value, button, type) {
-    // Falls der User zuerst auf Term klickt, dann auf Match (oder umgekehrt)
-    // 1) Wenn ein Term ausgewählt ist und wir klicken auf einen Match, bilden wir ein Paar.
-    // 2) Umgekehrt genauso.
-
     if (type === "term") {
-        // Wenn wir schon einen Term hatten, entfernen wir die Auswahl
-        if (selectedTerm) {
-            unhighlightButton(selectedTerm.button, "term");
-        }
+        if (selectedTerm) unhighlightButton(selectedTerm.button, "term");
         selectedTerm = { value, button };
         highlightButton(button);
     } else {
-        // type === "match"
-        if (selectedMatch) {
-            unhighlightButton(selectedMatch.button, "match");
-        }
+        if (selectedMatch) unhighlightButton(selectedMatch.button, "match");
         selectedMatch = { value, button };
         highlightButton(button);
     }
 
-    // Prüfen, ob wir beide Seiten haben
+    // Haben wir beides?
     if (selectedTerm && selectedMatch) {
-        // -> Neues Pair bilden
+        // Neues Paar anlegen/ändern
         addPair(selectedTerm.value, selectedMatch.value, selectedTerm.button, selectedMatch.button);
 
-        // zurücksetzen, damit der nächste Klick wieder von vorne beginnt
+        // Reset
         selectedTerm = null;
         selectedMatch = null;
     }
 }
 
 /**
- * Ein neues Paar in selectedPairs eintragen
- * und beide Buttons mit derselben Farbe belegen.
+ * Paar speichern + Farbe anwenden
  */
 function addPair(term, match, termBtn, matchBtn) {
-    // Prüfen, ob der term schon mit was anderem gematched war
+    // Falls term schon verbunden war -> entfernen
     if (selectedPairs[term]) {
-        // Dann altes Match entfernen
         let oldMatch = selectedPairs[term];
         removeColor(term, oldMatch);
         delete selectedPairs[term];
     }
 
-    // Falls umgekehrt der match schon mit einem anderen term verbunden war:
-    // => wir suchen, wo (termX -> match) == match
-    for (const t in selectedPairs) {
+    // Falls match schon verbunden war (umgekehrt)
+    for (let t in selectedPairs) {
         if (selectedPairs[t] === match) {
             removeColor(t, match);
             delete selectedPairs[t];
@@ -416,62 +374,52 @@ function addPair(term, match, termBtn, matchBtn) {
         }
     }
 
-    // Jetzt neues Paar anlegen
+    // Neues Paar
     selectedPairs[term] = match;
 
-    // Nächste Farbe aus dem Array
+    // Nimm eine Farbklasse
     let colorClass = pairColors[colorIndex];
     colorIndex = (colorIndex + 1) % pairColors.length;
 
-    // Speichere die Farbe in colorMap
+    // Speichere im colorMap
     colorMap[term]  = colorClass;
     colorMap[match] = colorClass;
 
-    // Anwenden auf Buttons
+    // Füge die Klasse hinzu
     termBtn.classList.add(colorClass);
     matchBtn.classList.add(colorClass);
 }
 
 /**
- * Entfernt die zugeordnete Farbe von term + match (sofern vorhanden).
+ * Entfernt die Farbe von term+match
  */
 function removeColor(term, match) {
     let colorClassTerm  = colorMap[term];
     let colorClassMatch = colorMap[match];
 
-    // Buttons via DOM suchen oder mit einer eigenen Buttons-Map verwalten.
-    // Hier vereinfachend: document.querySelectorAll
-    // => wir finden das jeweilige Button-Element und entfernen die Klasse
     if (colorClassTerm) {
         let btns = document.querySelectorAll("button");
-        btns.forEach(btn => {
-            if (btn.textContent === term) {
-                btn.classList.remove(colorClassTerm);
+        btns.forEach(b => {
+            if (b.textContent === term) {
+                b.classList.remove(colorClassTerm);
             }
         });
         delete colorMap[term];
     }
     if (colorClassMatch) {
         let btns = document.querySelectorAll("button");
-        btns.forEach(btn => {
-            if (btn.textContent === match) {
-                btn.classList.remove(colorClassMatch);
+        btns.forEach(b => {
+            if (b.textContent === match) {
+                b.classList.remove(colorClassMatch);
             }
         });
         delete colorMap[match];
     }
 }
 
-/**
- * Kurzes optisches Hervorheben des aktuellen Klicks
- */
 function highlightButton(btn) {
     btn.style.border = "3px solid red";
 }
-
-/**
- * Wenn man erneut klickt, entfernen wir das rote Hervorheben.
- */
 function unhighlightButton(btn, type) {
     if (btn) {
         btn.style.border = (type === "term") ? "3px solid orange" : "3px solid lightblue";
@@ -482,32 +430,62 @@ function unhighlightButton(btn, type) {
 }
 
 /**
- * finaler Check aller Paare
+ * Überprüfen
  */
 function checkFlussMatches(pairs) {
     let correct = true;
-
-    // pairs = [{term:"caelo",match:"Himmel"},...]
-    // => wir prüfen, ob selectedPairs[term] === match
     for (let p of pairs) {
         if (!selectedPairs[p.term] || selectedPairs[p.term] !== p.match) {
             correct = false;
             break;
         }
     }
-
     if (correct) {
         stars++;
         updateStars();
         alert("Richtig! ⭐ Du hast einen Stern erhalten.");
         setTimeout(backToSubregions, 1000);
     } else {
-        alert("Falsch! ❌ Bitte versuche es nochmal (du kannst beliebig umstellen).");
+        alert("Falsch! ❌ Bitte versuche es nochmal (du kannst die Zuordnungen ändern).");
     }
 }
 
 /***********************************************************
- *  Mehrfachauswahl-Handler (z.B. in 'Der Markt')
+ *  FLUSS ABWÄRTS => Mehrfachauswahl (5 richtige), farbig
+ ***********************************************************/
+function setMatchingColors(index, button) {
+    // 4 Farben: blau, gelb, rosa, grün
+    const colors = ["matching-blue", "matching-yellow", "matching-pink", "matching-green"];
+
+    // Erst alle entfernen
+    button.classList.remove(...colors);
+
+    if (selectedAnswers.includes(index)) {
+        // Abwählen
+        selectedAnswers = selectedAnswers.filter(i => i !== index);
+    } else {
+        // Neu
+        selectedAnswers.push(index);
+        let colorClass = colors[selectedAnswers.length % colors.length];
+        button.classList.add(colorClass);
+    }
+}
+
+function checkFiveAnswers(correctAnswers) {
+    selectedAnswers.sort();
+    correctAnswers.sort();
+    if (JSON.stringify(selectedAnswers) === JSON.stringify(correctAnswers)) {
+        stars++;
+        updateStars();
+        alert("Richtig! ⭐ Du hast einen Stern erhalten.");
+        setTimeout(backToSubregions, 1000);
+    } else {
+        alert("Falsch! ❌ Du musst GENAU fünf richtige Antworten auswählen.");
+    }
+}
+
+/***********************************************************
+ *  Multi-Choice Handler (z.B. in 'Der Markt')
  ***********************************************************/
 function handleMultiChoice(index, button, correctAnswers, subregion) {
     let maxLen = correctAnswers.length;
@@ -526,7 +504,7 @@ function handleMultiChoice(index, button, correctAnswers, subregion) {
         }
     }
 
-    // Wenn Anzahl gleich => auswerten
+    // Wenn Anzahl gleich => Check
     if (selectedAnswers.length === correctAnswers.length) {
         let sortedSelected = [...selectedAnswers].sort();
         let sortedCorrect = [...correctAnswers].sort();
@@ -542,7 +520,7 @@ function handleMultiChoice(index, button, correctAnswers, subregion) {
 }
 
 /***********************************************************
- *  Aufgaben-Fortschritt / Nächste Aufgabe
+ *  NÄCHSTE AUFGABE / NAVIGATION
  ***********************************************************/
 function handleNextTask(subregion) {
     if (subregion === "Die Bewohner") {
