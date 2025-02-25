@@ -6,6 +6,8 @@ body {
     background-size: cover;
     margin: 0;
     height: 100vh;
+    /* Tipp: Wenn du Scrollen erlauben möchtest, setze overflow auf auto oder entferne die Zeile:
+       overflow: hidden; */
     overflow: hidden;
     color: black;
 }
@@ -55,9 +57,11 @@ body {
     border-radius: 8px;
 }
 
-/* Region-Buttons (frei positionierbar) */
+/* Region-Buttons */
 .region-button {
-    position: absolute;
+    /* Ab jetzt NICHT mehr absolut positioniert,
+       damit sie sichtbar unten/nebeneinander erscheinen. */
+    display: inline-block;
     background-color: rgba(0, 123, 255, 0.8);
     color: white;
 }
@@ -66,14 +70,16 @@ body {
 .answer-button {
     background-color: rgba(0, 123, 255, 0.8);
     color: white;
-    margin: 5px;
+    display: block; /* Jeder Button in eigener Zeile */
+    margin: 10px auto; /* zentrieren */
+    width: 50%;
 }
 
 /* Farben für die Zuordnung in 'Fluss abwärts' */
-.matching-blue   { background-color: blue;   color: white; }
+.matching-blue { background-color: blue; color: white; }
 .matching-yellow { background-color: yellow; color: black; }
-.matching-pink   { background-color: pink;   color: black; }
-.matching-green  { background-color: green;  color: white; }
+.matching-pink { background-color: pink; color: black; }
+.matching-green { background-color: green; color: white; }
 
 /* Zurück-Buttons */
 .back-button {
@@ -84,13 +90,13 @@ body {
     border-radius: 5px;
 }
 
-/* Zusätzliche Hintergründe für Wald und Fluss */
+/* Zusätzliche Hintergrund-Klassen für Wald und Fluss */
 .wald-background {
-    background: url("wald.jpg") no-repeat center center fixed;
-    background-size: cover;
+    background: url("wald.jpg") no-repeat center center fixed !important;
+    background-size: cover !important;
 }
 
 .fluss-background {
-    background: url("fluss.jpg") no-repeat center center fixed;
-    background-size: cover;
+    background: url("fluss.jpg") no-repeat center center fixed !important;
+    background-size: cover !important;
 }
