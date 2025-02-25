@@ -2,7 +2,7 @@
  * GRUNDLAYOUT / HINTERGRUND
  *************************************************************/
 body {
-    font-family: Comic Sans MS, bold;
+    font-family: Comic Sans MS;
     text-align: center;
     background: url("background.jpg") no-repeat center center fixed;
     background-size: cover;
