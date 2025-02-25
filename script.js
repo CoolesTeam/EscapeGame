@@ -18,12 +18,12 @@ function startGame() {
 let stars = 0;
 let currentRegion = "";
 let currentSubregion = "";
-let selectedAnswers = [];       // Für Mehrfach- und 5er-Auswahl
+let selectedAnswers = [];   
 let dieBewohnerTaskIndex = 0;  
 let marketTaskIndex = 0;       
 
 /***********************************************************
- *  SUBREGIONEN
+ *  SUBREGIONEN (STRUKTUR)
  ***********************************************************/
 const subregions = {
     wald: ["Weg", "Baum"],
@@ -33,33 +33,25 @@ const subregions = {
 
 /***********************************************************
  *  FRAGEN & ANTWORTEN
- *
- *  - "Fluss aufwärts": Zuordnungs-Spiel (1 Versuch)
- *  - "Fluss abwärts": 5-fach Mehrfachauswahl (1 Versuch)
  ***********************************************************/
 const questions = {
-    // Wald
+    // WALD
     "Weg": [{
         question: "Finde das Relativpronomen und klicke es an.",
         answers: ["Sunt", "item", "quae", "appellantur"],
         correct: 2
     }],
     "Baum": [{
-        question: "Suche das Subjekt des Satzes heraus und klicke es an.",
-        sentence: "Est bos cervi figura, cuius a media fronte inter aures unum cornu exsistit excelsius...",
+        question: "Suche das Subjekt...",
         answers: ["bos", "cervi figura", "cornibus", "quae", "nota sunt"],
         correct: 0
     }],
 
-    // Dorf
+    // DORF
     "Die Bewohner": [
       {
-        question: "Übersetze den Satz: 'Dicebant servos nullis iuribus praeditos esse...'",
-        answers: [
-            "Die Sklaven haben keine Rechte und sind abhängig von ihren Herren.",
-            "Sie sagten, dass die Sklaven keinerlei Rechte hätten und vollständig von ihren Herren abhängig sind.",
-            "Die Sklaven sagen, dass sie keine Rechte haben und abhängig von ihren Herren sind."
-        ],
+        question: "Übersetze...",
+        answers: ["...", "...", "..."],
         correct: 1
       },
       {
@@ -70,23 +62,20 @@ const questions = {
     ],
     "Der Markt": [
       {
-        question: "Klicke die drei Stämme von Gallien an.",
-        sentence: "Gallia est omnis divisa in partes tres...",
+        question: "Klicke die drei Stämme...",
         answers: ["Belgae", "Gallia", "Aquitani", "Celtae", "Galli"],
         correct: [0, 2, 3]
       },
       {
         question: "Markiere die beiden Flüsse.",
-        sentence: "Eorum una pars, quam Gallos obtinere dictum est...",
         answers: ["Rhodano", "Garumna", "Belgarum", "Aquitani"],
         correct: [0, 1]
       }
     ],
 
-    // Fluss
-    /* FLUSS AUFWÄRTS => Zuordnungs-Spiel (1 Versuch) */
+    // FLUSS
     "Fluss aufwärts": [{
-        question: "Ordne die Begriffe richtig zu (Orange ↔ Hellblau).",
+        question: "Ordne die Begriffe richtig zu...",
         pairs: [
             { term: "caelo",    match: "Himmel" },
             { term: "sacris",   match: "Opfer" },
@@ -94,21 +83,62 @@ const questions = {
             { term: "imperium", match: "Macht" }
         ]
     }],
-    /* Der Hafen => Single */
     "Der Hafen": [{
         question: "Wie wird dieser Stamm beschrieben?",
-        sentence: "Haec civitas longe plurimum totius Galliae",
         answers: ["der größte Stamm", "der kleinste Stamm", "der mächtigste Stamm"],
         correct: 2
     }],
-    /* FLUSS ABWÄRTS => 5-fach Mehrfachauswahl (1 Versuch) */
     "Fluss abwärts": [{
-        question: "Markiere alle Adjektive.",
-        sentence: "Sacrificia publica ac privata procurant, religiones interpretantur...",
+        question: "Markiere alle Adjektive...",
         answers: ["publica", "controversiis", "privata", "disciplinae", "magnus", "magno", "omnibus", "interpretantur"],
         correct: [0, 2, 4, 5, 6]
     }]
 };
+
+/***********************************************************
+ *  HILFSFUNKTIONEN FÜR KLASSEN
+ ***********************************************************/
+/**
+ * Entfernt vorhandene 'region-...' Klassen vom body
+ * und fügt region-XYZ je nach Parameter hinzu
+ */
+function applyRegionClass(region) {
+    document.body.classList.remove("region-wald", "region-dorf", "region-fluss");
+    if (region === "wald")  document.body.classList.add("region-wald");
+    if (region === "dorf")  document.body.classList.add("region-dorf");
+    if (region === "fluss") document.body.classList.add("region-fluss");
+}
+
+/**
+ * Macht aus 'Weg' => 'question-weg',
+ * aus 'Die Bewohner' => 'question-die-bewohner' etc.
+ */
+function subregionToClassName(subregion) {
+    return "question-" + subregion
+        .toLowerCase()         // kleinschreiben
+        .replace(/\s+/g, "-")  // Leerzeichen durch "-"
+        .replace(/[^\w-]/g, ""); // Sonderzeichen entfernen, falls nötig
+}
+
+/**
+ * Entfernt vorhandene 'question-...' Klassen vom #task-screen
+ * und fügt die passende Subregion-Klasse hinzu
+ */
+function applySubregionClass(subregion) {
+    // Alle subregion-Klassen im CSS definieren:
+    //  .question-weg, .question-baum, .question-die-bewohner, ...
+    const taskScreen = document.getElementById("task-screen");
+
+    // Alle question-... Klassen entfernen
+    taskScreen.classList.remove(
+      "question-weg", "question-baum", "question-die-bewohner", "question-der-markt",
+      "question-fluss-aufwärts", "question-der-hafen", "question-fluss-abwärts"
+    );
+
+    // Die neue Klasse hinzufügen
+    const newClass = subregionToClassName(subregion);
+    taskScreen.classList.add(newClass);
+}
 
 /***********************************************************
  *  showSubregions(region)
@@ -116,17 +146,20 @@ const questions = {
 function showSubregions(region) {
     currentRegion = region;
 
-    // Hintergründe entfernen
-    document.body.classList.remove("wald-background", "fluss-background");
+    // REGION-KLASSE anwenden (für CSS)
+    applyRegionClass(region);
 
-    // Ggf. Wald-/Fluss-Hintergrund
+    // Alte Hintergründe entfernen
+    document.body.classList.remove("wald-background", "fluss-background");
+    // Falls du die wald.jpg/fluss.jpg Hintergründe beibehalten willst,
+    // kannst du das hier anpassen:
     if (region === "wald") {
         document.body.classList.add("wald-background");
     } else if (region === "fluss") {
         document.body.classList.add("fluss-background");
     }
 
-    // Wechsel zum Subregionen-Screen
+    // UI-Logik
     document.getElementById("game-screen").style.display = "none";
     document.getElementById("subregion-screen").style.display = "block";
 
@@ -155,16 +188,19 @@ function showSubregions(region) {
  ***********************************************************/
 function startTask(subregion) {
     currentSubregion = subregion;
+
+    // Subregion-Klasse anwenden (für CSS)
+    applySubregionClass(subregion);
+
     document.getElementById("subregion-screen").style.display = "none";
     document.getElementById("task-screen").style.display = "block";
 
     let tasks = questions[subregion];
     if (!tasks) {
-        console.error("Fehler: Keine Frage für diese Unterregion gefunden!");
+        console.error("Fehler: Keine Frage für Subregion:", subregion);
         return;
     }
 
-    // Mehrfach-Aufgaben in 'Die Bewohner' oder 'Der Markt'
     let task;
     if (subregion === "Die Bewohner") {
         task = tasks[dieBewohnerTaskIndex];
@@ -173,14 +209,16 @@ function startTask(subregion) {
             backToSubregions();
             return;
         }
-    } else if (subregion === "Der Markt") {
+    }
+    else if (subregion === "Der Markt") {
         task = tasks[marketTaskIndex];
         if (!task) {
             alert("Alle Aufgaben im Markt erledigt!");
             backToSubregions();
             return;
         }
-    } else {
+    }
+    else {
         // Standard: nur eine Aufgabe
         task = tasks[0];
     }
@@ -193,7 +231,7 @@ function startTask(subregion) {
     answerContainer.innerHTML = "";
     selectedAnswers = [];
 
-    // Satz anzeigen (falls vorhanden)
+    // Satz optional
     if (task.sentence) {
         let sentenceP = document.createElement("p");
         sentenceP.style.fontStyle = "italic";
@@ -201,19 +239,18 @@ function startTask(subregion) {
         answerContainer.appendChild(sentenceP);
     }
 
-    // Spezialfälle:
-    // 1) Fluss aufwärts => Zuordnungs-Spiel (1 Versuch)
+    // FALL 1: "Fluss aufwärts" => Zuordnungs-Spiel
     if (subregion === "Fluss aufwärts") {
         setupMatchingGame(task.pairs);
         return;
     }
 
-    // 2) Fluss abwärts => 5-fach Mehrfachauswahl (1 Versuch)
+    // FALL 2: "Fluss abwärts" => 5-fach Mehrfachauswahl
     if (subregion === "Fluss abwärts") {
         let submitBtn = document.createElement("button");
         submitBtn.textContent = "Bestätigen";
         submitBtn.classList.add("button", "submit-button");
-        submitBtn.onclick = () => checkFiveAnswers(task.correct); 
+        submitBtn.onclick = () => checkFiveAnswers(task.correct);
         answerContainer.appendChild(submitBtn);
 
         task.answers.forEach((answer, index) => {
@@ -226,14 +263,14 @@ function startTask(subregion) {
         return;
     }
 
-    // 3) Sonst Single/Mehrfach
+    // FALL 3: Standard Single/Mehrfach
     task.answers.forEach((answer, index) => {
         let btn = document.createElement("button");
         btn.textContent = answer;
         btn.classList.add("button", "answer-button");
 
-        // Single
         if (!Array.isArray(task.correct)) {
+            // Single
             btn.onclick = () => {
                 if (index === task.correct) {
                     stars++;
@@ -244,9 +281,8 @@ function startTask(subregion) {
                     alert("Falsch! ❌ Versuch es nochmal.");
                 }
             };
-        }
-        // Multi
-        else {
+        } else {
+            // Multi
             btn.onclick = () => handleMultiChoice(index, btn, task.correct, subregion);
         }
         answerContainer.appendChild(btn);
@@ -254,11 +290,10 @@ function startTask(subregion) {
 }
 
 /***********************************************************
- *  FLUSS AUFWÄRTS => Zuordnungs-Spiel (Nur 1 Versuch!)
+ *  FLUSS AUFWÄRTS => Zuordnungs-Spiel
  ***********************************************************/
 const pairColors = ["matching-blue", "matching-yellow", "matching-pink", "matching-green"];
 let colorIndex = 0;
-
 let selectedTerm = null;
 let selectedMatch = null;
 let selectedPairs = {};
@@ -268,7 +303,6 @@ function setupMatchingGame(pairs) {
     let container = document.getElementById("answers-container");
     container.innerHTML = "<p>Verbinde Orange (lateinische Wörter) mit Hellblau (deutsche Bedeutung) per Klick!</p>";
 
-    // zurücksetzen
     selectedTerm = null;
     selectedMatch = null;
     selectedPairs = {};
@@ -283,7 +317,7 @@ function setupMatchingGame(pairs) {
     rightDiv.style.display = "inline-block";
     rightDiv.style.verticalAlign = "top";
 
-    // Linke Seite (Term)
+    // Linke Seite (Orange)
     pairs.forEach(pair => {
         let leftBtn = document.createElement("button");
         leftBtn.textContent = pair.term;
@@ -296,7 +330,7 @@ function setupMatchingGame(pairs) {
         leftDiv.appendChild(leftBtn);
     });
 
-    // Rechte Seite (Match)
+    // Rechte Seite (Hellblau)
     pairs.forEach(pair => {
         let rightBtn = document.createElement("button");
         rightBtn.textContent = pair.match;
@@ -312,7 +346,6 @@ function setupMatchingGame(pairs) {
     container.appendChild(leftDiv);
     container.appendChild(rightDiv);
 
-    // Überprüfen-Button => Nur 1 Versuch!
     let checkBtn = document.createElement("button");
     checkBtn.textContent = "Überprüfen";
     checkBtn.classList.add("button");
@@ -333,26 +366,19 @@ function selectFlussItem(value, button, type) {
         highlightButton(button);
     }
 
-    // beide?
     if (selectedTerm && selectedMatch) {
         addPair(selectedTerm.value, selectedTerm.button, selectedMatch.value, selectedMatch.button);
-        // Reset
         selectedTerm = null;
         selectedMatch = null;
     }
 }
 
-/**
- * Speichert Paar + Farbe
- */
 function addPair(term, termBtn, match, matchBtn) {
-    // Falls term schon verbunden
     if (selectedPairs[term]) {
         let oldMatch = selectedPairs[term];
         removeColor(term, oldMatch);
         delete selectedPairs[term];
     }
-    // Falls match schon verbunden
     for (let t in selectedPairs) {
         if (selectedPairs[t] === match) {
             removeColor(t, match);
@@ -361,34 +387,31 @@ function addPair(term, termBtn, match, matchBtn) {
         }
     }
 
-    // Neues Paar
     selectedPairs[term] = match;
     let colorClass = pairColors[colorIndex];
     colorIndex = (colorIndex + 1) % pairColors.length;
+
     colorMap[term]  = colorClass;
     colorMap[match] = colorClass;
+
     termBtn.classList.add(colorClass);
     matchBtn.classList.add(colorClass);
 }
 
 function removeColor(term, match) {
-    let classTerm  = colorMap[term];
-    let classMatch = colorMap[match];
-    if (classTerm) {
+    let cTerm  = colorMap[term];
+    let cMatch = colorMap[match];
+    if (cTerm) {
         let btns = document.querySelectorAll("button");
         btns.forEach(b => {
-            if (b.textContent === term) {
-                b.classList.remove(classTerm);
-            }
+            if (b.textContent === term) b.classList.remove(cTerm);
         });
         delete colorMap[term];
     }
-    if (classMatch) {
+    if (cMatch) {
         let btns = document.querySelectorAll("button");
         btns.forEach(b => {
-            if (b.textContent === match) {
-                b.classList.remove(classMatch);
-            }
+            if (b.textContent === match) b.classList.remove(cMatch);
         });
         delete colorMap[match];
     }
@@ -406,9 +429,7 @@ function unhighlightButton(btn, type) {
     }
 }
 
-/**
- * Nur 1 Versuch => Wenn falsch, direkt zurück
- */
+/** Nur 1 Versuch => Zurück, egal ob richtig oder falsch */
 function checkFlussMatches(pairs) {
     let correct = true;
     for (let p of pairs) {
@@ -424,31 +445,26 @@ function checkFlussMatches(pairs) {
     } else {
         alert("Falsch! ❌ Deine Zuordnung war nicht korrekt.");
     }
-    // Danach zurück
     setTimeout(backToSubregions, 1000);
 }
 
 /***********************************************************
- *  FLUSS ABWÄRTS => 5-fach Mehrfachauswahl (1 Versuch)
+ *  FLUSS ABWÄRTS => 5-fach Mehrfachauswahl
  ***********************************************************/
 function setMatchingColors(index, button) {
     const colors = ["matching-blue", "matching-yellow", "matching-pink", "matching-green"];
     button.classList.remove(...colors);
 
     if (selectedAnswers.includes(index)) {
-        // abwählen
         selectedAnswers = selectedAnswers.filter(i => i !== index);
     } else {
-        // neu
         selectedAnswers.push(index);
         let colorClass = colors[selectedAnswers.length % colors.length];
         button.classList.add(colorClass);
     }
 }
 
-/**
- * Nur 1 Versuch => direkt zurück
- */
+/** 1 Versuch => direkt zurück, egal ob richtig/falsch */
 function checkFiveAnswers(correctAnswers) {
     selectedAnswers.sort();
     correctAnswers.sort();
@@ -457,14 +473,13 @@ function checkFiveAnswers(correctAnswers) {
         updateStars();
         alert("Richtig! ⭐ Du hast einen Stern erhalten.");
     } else {
-        alert("Falsch! ❌ Du hast nicht die richtigen 5 Antworten gewählt.");
+        alert("Falsch! ❌ Nicht die richtigen 5 Antworten.");
     }
-    // Danach sofort zurück
     setTimeout(backToSubregions, 1000);
 }
 
 /***********************************************************
- *  Multi-Choice Handler (z.B. 'Der Markt')
+ *  MULTI-CHOICE (z.B. 'Der Markt')
  ***********************************************************/
 function handleMultiChoice(index, button, correctAnswers, subregion) {
     let maxLen = correctAnswers.length;
@@ -482,7 +497,6 @@ function handleMultiChoice(index, button, correctAnswers, subregion) {
         }
     }
 
-    // Wenn Anzahl = correctAnswers.length => Check
     if (selectedAnswers.length === correctAnswers.length) {
         let sortedSelected = [...selectedAnswers].sort();
         let sortedCorrect = [...correctAnswers].sort();
@@ -511,7 +525,7 @@ function handleNextTask(subregion) {
 }
 
 /***********************************************************
- *  STERNE & NAVIGATION
+ *  STERNE / SCREEN-WECHSEL
  ***********************************************************/
 function updateStars() {
     document.getElementById("stars-count").textContent = stars;
