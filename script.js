@@ -18,7 +18,7 @@ function startGame() {
 let stars = 0;
 let currentRegion = "";
 let currentSubregion = "";
-let selectedAnswers = [];
+let selectedAnswers = [];       // Für Mehrfach- und 5er-Auswahl
 let dieBewohnerTaskIndex = 0;  
 let marketTaskIndex = 0;       
 
@@ -34,8 +34,8 @@ const subregions = {
 /***********************************************************
  *  FRAGEN & ANTWORTEN
  *
- *  - "Fluss aufwärts": Zuordnungs-Spiel
- *  - "Fluss abwärts": 5-fach Mehrfachauswahl (EIN Versuch)
+ *  - "Fluss aufwärts": Zuordnungs-Spiel (1 Versuch)
+ *  - "Fluss abwärts": 5-fach Mehrfachauswahl (1 Versuch)
  ***********************************************************/
 const questions = {
     // Wald
@@ -84,7 +84,7 @@ const questions = {
     ],
 
     // Fluss
-    // "Fluss aufwärts" => Zuordnungs-Spiel
+    /* FLUSS AUFWÄRTS => Zuordnungs-Spiel (1 Versuch) */
     "Fluss aufwärts": [{
         question: "Ordne die Begriffe richtig zu (Orange ↔ Hellblau).",
         pairs: [
@@ -94,16 +94,14 @@ const questions = {
             { term: "imperium", match: "Macht" }
         ]
     }],
-
-    // Der Hafen => Single
+    /* Der Hafen => Single */
     "Der Hafen": [{
         question: "Wie wird dieser Stamm beschrieben?",
         sentence: "Haec civitas longe plurimum totius Galliae",
         answers: ["der größte Stamm", "der kleinste Stamm", "der mächtigste Stamm"],
         correct: 2
     }],
-
-    // Fluss abwärts => 5-fach Mehrfachauswahl (NUR 1 Versuch)
+    /* FLUSS ABWÄRTS => 5-fach Mehrfachauswahl (1 Versuch) */
     "Fluss abwärts": [{
         question: "Markiere alle Adjektive.",
         sentence: "Sacrificia publica ac privata procurant, religiones interpretantur...",
@@ -121,7 +119,7 @@ function showSubregions(region) {
     // Hintergründe entfernen
     document.body.classList.remove("wald-background", "fluss-background");
 
-    // Füge ggf. Wald-/Fluss-Hintergrund hinzu
+    // Ggf. Wald-/Fluss-Hintergrund
     if (region === "wald") {
         document.body.classList.add("wald-background");
     } else if (region === "fluss") {
@@ -140,7 +138,6 @@ function showSubregions(region) {
         btn.textContent = sub;
         btn.classList.add("button", "subregion-button");
         btn.onclick = function () {
-            // Reset-Index bei Mehrfachaufgaben
             if (region === "dorf" && sub === "Die Bewohner") {
                 dieBewohnerTaskIndex = 0;
             }
@@ -167,7 +164,7 @@ function startTask(subregion) {
         return;
     }
 
-    // Mehrfach-Aufgaben "Die Bewohner" / "Der Markt"
+    // Mehrfach-Aufgaben in 'Die Bewohner' oder 'Der Markt'
     let task;
     if (subregion === "Die Bewohner") {
         task = tasks[dieBewohnerTaskIndex];
@@ -176,8 +173,7 @@ function startTask(subregion) {
             backToSubregions();
             return;
         }
-    }
-    else if (subregion === "Der Markt") {
+    } else if (subregion === "Der Markt") {
         task = tasks[marketTaskIndex];
         if (!task) {
             alert("Alle Aufgaben im Markt erledigt!");
@@ -206,22 +202,20 @@ function startTask(subregion) {
     }
 
     // Spezialfälle:
-    // 1) Fluss aufwärts => Zuordnungs-Spiel
+    // 1) Fluss aufwärts => Zuordnungs-Spiel (1 Versuch)
     if (subregion === "Fluss aufwärts") {
         setupMatchingGame(task.pairs);
         return;
     }
 
-    // 2) Fluss abwärts => 5-fach Mehrfachauswahl (NUR 1 Versuch)
+    // 2) Fluss abwärts => 5-fach Mehrfachauswahl (1 Versuch)
     if (subregion === "Fluss abwärts") {
-        // "Bestätigen"-Button
         let submitBtn = document.createElement("button");
         submitBtn.textContent = "Bestätigen";
         submitBtn.classList.add("button", "submit-button");
-        submitBtn.onclick = () => checkFiveAnswers(task.correct);
+        submitBtn.onclick = () => checkFiveAnswers(task.correct); 
         answerContainer.appendChild(submitBtn);
 
-        // Antworten (farbige Auswahl)
         task.answers.forEach((answer, index) => {
             let btn = document.createElement("button");
             btn.textContent = answer;
@@ -251,7 +245,7 @@ function startTask(subregion) {
                 }
             };
         }
-        // Mehrfach
+        // Multi
         else {
             btn.onclick = () => handleMultiChoice(index, btn, task.correct, subregion);
         }
@@ -260,10 +254,10 @@ function startTask(subregion) {
 }
 
 /***********************************************************
- *  FLUSS AUFWÄRTS => Zuordnungs-Spiel
+ *  FLUSS AUFWÄRTS => Zuordnungs-Spiel (Nur 1 Versuch!)
  ***********************************************************/
 const pairColors = ["matching-blue", "matching-yellow", "matching-pink", "matching-green"];
-let colorIndex = 0; 
+let colorIndex = 0;
 
 let selectedTerm = null;
 let selectedMatch = null;
@@ -274,7 +268,7 @@ function setupMatchingGame(pairs) {
     let container = document.getElementById("answers-container");
     container.innerHTML = "<p>Verbinde Orange (lateinische Wörter) mit Hellblau (deutsche Bedeutung) per Klick!</p>";
 
-    // Zurücksetzen
+    // zurücksetzen
     selectedTerm = null;
     selectedMatch = null;
     selectedPairs = {};
@@ -289,7 +283,7 @@ function setupMatchingGame(pairs) {
     rightDiv.style.display = "inline-block";
     rightDiv.style.verticalAlign = "top";
 
-    // Linke Seite (Orange)
+    // Linke Seite (Term)
     pairs.forEach(pair => {
         let leftBtn = document.createElement("button");
         leftBtn.textContent = pair.term;
@@ -302,7 +296,7 @@ function setupMatchingGame(pairs) {
         leftDiv.appendChild(leftBtn);
     });
 
-    // Rechte Seite (Hellblau)
+    // Rechte Seite (Match)
     pairs.forEach(pair => {
         let rightBtn = document.createElement("button");
         rightBtn.textContent = pair.match;
@@ -318,6 +312,7 @@ function setupMatchingGame(pairs) {
     container.appendChild(leftDiv);
     container.appendChild(rightDiv);
 
+    // Überprüfen-Button => Nur 1 Versuch!
     let checkBtn = document.createElement("button");
     checkBtn.textContent = "Überprüfen";
     checkBtn.classList.add("button");
@@ -338,24 +333,26 @@ function selectFlussItem(value, button, type) {
         highlightButton(button);
     }
 
-    // Beide gewählt?
+    // beide?
     if (selectedTerm && selectedMatch) {
-        addPair(selectedTerm.value, selectedMatch.value, selectedTerm.button, selectedMatch.button);
+        addPair(selectedTerm.value, selectedTerm.button, selectedMatch.value, selectedMatch.button);
         // Reset
         selectedTerm = null;
         selectedMatch = null;
     }
 }
 
-function addPair(term, match, termBtn, matchBtn) {
-    // Falls term schon verbunden war -> entfernen
+/**
+ * Speichert Paar + Farbe
+ */
+function addPair(term, termBtn, match, matchBtn) {
+    // Falls term schon verbunden
     if (selectedPairs[term]) {
         let oldMatch = selectedPairs[term];
         removeColor(term, oldMatch);
         delete selectedPairs[term];
     }
-
-    // Falls match schon verbunden war -> entfernen
+    // Falls match schon verbunden
     for (let t in selectedPairs) {
         if (selectedPairs[t] === match) {
             removeColor(t, match);
@@ -375,23 +372,22 @@ function addPair(term, match, termBtn, matchBtn) {
 }
 
 function removeColor(term, match) {
-    let colorClassTerm  = colorMap[term];
-    let colorClassMatch = colorMap[match];
-
-    if (colorClassTerm) {
+    let classTerm  = colorMap[term];
+    let classMatch = colorMap[match];
+    if (classTerm) {
         let btns = document.querySelectorAll("button");
         btns.forEach(b => {
             if (b.textContent === term) {
-                b.classList.remove(colorClassTerm);
+                b.classList.remove(classTerm);
             }
         });
         delete colorMap[term];
     }
-    if (colorClassMatch) {
+    if (classMatch) {
         let btns = document.querySelectorAll("button");
         btns.forEach(b => {
             if (b.textContent === match) {
-                b.classList.remove(colorClassMatch);
+                b.classList.remove(classMatch);
             }
         });
         delete colorMap[match];
@@ -410,6 +406,9 @@ function unhighlightButton(btn, type) {
     }
 }
 
+/**
+ * Nur 1 Versuch => Wenn falsch, direkt zurück
+ */
 function checkFlussMatches(pairs) {
     let correct = true;
     for (let p of pairs) {
@@ -422,24 +421,25 @@ function checkFlussMatches(pairs) {
         stars++;
         updateStars();
         alert("Richtig! ⭐ Du hast einen Stern erhalten.");
-        setTimeout(backToSubregions, 1000);
     } else {
-        alert("Falsch! ❌ Bitte versuche es nochmal.");
+        alert("Falsch! ❌ Deine Zuordnung war nicht korrekt.");
     }
+    // Danach zurück
+    setTimeout(backToSubregions, 1000);
 }
 
 /***********************************************************
- *  FLUSS ABWÄRTS => 5-fach Mehrfachauswahl, EIN Versuch
+ *  FLUSS ABWÄRTS => 5-fach Mehrfachauswahl (1 Versuch)
  ***********************************************************/
 function setMatchingColors(index, button) {
     const colors = ["matching-blue", "matching-yellow", "matching-pink", "matching-green"];
     button.classList.remove(...colors);
 
     if (selectedAnswers.includes(index)) {
-        // Abwählen
+        // abwählen
         selectedAnswers = selectedAnswers.filter(i => i !== index);
     } else {
-        // Neu
+        // neu
         selectedAnswers.push(index);
         let colorClass = colors[selectedAnswers.length % colors.length];
         button.classList.add(colorClass);
@@ -447,9 +447,7 @@ function setMatchingColors(index, button) {
 }
 
 /**
- * WICHTIG: Nur EIN Versuch => Nach Bestätigung ist Schluss
- * - Ist es richtig => Stern + Zurück
- * - Ist es falsch => kein Stern + Zurück
+ * Nur 1 Versuch => direkt zurück
  */
 function checkFiveAnswers(correctAnswers) {
     selectedAnswers.sort();
@@ -459,14 +457,14 @@ function checkFiveAnswers(correctAnswers) {
         updateStars();
         alert("Richtig! ⭐ Du hast einen Stern erhalten.");
     } else {
-        alert("Falsch! ❌ Du hast leider die falschen 5 Antworten markiert.");
+        alert("Falsch! ❌ Du hast nicht die richtigen 5 Antworten gewählt.");
     }
-    // Egal ob richtig oder falsch, es geht zurück - kein 2. Versuch
+    // Danach sofort zurück
     setTimeout(backToSubregions, 1000);
 }
 
 /***********************************************************
- *  Multi-Choice Handler (z.B. in 'Der Markt')
+ *  Multi-Choice Handler (z.B. 'Der Markt')
  ***********************************************************/
 function handleMultiChoice(index, button, correctAnswers, subregion) {
     let maxLen = correctAnswers.length;
@@ -484,7 +482,7 @@ function handleMultiChoice(index, button, correctAnswers, subregion) {
         }
     }
 
-    // Wenn Anzahl gleich => Check
+    // Wenn Anzahl = correctAnswers.length => Check
     if (selectedAnswers.length === correctAnswers.length) {
         let sortedSelected = [...selectedAnswers].sort();
         let sortedCorrect = [...correctAnswers].sort();
