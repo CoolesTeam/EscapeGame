@@ -63,18 +63,20 @@ body {
     color: white;
 }
 
-/* Antwort-Buttons */
+/* Antwort-Buttons -> neutraler Hintergrund */
 .answer-button {
-    background-color: rgba(0, 123, 255, 0.8);
-    color: white;
-    display: block; /* Jeder Button in eigener Zeile */
-    margin: 10px auto; /* zentrieren */
+    background-color: #f0f0f0;
+    color: black;
+    display: block; 
+    margin: 10px auto; 
     width: 50%;
     padding: 10px 0;
     font-size: 16px;
+    border: 2px solid rgba(0, 123, 255, 0.8);
+    border-radius: 8px;
 }
 
-/* Farben für die Zuordnung bei der Mehrfachauswahl (Fluss aufwärts jetzt!) */
+/* Vier Farbklassen (Blau, Gelb, Rosa, Grün) */
 .matching-blue {
     background-color: blue !important;
     color: white !important;
