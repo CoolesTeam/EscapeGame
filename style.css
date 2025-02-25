@@ -22,7 +22,7 @@ body {
     align-items: center;
 }
 
-/* Erklärungsbildschirm */
+/* Einführungsbildschirm */
 #intro-screen {
     position: absolute;
     width: 100%;
@@ -55,12 +55,24 @@ body {
     border-radius: 8px;
 }
 
-/* Frei positionierbare Buttons */
+/* Regionen-Buttons */
 .region-button {
     position: absolute;
     background-color: rgba(0, 123, 255, 0.8);
     color: white;
 }
+
+/* Antwort-Buttons */
+.answer-button {
+    background-color: rgba(0, 123, 255, 0.8);
+    color: white;
+}
+
+/* Farbzuordnung für "Fluss abwärts" */
+.matching-blue { background-color: blue; color: white; }
+.matching-yellow { background-color: yellow; color: black; }
+.matching-pink { background-color: pink; color: black; }
+.matching-green { background-color: green; color: white; }
 
 /* Hintergrundbilder für Regionen */
 .wald-background {
@@ -72,18 +84,6 @@ body {
     background: url("Fluss.jpg") no-repeat center center fixed;
     background-size: cover;
 }
-
-/* Antwort-Buttons */
-.answer-button {
-    background-color: rgba(0, 123, 255, 0.8);
-    color: white;
-}
-
-/* Farben für die Zuordnung in "Fluss abwärts" */
-.matching-blue { background-color: blue; color: white; }
-.matching-yellow { background-color: yellow; color: black; }
-.matching-pink { background-color: pink; color: black; }
-.matching-green { background-color: green; color: white; }
 
 /* Zurück-Buttons */
 .back-button {
