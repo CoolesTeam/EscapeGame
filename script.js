@@ -19,8 +19,8 @@ let stars = 0;
 let currentRegion = "";
 let currentSubregion = "";
 let selectedAnswers = [];
-let dieBewohnerTaskIndex = 0;
-let marketTaskIndex = 0;
+let dieBewohnerTaskIndex = 0;  // Beispiel für Mehrfachaufgaben
+let marketTaskIndex = 0;       // Beispiel für Mehrfachaufgaben
 
 /***********************************************************
  *  SUBREGIONEN
@@ -75,7 +75,7 @@ const questions = {
       },
       {
         question: "Markiere die beiden Flüsse.",
-        sentence: "Eorum una pars, quam Gallos obtinere dictum est, initium capit a flumine Rhodano...",
+        sentence: "Eorum una pars, quam Gallos obtinere dictum ist, initium capit a flumine Rhodano...",
         answers: ["Rhodano", "Garumna", "Belgarum", "Aquitani"],
         correct: [0, 1]
       }
@@ -116,7 +116,7 @@ const questions = {
 function showSubregions(region) {
     currentRegion = region;
 
-    // Entferne Wald/Fluss-Hintergrund
+    // Entferne alte Hintergründe (falls gesetzt)
     document.body.classList.remove("wald-background", "fluss-background");
 
     // Füge ggf. Wald-/Fluss-Hintergrund hinzu
@@ -126,6 +126,7 @@ function showSubregions(region) {
         document.body.classList.add("fluss-background");
     }
 
+    // Zeige Subregionen
     document.getElementById("game-screen").style.display = "none";
     document.getElementById("subregion-screen").style.display = "block";
 
@@ -137,7 +138,10 @@ function showSubregions(region) {
         btn.textContent = sub;
         btn.classList.add("button", "subregion-button");
         btn.onclick = function () {
-            // Resette Index falls "Der Markt" -> 2 Aufgaben
+            // Resette ggf. den Index für Mehrfach-Aufgaben
+            if (region === "dorf" && sub === "Die Bewohner") {
+                dieBewohnerTaskIndex = 0;
+            }
             if (region === "dorf" && sub === "Der Markt") {
                 marketTaskIndex = 0;
             }
@@ -180,11 +184,33 @@ function startTask(subregion) {
         return;
     }
 
+    // Prüfe, ob es in dieser Subregion mehrere Aufgaben (Index) gibt
     let task;
-    // -> "Die Bewohner" => 2 Aufgaben => Index
-    // -> "Der Markt" => 2 Aufgaben => Index
-    // Falls du später mehr Index-Logik brauchst, hier ergänzen...
-    task = tasks[0];
+    
+    // Beispiel-Logik: "Die Bewohner"
+    if (subregion === "Die Bewohner") {
+        task = tasks[dieBewohnerTaskIndex];
+        if (!task) {
+            // Keine weitere Aufgabe -> zurück
+            alert("Du hast alle Aufgaben hier erledigt!");
+            backToSubregions();
+            return;
+        }
+    }
+    // Beispiel-Logik: "Der Markt"
+    else if (subregion === "Der Markt") {
+        task = tasks[marketTaskIndex];
+        if (!task) {
+            // Keine weitere Aufgabe -> zurück
+            alert("Du hast alle Aufgaben hier erledigt!");
+            backToSubregions();
+            return;
+        }
+    }
+    // Standard: Nur eine Aufgabe
+    else {
+        task = tasks[0];
+    }
 
     document.getElementById("task-title").textContent = `Aufgabe in ${subregion}`;
     document.getElementById("question-text").textContent = task.question;
@@ -192,6 +218,14 @@ function startTask(subregion) {
     let answerContainer = document.getElementById("answers-container");
     answerContainer.innerHTML = "";
     selectedAnswers = [];
+
+    // Satz optional anzeigen (falls vorhanden)
+    if (task.sentence) {
+        let sentenceP = document.createElement("p");
+        sentenceP.style.fontStyle = "italic";
+        sentenceP.textContent = task.sentence;
+        answerContainer.appendChild(sentenceP);
+    }
 
     // Falls "Fluss aufwärts" => Zuordnungs-Spiel
     if (subregion === "Fluss aufwärts") {
@@ -217,50 +251,72 @@ function startTask(subregion) {
         return;
     }
 
-    // Standard: Buttons generieren
+    // Standard: Buttons generieren (Single oder Mehrfach)
     task.answers.forEach((answer, index) => {
         let btn = document.createElement("button");
         btn.textContent = answer;
         btn.classList.add("button", "answer-button");
-        // Single/Mehrfach?
-        btn.onclick = () => handleSelectAnswers(index, btn, task.correct);
+
+        // Single Choice?
+        if (!Array.isArray(task.correct)) {
+            btn.onclick = () => {
+                if (index === task.correct) {
+                    // Richtig
+                    stars++;
+                    updateStars();
+                    alert("Richtig! ⭐ Du hast einen Stern erhalten.");
+                    handleNextTask(subregion);
+                } else {
+                    alert("Falsch! ❌ Versuch es nochmal.");
+                }
+            };
+        }
+        // Multi Choice
+        else {
+            btn.onclick = () => handleMultiChoice(index, btn, task.correct, subregion);
+        }
+
         answerContainer.appendChild(btn);
     });
 }
 
 /***********************************************************
- *  Single vs. Multi Choice => handleSelectAnswers
+ *  Multi Choice Handler
  ***********************************************************/
-function handleSelectAnswers(index, button, correctAnswers) {
-    if (Array.isArray(correctAnswers)) {
-        // Multi
-        let maxLen = correctAnswers.length;
-        if (selectedAnswers.includes(index)) {
-            selectedAnswers = selectedAnswers.filter(i => i !== index);
-            button.style.backgroundColor = "";
-        } else {
-            if (selectedAnswers.length < maxLen) {
-                selectedAnswers.push(index);
-                button.style.backgroundColor = "orange";
-            } else {
-                alert(`Du kannst nur ${maxLen} Antworten auswählen!`);
-            }
-        }
+function handleMultiChoice(index, button, correctAnswers, subregion) {
+    let maxLen = correctAnswers.length;
+    if (selectedAnswers.includes(index)) {
+        // Abwählen
+        selectedAnswers = selectedAnswers.filter(i => i !== index);
+        button.style.backgroundColor = "";
     } else {
-        // Single => direkt werten
-        if (index === correctAnswers) {
+        if (selectedAnswers.length < maxLen) {
+            selectedAnswers.push(index);
+            button.style.backgroundColor = "orange";
+        } else {
+            alert(`Du kannst nur ${maxLen} Antworten auswählen!`);
+        }
+    }
+
+    // Wenn Anzahl der ausgewählten = Anzahl der korrekten
+    if (selectedAnswers.length === correctAnswers.length) {
+        // Vergleich
+        let sortedSelected = [...selectedAnswers].sort();
+        let sortedCorrect = [...correctAnswers].sort();
+        if (JSON.stringify(sortedSelected) === JSON.stringify(sortedCorrect)) {
+            // Richtig
             stars++;
             updateStars();
             alert("Richtig! ⭐ Du hast einen Stern erhalten.");
+            handleNextTask(subregion);
         } else {
-            alert("Falsch! ❌ Versuch es nochmal.");
+            alert("Falsch! ❌ Bitte versuche es nochmal.");
         }
-        setTimeout(backToSubregions, 1000);
     }
 }
 
 /***********************************************************
- *  "Fluss abwärts" => 5 korrekte
+ *  "Fluss abwärts" => 5 korrekte => Button-Klick
  ***********************************************************/
 function checkFiveAnswers(correctAnswers) {
     selectedAnswers.sort();
@@ -284,7 +340,7 @@ let selectedPairs = {};
 
 function setupMatchingGame(pairs) {
     let container = document.getElementById("answers-container");
-    container.innerHTML = "<p>Verbinde Orange (Fragen) mit Hellblau (Antworten) per Klick!</p>";
+    container.innerHTML = "<p>Verbinde Orange (lateinische Wörter) mit Hellblau (deutsche Bedeutung) per Klick!</p>";
 
     selectedPairs = {};
 
@@ -369,10 +425,26 @@ function checkFlussMatches(pairs) {
         stars++;
         updateStars();
         alert("Richtig! ⭐ Du hast einen Stern erhalten.");
+        setTimeout(backToSubregions, 1000);
     } else {
         alert("Falsch! ❌ Bitte versuche es nochmal.");
         selectedPairs = {};
     }
+}
+
+/***********************************************************
+ *  Aufgaben-Fortschritt / Nächste Aufgabe
+ ***********************************************************/
+function handleNextTask(subregion) {
+    // Wenn wir in 'Die Bewohner' oder 'Der Markt' sind, zum nächsten Index
+    if (subregion === "Die Bewohner") {
+        dieBewohnerTaskIndex++;
+    }
+    if (subregion === "Der Markt") {
+        marketTaskIndex++;
+    }
+    // Zurück zum Subregions-Menü oder gleich nächste Aufgabe starten
+    // Hier einfach: Aufgabe beendet -> zurück
     setTimeout(backToSubregions, 1000);
 }
 
