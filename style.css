@@ -6,8 +6,7 @@ body {
     background-size: cover;
     margin: 0;
     height: 100vh;
-    /* Tipp: Wenn du Scrollen erlauben möchtest, setze overflow auf auto oder entferne die Zeile:
-       overflow: hidden; */
+    /* Falls du Scrollen erlauben möchtest, entferne diese Zeile oder setze 'auto': */
     overflow: hidden;
     color: black;
 }
@@ -59,8 +58,7 @@ body {
 
 /* Region-Buttons */
 .region-button {
-    /* Ab jetzt NICHT mehr absolut positioniert,
-       damit sie sichtbar unten/nebeneinander erscheinen. */
+    /* Display als Block, damit sie sauber untereinander oder nebeneinander erscheinen */
     display: inline-block;
     background-color: rgba(0, 123, 255, 0.8);
     color: white;
@@ -71,15 +69,29 @@ body {
     background-color: rgba(0, 123, 255, 0.8);
     color: white;
     display: block; /* Jeder Button in eigener Zeile */
-    margin: 10px auto; /* zentrieren */
+    margin: 10px auto; /* zentriert */
     width: 50%;
+    padding: 10px 0;
+    font-size: 16px;
 }
 
-/* Farben für die Zuordnung in 'Fluss abwärts' */
-.matching-blue { background-color: blue; color: white; }
-.matching-yellow { background-color: yellow; color: black; }
-.matching-pink { background-color: pink; color: black; }
-.matching-green { background-color: green; color: white; }
+/* Farben für die Zuordnung (Fluss abwärts) */
+.matching-blue {
+    background-color: blue !important;
+    color: white !important;
+}
+.matching-yellow {
+    background-color: yellow !important;
+    color: black !important;
+}
+.matching-pink {
+    background-color: pink !important;
+    color: black !important;
+}
+.matching-green {
+    background-color: green !important;
+    color: white !important;
+}
 
 /* Zurück-Buttons */
 .back-button {
