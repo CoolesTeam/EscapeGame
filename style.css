@@ -19,11 +19,11 @@ body {
 .title-text {
     font-size: 2em;
     font-weight: bold;
-    margin: 10px 0;
+    margin: 30px 0;
 }
 
 .normal-text {
-    margin: 10px 0;
+    margin: 20px 0;
     line-height: 1.4;
 }
 
