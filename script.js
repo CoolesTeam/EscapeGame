@@ -133,7 +133,7 @@ function applySubregionClass(subregion) {
 function showSubregions(region) {
     currentRegion = region;
 
-    // Klasse für Region (CSS)
+    // Region-Klasse anwenden
     applyRegionClass(region);
 
     // Hintergrund anpassen
@@ -213,6 +213,7 @@ function startTask(subregion) {
     answerContainer.innerHTML = "";
     selectedAnswers = [];
 
+    // Satz optional
     if (task.sentence) {
         let sentenceP = document.createElement("p");
         sentenceP.style.fontStyle = "italic";
@@ -509,14 +510,13 @@ function handleNextTask(subregion) {
  *  STERNE & NAVIGATION
  ***********************************************************/
 function updateStars() {
+    // Wir aktualisieren hier nur das Text-Feld, 
+    // das sich oben rechts in .stars-info befindet
     document.getElementById("stars-count").textContent = stars;
 }
 
-/** 
- * Wenn wir von Subregionen zurück zur Start-Region wollen,
- * entfernen wir wald-/fluss-background 
- */
 function backToRegions() {
+    // Hintergrund entfernen => Standard
     document.body.classList.remove("wald-background", "fluss-background");
 
     document.getElementById("subregion-screen").style.display = "none";
