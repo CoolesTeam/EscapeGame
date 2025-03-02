@@ -2,7 +2,7 @@
  * GRUNDLAYOUT / HINTERGRUND
  *************************************************************/
 body {
-    font-family: Comic Sans MS;
+    font-family: Arial, sans-serif;
     text-align: center;
     background: url("background.jpg") no-repeat center center fixed;
     background-size: cover;
@@ -113,8 +113,7 @@ body {
  * BUTTON-KLASSEN
  *************************************************************/
 .button {
-    /* Schriftart Comic Sans MS bei Buttons */
-    font-family: "Comic Sans MS", cursive, sans-serif;
+    font-family: "Comic Sans MS", cursive, sans-serif; /* Anpassbar */
     padding: 15px 30px;
     font-size: 18px;
     border: none;
@@ -188,19 +187,14 @@ body {
  * AB HIER: PLATZHALTER-KLASSEN FÜR REGIONEN & FRAGEN
  * (Individuelle Anpassungen möglich)
  *************************************************************/
-.region-wald  { /* z.B. .region-wald .title-text { color: green; } */ }
-.region-dorf  { /* z.B. .region-dorf .title-text { color: brown; } */ }
-.region-fluss { /* z.B. .region-fluss .title-text { color: blue; } */ }
+.region-wald  {}
+.region-dorf  {}
+.region-fluss {}
 
-/* Wald-Subregionen */
-.question-weg  { /* z.B. .question-weg .answers-container { background: ... } */ }
-.question-baum { /* ... */ }
-
-/* Dorf-Subregionen */
-.question-die-bewohner { /* ... */ }
-.question-der-markt     { /* ... */ }
-
-/* Fluss-Subregionen */
-.question-fluss-aufwärts { /* ... */ }
-.question-der-hafen       { /* ... */ }
-.question-fluss-abwärts   { /* ... */ }
+.question-weg  {}
+.question-baum {}
+.question-die-bewohner {}
+.question-der-markt     {}
+.question-fluss-aufwärts {}
+.question-der-hafen      {}
+.question-fluss-abwärts  {}
