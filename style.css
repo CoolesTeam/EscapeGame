@@ -2,7 +2,7 @@
  * GRUNDLAYOUT / HINTERGRUND
  *************************************************************/
 body {
-    font-family: Comic Sans MS;
+    font-family: Arial, sans-serif;
     text-align: center;
     background: url("background.jpg") no-repeat center center fixed;
     background-size: cover;
@@ -19,11 +19,11 @@ body {
 .title-text {
     font-size: 2em;
     font-weight: bold;
-    margin: 30px 0;
+    margin: 10px 0;
 }
 
 .normal-text {
-    margin: 20px 0;
+    margin: 10px 0;
     line-height: 1.4;
 }
 
@@ -66,13 +66,11 @@ body {
 
 /* Hauptbildschirm (Regionen) */
 .game-screen {
-    /* Beispiel-Padding */
     padding: 20px;
 }
 
 /* Subregionen-Bildschirm */
 .subregion-screen {
-    /* Beispiel-Padding */
     padding: 20px;
 }
 
@@ -85,12 +83,10 @@ body {
  * CONTAINER
  *************************************************************/
 .subregion-container {
-    /* optional styles */
     margin: 10px 0;
 }
 
 .answers-container {
-    /* optional styles */
     margin: 10px 0;
 }
 
@@ -98,8 +94,11 @@ body {
  * BUTTON-KLASSEN
  *************************************************************/
 .button {
+    /* HIER die Schriftart Comic Sans MS: */
+    font-family: "Comic Sans MS", cursive, sans-serif;
+
     padding: 15px 30px;
-    font-size: 20px;
+    font-size: 18px;
     border: none;
     cursor: pointer;
     transition: 0.3s;
@@ -122,7 +121,7 @@ body {
     margin: 10px auto; 
     width: 50%;
     padding: 10px 0;
-    font-size: 20px;
+    font-size: 16px;
     border: 2px solid rgba(0, 123, 255, 0.8);
     border-radius: 8px;
 }
@@ -169,14 +168,11 @@ body {
 
 /*************************************************************
  * AB HIER: PLATZHALTER-KLASSEN FÜR REGIONEN & FRAGEN
- * Damit jede Region & Subregion einzeln anpassbar ist.
+ * (Individuelle Anpassungen möglich)
  *************************************************************/
-/* REGION-KLASSEN am <body> (dynamisch zugewiesen) */
 .region-wald  { /* z.B. .region-wald .title-text { color: green; } */ }
 .region-dorf  { /* z.B. .region-dorf .title-text { color: brown; } */ }
 .region-fluss { /* z.B. .region-fluss .title-text { color: blue; } */ }
-
-/* FRAGEN-KLASSEN am #task-screen (dynamisch zugewiesen) */
 
 /* Wald-Subregionen */
 .question-weg  { /* z.B. .question-weg .answers-container { background: ... } */ }
