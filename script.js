@@ -16,14 +16,45 @@ function startGame() {
  *  GLOBALE VARIABLEN
  ***********************************************************/
 let stars = 0;
+
+/**
+ * Wir speichern den Status jeder Frage in einer Struktur:
+ * answeredStatus[subregion] = 
+ *   - null, falls kein Mehrfach => single Task
+ *   - oder ein Array, falls es mehrere Tasks gibt.
+ * 
+ * Mögliche Werte:
+ * - "unanswered": (Standard) => noch nicht beantwortet
+ * - "correct" => einmal richtig gelöst
+ * - "wrong"   => einmal falsch gelöst
+ * 
+ * Für Subregionen mit mehreren Aufgaben (z. B. "Die Bewohner" mit 2):
+ *   answeredStatus["Die Bewohner"] = ["unanswered"/"correct"/"wrong", ...]
+ */
+let answeredStatus = {
+    "Weg": "unanswered",
+    "Baum": "unanswered",
+
+    "Die Bewohner": ["unanswered", "unanswered"],
+    "Der Markt":    ["unanswered", "unanswered"],
+
+    "Fluss aufwärts": "unanswered",
+    "Der Hafen":       "unanswered",
+    "Fluss abwärts":   "unanswered"
+};
+
+let dieBewohnerTaskIndex = 0;  
+let marketTaskIndex = 0;  
+
+// Für Mehrfach-/5er-Auswahl
+let selectedAnswers = [];
+
+// Aktuelle Region/Subregion
 let currentRegion = "";
 let currentSubregion = "";
-let selectedAnswers = [];
-let dieBewohnerTaskIndex = 0;  
-let marketTaskIndex = 0;       
 
 /***********************************************************
- *  SUBREGIONEN
+ *  SUBREGIONEN-LISTE
  ***********************************************************/
 const subregions = {
     wald: ["Weg", "Baum"],
@@ -35,7 +66,6 @@ const subregions = {
  *  FRAGEN & ANTWORTEN
  ***********************************************************/
 const questions = {
-    // WALD
     "Weg": [{
         question: "Finde das Relativpronomen und klicke es an.",
         answers: ["Sunt", "item", "quae", "appellantur"],
@@ -47,7 +77,7 @@ const questions = {
         correct: 0
     }],
 
-    // DORF
+    // "Die Bewohner" => 2 Aufgaben
     "Die Bewohner": [
       {
         question: "Übersetze...",
@@ -59,11 +89,13 @@ const questions = {
         correct: 1
       },
       {
-        question: "Gib den AcI Auslöser an.",
+        question: "Gib den AcI-Auslöser an.",
         answers: ["dicebant", "iuribus", "praeditos"],
         correct: 0
       }
     ],
+
+    // "Der Markt" => 2 Aufgaben
     "Der Markt": [
       {
         question: "Klicke die drei Stämme...",
@@ -77,7 +109,7 @@ const questions = {
       }
     ],
 
-    // FLUSS
+    // Fluss
     "Fluss aufwärts": [{
         question: "Ordne die Begriffe richtig zu...",
         pairs: [
@@ -100,49 +132,15 @@ const questions = {
 };
 
 /***********************************************************
- *  Hilfsfunktionen für Region- & Subregion-Klassen
- ***********************************************************/
-function applyRegionClass(region) {
-    document.body.classList.remove("region-wald", "region-dorf", "region-fluss");
-    if (region === "wald")  document.body.classList.add("region-wald");
-    if (region === "dorf")  document.body.classList.add("region-dorf");
-    if (region === "fluss") document.body.classList.add("region-fluss");
-}
-
-function subregionToClassName(subregion) {
-    return "question-" + subregion
-        .toLowerCase()
-        .replace(/\s+/g, "-")
-        .replace(/[^\w-]/g, "");
-}
-
-function applySubregionClass(subregion) {
-    const taskScreen = document.getElementById("task-screen");
-    taskScreen.classList.remove(
-      "question-weg", "question-baum",
-      "question-die-bewohner", "question-der-markt",
-      "question-fluss-aufwärts", "question-der-hafen", "question-fluss-abwärts"
-    );
-    const newClass = subregionToClassName(subregion);
-    taskScreen.classList.add(newClass);
-}
-
-/***********************************************************
  *  showSubregions(region)
  ***********************************************************/
 function showSubregions(region) {
     currentRegion = region;
 
-    // Region-Klasse anwenden
-    applyRegionClass(region);
-
-    // Hintergrund anpassen
+    // Hintergründe
     document.body.classList.remove("wald-background", "fluss-background");
-    if (region === "wald") {
-        document.body.classList.add("wald-background");
-    } else if (region === "fluss") {
-        document.body.classList.add("fluss-background");
-    }
+    if (region === "wald")  document.body.classList.add("wald-background");
+    if (region === "fluss") document.body.classList.add("fluss-background");
 
     document.getElementById("game-screen").style.display = "none";
     document.getElementById("subregion-screen").style.display = "block";
@@ -155,7 +153,9 @@ function showSubregions(region) {
         btn.textContent = sub;
         btn.classList.add("button", "subregion-button");
         btn.onclick = function () {
+            // Reset Indizes bei Mehrfachaufgaben
             if (region === "dorf" && sub === "Die Bewohner") {
+                // Wenn wir 2 Tasks haben => answeredStatus["Die Bewohner"] = [...]
                 dieBewohnerTaskIndex = 0;
             }
             if (region === "dorf" && sub === "Der Markt") {
@@ -169,43 +169,50 @@ function showSubregions(region) {
 
 /***********************************************************
  *  startTask(subregion)
+ *  => Prüft, ob bereits "wrong" oder "correct"
  ***********************************************************/
 function startTask(subregion) {
     currentSubregion = subregion;
-    applySubregionClass(subregion);
-
     document.getElementById("subregion-screen").style.display = "none";
     document.getElementById("task-screen").style.display = "block";
 
     let tasks = questions[subregion];
     if (!tasks) {
-        console.error("Fehler: Keine Frage für Subregion:", subregion);
+        console.error("Keine Fragen zu dieser Subregion:", subregion);
         return;
     }
 
+    // MULTI-Aufgaben: "Die Bewohner" / "Der Markt"
     let task;
-    if (subregion === "Die Bewohner") {
-        task = tasks[dieBewohnerTaskIndex];
-        if (!task) {
-            alert("Alle Aufgaben in 'Die Bewohner' erledigt!");
+    let statusForSubregion = answeredStatus[subregion];
+
+    if (Array.isArray(tasks) && tasks.length > 1) {
+        // subregion hat mehrere Aufgaben
+        let index = 0;
+        if (subregion === "Die Bewohner") index = dieBewohnerTaskIndex;
+        else if (subregion === "Der Markt") index = marketTaskIndex;
+        
+        // Prüfe, ob array => answeredStatus[subregion][index]
+        if (statusForSubregion[index] !== "unanswered") {
+            // Falls "wrong" oder "correct" => kein 2. Versuch
+            alert("Diese Aufgabe wurde bereits beantwortet. Keine Wiederholung möglich!");
             backToSubregions();
             return;
         }
-    }
-    else if (subregion === "Der Markt") {
-        task = tasks[marketTaskIndex];
-        if (!task) {
-            alert("Alle Aufgaben im Markt erledigt!");
+
+        task = tasks[index];
+
+    } else {
+        // Single-Aufgabe
+        if (statusForSubregion !== "unanswered") {
+            alert("Diese Aufgabe wurde bereits beantwortet. Keine Wiederholung möglich!");
             backToSubregions();
             return;
         }
-    }
-    else {
-        // Standard: nur eine Aufgabe
         task = tasks[0];
     }
 
-    // Titel & Frage
+    // Normaler Ablauf: UI vorbereiten
     document.getElementById("task-title").textContent = `Aufgabe in ${subregion}`;
     document.getElementById("question-text").textContent = task.question;
 
@@ -215,19 +222,19 @@ function startTask(subregion) {
 
     // Satz optional
     if (task.sentence) {
-        let sentenceP = document.createElement("p");
-        sentenceP.style.fontStyle = "italic";
-        sentenceP.textContent = task.sentence;
-        answerContainer.appendChild(sentenceP);
+        let p = document.createElement("p");
+        p.style.fontStyle = "italic";
+        p.textContent = task.sentence;
+        answerContainer.appendChild(p);
     }
 
-    // Fluss aufwärts => Zuordnungs-Spiel
+    // FLUSS AUFWÄRTS => Zuordnungs-Spiel
     if (subregion === "Fluss aufwärts") {
         setupMatchingGame(task.pairs);
         return;
     }
 
-    // Fluss abwärts => 5-fach Mehrfachauswahl
+    // FLUSS ABWÄRTS => 5-fach Mehrfachauswahl
     if (subregion === "Fluss abwärts") {
         let submitBtn = document.createElement("button");
         submitBtn.textContent = "Bestätigen";
@@ -245,7 +252,7 @@ function startTask(subregion) {
         return;
     }
 
-    // Standard: Single/Mehrfach
+    // Standard (Single / MultiChoice)
     task.answers.forEach((answer, index) => {
         let btn = document.createElement("button");
         btn.textContent = answer;
@@ -255,16 +262,21 @@ function startTask(subregion) {
             // Single
             btn.onclick = () => {
                 if (index === task.correct) {
+                    // Richtig => Stern + set "correct"
+                    setAnswerStatus(subregion, "correct");
                     stars++;
                     updateStars();
                     alert("Richtig! ⭐ Du hast einen Stern erhalten.");
                     handleNextTask(subregion);
                 } else {
-                    alert("Falsch! ❌ Versuch es nochmal.");
+                    // Falsch => set "wrong"
+                    setAnswerStatus(subregion, "wrong");
+                    alert("Falsch! ❌ Keine Wiederholung möglich.");
+                    handleNextTask(subregion);
                 }
             };
         } else {
-            // Mehrfach
+            // Multi
             btn.onclick = () => handleMultiChoice(index, btn, task.correct, subregion);
         }
         answerContainer.appendChild(btn);
@@ -272,7 +284,117 @@ function startTask(subregion) {
 }
 
 /***********************************************************
- *  FLUSS AUFWÄRTS => Zuordnungs-Spiel
+ *  Hilfsfunktion setAnswerStatus(subregion, status)
+ *  -> Für Single / für Multi mit Index
+ ***********************************************************/
+function setAnswerStatus(subregion, result) {
+    let tasks = questions[subregion];
+
+    // Mehrfach-Aufgaben?
+    if (Array.isArray(tasks) && tasks.length > 1) {
+        if (subregion === "Die Bewohner") {
+            answeredStatus[subregion][dieBewohnerTaskIndex] = result;
+        } else if (subregion === "Der Markt") {
+            answeredStatus[subregion][marketTaskIndex] = result;
+        }
+    } else {
+        // Single
+        answeredStatus[subregion] = result;
+    }
+}
+
+/***********************************************************
+ *  handleNextTask(subregion)
+ *  -> Falls subregion mehrere Aufgaben hat, zum nächsten Index
+ *     Sonst => zurück
+ ***********************************************************/
+function handleNextTask(subregion) {
+    let tasks = questions[subregion];
+    if (Array.isArray(tasks) && tasks.length > 1) {
+        // Mehrere
+        if (subregion === "Die Bewohner") dieBewohnerTaskIndex++;
+        if (subregion === "Der Markt")    marketTaskIndex++;
+    }
+    setTimeout(backToSubregions, 1000);
+}
+
+/***********************************************************
+ *  MULTI CHOICE: handleMultiChoice
+ *  -> Single Attempt => Bei erstem Fehler => "wrong"
+ *     Bei richtig => "correct"
+ ***********************************************************/
+function handleMultiChoice(index, button, correctAnswers, subregion) {
+    let maxLen = correctAnswers.length;
+    if (selectedAnswers.includes(index)) {
+        selectedAnswers = selectedAnswers.filter(i => i !== index);
+        button.style.backgroundColor = "#f0f0f0";
+        button.style.color = "black";
+    } else {
+        if (selectedAnswers.length < maxLen) {
+            selectedAnswers.push(index);
+            button.style.backgroundColor = "orange";
+            button.style.color = "white";
+        } else {
+            alert(`Du kannst nur ${maxLen} Antworten auswählen!`);
+        }
+    }
+
+    // Wenn Anzahl = correctAnswers.length => auswerten
+    if (selectedAnswers.length === correctAnswers.length) {
+        let sortedSel = [...selectedAnswers].sort();
+        let sortedCor = [...correctAnswers].sort();
+        if (JSON.stringify(sortedSel) === JSON.stringify(sortedCor)) {
+            // correct
+            setAnswerStatus(subregion, "correct");
+            stars++;
+            updateStars();
+            alert("Richtig! ⭐ Du hast einen Stern erhalten.");
+            handleNextTask(subregion);
+        } else {
+            // wrong
+            setAnswerStatus(subregion, "wrong");
+            alert("Falsch! ❌ Keine Wiederholung möglich.");
+            handleNextTask(subregion);
+        }
+    }
+}
+
+/***********************************************************
+ *  FLUSS ABWÄRTS => 5-fach Mehrfachauswahl
+ *  -> Einmaliger Versuch
+ ***********************************************************/
+function setMatchingColors(index, button) {
+    const colors = ["matching-blue", "matching-yellow", "matching-pink", "matching-green"];
+    button.classList.remove(...colors);
+
+    if (selectedAnswers.includes(index)) {
+        selectedAnswers = selectedAnswers.filter(i => i !== index);
+    } else {
+        selectedAnswers.push(index);
+        let colorClass = colors[selectedAnswers.length % colors.length];
+        button.classList.add(colorClass);
+    }
+}
+
+function checkFiveAnswers(correctAnswers) {
+    selectedAnswers.sort();
+    correctAnswers.sort();
+    if (JSON.stringify(selectedAnswers) === JSON.stringify(correctAnswers)) {
+        // correct
+        setAnswerStatus(currentSubregion, "correct");
+        stars++;
+        updateStars();
+        alert("Richtig! ⭐ Du hast einen Stern erhalten.");
+    } else {
+        // wrong
+        setAnswerStatus(currentSubregion, "wrong");
+        alert("Falsch! ❌ Keine Wiederholung möglich.");
+    }
+    setTimeout(backToSubregions, 1000);
+}
+
+/***********************************************************
+ *  FLUSS AUFWÄRTS => Zuordnungs-Spiel (auch nur 1 Versuch)
  ***********************************************************/
 const pairColors = ["matching-blue", "matching-yellow", "matching-pink", "matching-green"];
 let colorIndex = 0;
@@ -299,7 +421,6 @@ function setupMatchingGame(pairs) {
     rightDiv.style.display = "inline-block";
     rightDiv.style.verticalAlign = "top";
 
-    // Linke Seite
     pairs.forEach(pair => {
         let leftBtn = document.createElement("button");
         leftBtn.textContent = pair.term;
@@ -311,8 +432,6 @@ function setupMatchingGame(pairs) {
         leftBtn.onclick = () => selectFlussItem(pair.term, leftBtn, "term");
         leftDiv.appendChild(leftBtn);
     });
-
-    // Rechte Seite
     pairs.forEach(pair => {
         let rightBtn = document.createElement("button");
         rightBtn.textContent = pair.match;
@@ -339,13 +458,13 @@ function setupMatchingGame(pairs) {
 
 function selectFlussItem(value, button, type) {
     if (type === "term") {
-        if (selectedTerm) unhighlightButton(selectedTerm.button, "term");
+        if (selectedTerm) highlightButton(selectedTerm.button, "term"); // un-highlight
         selectedTerm = { value, button };
-        highlightButton(button);
+        highlightButton(button, "select");
     } else {
-        if (selectedMatch) unhighlightButton(selectedMatch.button, "match");
+        if (selectedMatch) highlightButton(selectedMatch.button, "match");
         selectedMatch = { value, button };
-        highlightButton(button);
+        highlightButton(button, "select");
     }
 
     if (selectedTerm && selectedMatch) {
@@ -356,6 +475,7 @@ function selectFlussItem(value, button, type) {
 }
 
 function addPair(term, termBtn, match, matchBtn) {
+    // vorhandene Zuordnungen löschen
     if (selectedPairs[term]) {
         let oldMatch = selectedPairs[term];
         removeColor(term, oldMatch);
@@ -370,19 +490,20 @@ function addPair(term, termBtn, match, matchBtn) {
     }
 
     selectedPairs[term] = match;
-    let colorClass = pairColors[colorIndex];
+    let c = pairColors[colorIndex];
     colorIndex = (colorIndex + 1) % pairColors.length;
 
-    colorMap[term]  = colorClass;
-    colorMap[match] = colorClass;
+    colorMap[term]  = c;
+    colorMap[match] = c;
 
-    termBtn.classList.add(colorClass);
-    matchBtn.classList.add(colorClass);
+    termBtn.classList.add(c);
+    matchBtn.classList.add(c);
 }
 
 function removeColor(term, match) {
     let cTerm  = colorMap[term];
     let cMatch = colorMap[match];
+
     if (cTerm) {
         let btns = document.querySelectorAll("button");
         btns.forEach(b => {
@@ -399,19 +520,15 @@ function removeColor(term, match) {
     }
 }
 
-function highlightButton(btn) {
-    btn.style.border = "3px solid red";
-}
-function unhighlightButton(btn, type) {
-    if (btn) {
-        btn.style.border = (type === "term") ? "3px solid orange" : "3px solid lightblue";
-        setTimeout(() => {
-            btn.style.border = "none";
-        }, 150);
+function highlightButton(btn, mode) {
+    if (mode === "select") {
+        btn.style.border = "3px solid red";
+    } else {
+        // unselect
+        btn.style.border = "none";
     }
 }
 
-/** 1 Versuch => direkt zurück */
 function checkFlussMatches(pairs) {
     let correct = true;
     for (let p of pairs) {
@@ -420,105 +537,31 @@ function checkFlussMatches(pairs) {
             break;
         }
     }
+
     if (correct) {
+        setAnswerStatus(currentSubregion, "correct");
         stars++;
         updateStars();
         alert("Richtig! ⭐ Du hast einen Stern erhalten.");
     } else {
-        alert("Falsch! ❌ Deine Zuordnung war nicht korrekt.");
+        setAnswerStatus(currentSubregion, "wrong");
+        alert("Falsch! ❌ Keine Wiederholung möglich.");
     }
     setTimeout(backToSubregions, 1000);
 }
 
 /***********************************************************
- *  FLUSS ABWÄRTS => 5-fach Mehrfachauswahl
- ***********************************************************/
-function setMatchingColors(index, button) {
-    const colors = ["matching-blue", "matching-yellow", "matching-pink", "matching-green"];
-    button.classList.remove(...colors);
-
-    if (selectedAnswers.includes(index)) {
-        selectedAnswers = selectedAnswers.filter(i => i !== index);
-    } else {
-        selectedAnswers.push(index);
-        let colorClass = colors[selectedAnswers.length % colors.length];
-        button.classList.add(colorClass);
-    }
-}
-
-/** 1 Versuch => direkt zurück */
-function checkFiveAnswers(correctAnswers) {
-    selectedAnswers.sort();
-    correctAnswers.sort();
-    if (JSON.stringify(selectedAnswers) === JSON.stringify(correctAnswers)) {
-        stars++;
-        updateStars();
-        alert("Richtig! ⭐ Du hast einen Stern erhalten.");
-    } else {
-        alert("Falsch! ❌ Nicht die richtigen 5 Antworten.");
-    }
-    setTimeout(backToSubregions, 1000);
-}
-
-/***********************************************************
- *  MULTI-CHOICE (z.B. 'Der Markt')
- ***********************************************************/
-function handleMultiChoice(index, button, correctAnswers, subregion) {
-    let maxLen = correctAnswers.length;
-    if (selectedAnswers.includes(index)) {
-        selectedAnswers = selectedAnswers.filter(i => i !== index);
-        button.style.backgroundColor = "#f0f0f0";
-        button.style.color = "black";
-    } else {
-        if (selectedAnswers.length < maxLen) {
-            selectedAnswers.push(index);
-            button.style.backgroundColor = "orange";
-            button.style.color = "white";
-        } else {
-            alert(`Du kannst nur ${maxLen} Antworten auswählen!`);
-        }
-    }
-
-    if (selectedAnswers.length === correctAnswers.length) {
-        let sortedSelected = [...selectedAnswers].sort();
-        let sortedCorrect = [...correctAnswers].sort();
-        if (JSON.stringify(sortedSelected) === JSON.stringify(sortedCorrect)) {
-            stars++;
-            updateStars();
-            alert("Richtig! ⭐ Du hast einen Stern erhalten.");
-            handleNextTask(subregion);
-        } else {
-            alert("Falsch! ❌ Bitte versuche es nochmal.");
-        }
-    }
-}
-
-/***********************************************************
- *  NÄCHSTE AUFGABE / NAVIGATION
- ***********************************************************/
-function handleNextTask(subregion) {
-    if (subregion === "Die Bewohner") {
-        dieBewohnerTaskIndex++;
-    }
-    if (subregion === "Der Markt") {
-        marketTaskIndex++;
-    }
-    setTimeout(backToSubregions, 1000);
-}
-
-/***********************************************************
- *  STERNE & NAVIGATION
+ *  UPDATE STARS
  ***********************************************************/
 function updateStars() {
-    // Wir aktualisieren hier nur das Text-Feld, 
-    // das sich oben rechts in .stars-info befindet
     document.getElementById("stars-count").textContent = stars;
 }
 
+/***********************************************************
+ *  BACK / NAVIGATION
+ ***********************************************************/
 function backToRegions() {
-    // Hintergrund entfernen => Standard
     document.body.classList.remove("wald-background", "fluss-background");
-
     document.getElementById("subregion-screen").style.display = "none";
     document.getElementById("game-screen").style.display = "block";
 }
