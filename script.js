@@ -18,12 +18,12 @@ function startGame() {
 let stars = 0;
 let currentRegion = "";
 let currentSubregion = "";
-let selectedAnswers = [];   
+let selectedAnswers = [];
 let dieBewohnerTaskIndex = 0;  
 let marketTaskIndex = 0;       
 
 /***********************************************************
- *  SUBREGIONEN (STRUKTUR)
+ *  SUBREGIONEN
  ***********************************************************/
 const subregions = {
     wald: ["Weg", "Baum"],
@@ -42,7 +42,7 @@ const questions = {
         correct: 2
     }],
     "Baum": [{
-        question: "Suche das Subjekt...",
+        question: "Suche das Subjekt des Satzes...",
         answers: ["bos", "cervi figura", "cornibus", "quae", "nota sunt"],
         correct: 0
     }],
@@ -51,7 +51,11 @@ const questions = {
     "Die Bewohner": [
       {
         question: "Übersetze...",
-        answers: ["...", "...", "..."],
+        answers: [
+            "Die Sklaven haben keine Rechte...",
+            "Sie sagten, dass die Sklaven keinerlei Rechte hätten...",
+            "Die Sklaven sagen, dass sie keine Rechte haben..."
+        ],
         correct: 1
       },
       {
@@ -96,12 +100,8 @@ const questions = {
 };
 
 /***********************************************************
- *  HILFSFUNKTIONEN FÜR KLASSEN
+ *  Hilfsfunktionen für Region- & Subregion-Klassen
  ***********************************************************/
-/**
- * Entfernt vorhandene 'region-...' Klassen vom body
- * und fügt region-XYZ je nach Parameter hinzu
- */
 function applyRegionClass(region) {
     document.body.classList.remove("region-wald", "region-dorf", "region-fluss");
     if (region === "wald")  document.body.classList.add("region-wald");
@@ -109,33 +109,20 @@ function applyRegionClass(region) {
     if (region === "fluss") document.body.classList.add("region-fluss");
 }
 
-/**
- * Macht aus 'Weg' => 'question-weg',
- * aus 'Die Bewohner' => 'question-die-bewohner' etc.
- */
 function subregionToClassName(subregion) {
     return "question-" + subregion
-        .toLowerCase()         // kleinschreiben
-        .replace(/\s+/g, "-")  // Leerzeichen durch "-"
-        .replace(/[^\w-]/g, ""); // Sonderzeichen entfernen, falls nötig
+        .toLowerCase()
+        .replace(/\s+/g, "-")
+        .replace(/[^\w-]/g, "");
 }
 
-/**
- * Entfernt vorhandene 'question-...' Klassen vom #task-screen
- * und fügt die passende Subregion-Klasse hinzu
- */
 function applySubregionClass(subregion) {
-    // Alle subregion-Klassen im CSS definieren:
-    //  .question-weg, .question-baum, .question-die-bewohner, ...
     const taskScreen = document.getElementById("task-screen");
-
-    // Alle question-... Klassen entfernen
     taskScreen.classList.remove(
-      "question-weg", "question-baum", "question-die-bewohner", "question-der-markt",
+      "question-weg", "question-baum",
+      "question-die-bewohner", "question-der-markt",
       "question-fluss-aufwärts", "question-der-hafen", "question-fluss-abwärts"
     );
-
-    // Die neue Klasse hinzufügen
     const newClass = subregionToClassName(subregion);
     taskScreen.classList.add(newClass);
 }
@@ -146,20 +133,17 @@ function applySubregionClass(subregion) {
 function showSubregions(region) {
     currentRegion = region;
 
-    // REGION-KLASSE anwenden (für CSS)
+    // Klasse für Region (CSS)
     applyRegionClass(region);
 
-    // Alte Hintergründe entfernen
+    // Hintergrund anpassen
     document.body.classList.remove("wald-background", "fluss-background");
-    // Falls du die wald.jpg/fluss.jpg Hintergründe beibehalten willst,
-    // kannst du das hier anpassen:
     if (region === "wald") {
         document.body.classList.add("wald-background");
     } else if (region === "fluss") {
         document.body.classList.add("fluss-background");
     }
 
-    // UI-Logik
     document.getElementById("game-screen").style.display = "none";
     document.getElementById("subregion-screen").style.display = "block";
 
@@ -188,8 +172,6 @@ function showSubregions(region) {
  ***********************************************************/
 function startTask(subregion) {
     currentSubregion = subregion;
-
-    // Subregion-Klasse anwenden (für CSS)
     applySubregionClass(subregion);
 
     document.getElementById("subregion-screen").style.display = "none";
@@ -231,7 +213,6 @@ function startTask(subregion) {
     answerContainer.innerHTML = "";
     selectedAnswers = [];
 
-    // Satz optional
     if (task.sentence) {
         let sentenceP = document.createElement("p");
         sentenceP.style.fontStyle = "italic";
@@ -239,13 +220,13 @@ function startTask(subregion) {
         answerContainer.appendChild(sentenceP);
     }
 
-    // FALL 1: "Fluss aufwärts" => Zuordnungs-Spiel
+    // Fluss aufwärts => Zuordnungs-Spiel
     if (subregion === "Fluss aufwärts") {
         setupMatchingGame(task.pairs);
         return;
     }
 
-    // FALL 2: "Fluss abwärts" => 5-fach Mehrfachauswahl
+    // Fluss abwärts => 5-fach Mehrfachauswahl
     if (subregion === "Fluss abwärts") {
         let submitBtn = document.createElement("button");
         submitBtn.textContent = "Bestätigen";
@@ -263,7 +244,7 @@ function startTask(subregion) {
         return;
     }
 
-    // FALL 3: Standard Single/Mehrfach
+    // Standard: Single/Mehrfach
     task.answers.forEach((answer, index) => {
         let btn = document.createElement("button");
         btn.textContent = answer;
@@ -282,7 +263,7 @@ function startTask(subregion) {
                 }
             };
         } else {
-            // Multi
+            // Mehrfach
             btn.onclick = () => handleMultiChoice(index, btn, task.correct, subregion);
         }
         answerContainer.appendChild(btn);
@@ -317,7 +298,7 @@ function setupMatchingGame(pairs) {
     rightDiv.style.display = "inline-block";
     rightDiv.style.verticalAlign = "top";
 
-    // Linke Seite (Orange)
+    // Linke Seite
     pairs.forEach(pair => {
         let leftBtn = document.createElement("button");
         leftBtn.textContent = pair.term;
@@ -330,7 +311,7 @@ function setupMatchingGame(pairs) {
         leftDiv.appendChild(leftBtn);
     });
 
-    // Rechte Seite (Hellblau)
+    // Rechte Seite
     pairs.forEach(pair => {
         let rightBtn = document.createElement("button");
         rightBtn.textContent = pair.match;
@@ -429,7 +410,7 @@ function unhighlightButton(btn, type) {
     }
 }
 
-/** Nur 1 Versuch => Zurück, egal ob richtig oder falsch */
+/** 1 Versuch => direkt zurück */
 function checkFlussMatches(pairs) {
     let correct = true;
     for (let p of pairs) {
@@ -464,7 +445,7 @@ function setMatchingColors(index, button) {
     }
 }
 
-/** 1 Versuch => direkt zurück, egal ob richtig/falsch */
+/** 1 Versuch => direkt zurück */
 function checkFiveAnswers(correctAnswers) {
     selectedAnswers.sort();
     correctAnswers.sort();
@@ -525,13 +506,19 @@ function handleNextTask(subregion) {
 }
 
 /***********************************************************
- *  STERNE / SCREEN-WECHSEL
+ *  STERNE & NAVIGATION
  ***********************************************************/
 function updateStars() {
     document.getElementById("stars-count").textContent = stars;
 }
 
+/** 
+ * Wenn wir von Subregionen zurück zur Start-Region wollen,
+ * entfernen wir wald-/fluss-background 
+ */
 function backToRegions() {
+    document.body.classList.remove("wald-background", "fluss-background");
+
     document.getElementById("subregion-screen").style.display = "none";
     document.getElementById("game-screen").style.display = "block";
 }
