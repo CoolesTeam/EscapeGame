@@ -77,8 +77,7 @@ const questions = {
     ],
     "Der Markt": [
       {
-        question: "Klicke die drei Stämme...
-            ",
+        question: "Klicke die drei Stämme...",
         answers: ["Belgae", "Gallia", "Aquitani", "Celtae", "Galli"],
         correct: [0, 2, 3]
       },
