@@ -20,11 +20,11 @@ let currentRegion = "";
 let currentSubregion = "";
 let selectedAnswers = [];
 
-// Indizes für Subregionen mit mehreren Aufgaben
+// Für Subregionen mit mehreren Aufgaben
 let dieBewohnerTaskIndex = 0;
 let marketTaskIndex = 0;
 
-// Status der Aufgaben (unanswered, correct, wrong)
+// Status der Aufgaben: "unanswered", "correct", "wrong"
 let answeredStatus = {
     "Weg": "unanswered",
     "Baum": "unanswered",
@@ -46,6 +46,7 @@ const subregions = {
 
 /***********************************************************
  *  FRAGEN & ANTWORTEN
+ *  ACHTUNG: Bei "Die Bewohner" wurde die erste Frage angepasst.
  ***********************************************************/
 const questions = {
     "Weg": [{
@@ -60,11 +61,11 @@ const questions = {
     }],
     "Die Bewohner": [
       {
-        question: "Übersetze...",
+        question: "Übersetze: Dicebant servos nullus iuribus praeditos esse et penitus a dominis pendere",
         answers: [
-            "Die Sklaven haben keine Rechte...",
-            "Sie sagten, dass die Sklaven keinerlei Rechte hätten...",
-            "Die Sklaven sagen, dass sie keine Rechte haben..."
+            "Die Sklaven haben keine Rechte und sind abhängig von ihren Herren.",
+            "Sie sagten, dass die Sklaven keinerlei Rechte hätten und vollständig von ihren Herren abhängig sind.",
+            "Die Sklaven sagen, dass sie keine Rechte haben und abhängig von ihren Herren sind."
         ],
         correct: 1
       },
@@ -163,6 +164,7 @@ function showSubregions(region) {
 
 /***********************************************************
  *  startTask(subregion)
+ *  => Einmalige Beantwortung
  ***********************************************************/
 function startTask(subregion) {
     currentSubregion = subregion;
@@ -323,7 +325,7 @@ function handleMultiChoice(index, button, correctAnswers, subregion) {
 }
 
 /***********************************************************
- *  FLUSS ABWÄRTS => 5-fach Mehrfachauswahl
+ *  FLUSS ABWÄRTS => 5er-Auswahl
  ***********************************************************/
 function setMatchingColors(index, button) {
     const colors = ["matching-blue", "matching-yellow", "matching-pink", "matching-green"];
@@ -504,8 +506,10 @@ function subregionToClassName(subregion) {
 
 function applySubregionClass(subregion) {
     const taskScreen = document.getElementById("task-screen");
-    taskScreen.classList.remove("question-weg", "question-baum", "question-die-bewohner",
-        "question-der-markt", "question-fluss-aufwärts", "question-der-hafen", "question-fluss-abwärts");
+    taskScreen.classList.remove(
+      "question-weg", "question-baum", "question-die-bewohner",
+      "question-der-markt", "question-fluss-aufwärts", "question-der-hafen", "question-fluss-abwärts"
+    );
     const newClass = subregionToClassName(subregion);
     taskScreen.classList.add(newClass);
 }
