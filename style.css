@@ -14,14 +14,13 @@ body {
 
 /*************************************************************
  * ALLGEMEINE SCREEN-REGELN
- * Wir verwenden hier die gemeinsame Klasse .screen für alle Screens.
  *************************************************************/
 .screen {
     width: 100%;
     min-height: 100vh;
 }
 
-/* Standardmäßig wird nur der Willkommens-Screen angezeigt */
+/* Initial nur welcome-screen sichtbar */
 .welcome-screen { display: block; }
 .intro-screen, .game-screen, .subregion-screen, .task-screen { display: none; }
 
@@ -67,6 +66,14 @@ body {
     text-align: center;
     box-shadow: 0px 4px 10px rgba(0,0,0,0.5);
     margin: 0 auto;
+}
+
+/*************************************************************
+ * SCREEN-STILE (Willkommen, Intro, Game, Subregion, Task)
+ *************************************************************/
+.welcome-screen, .intro-screen, .game-screen, .subregion-screen, .task-screen {
+    position: relative;
+    padding: 20px;
 }
 
 /*************************************************************
@@ -130,7 +137,7 @@ body {
 }
 
 /*************************************************************
- * SPEZIELLE HINTERGRÜNDE FÜR REGIONEN
+ * SPEZIELLE HINTERGRÜNDE
  *************************************************************/
 .wald-background {
     background: url("wald.jpg") no-repeat center center fixed !important;
@@ -143,8 +150,8 @@ body {
 
 /*************************************************************
  * REGIONSSPEZIFISCHE STILE
- * In der Region "Fluss" (über .region-fluss) erhält der gesamte Task-Screen
- * einen weißen, halbtransparenten Hintergrund, den du hier anpassen kannst.
+ * In der Region "Fluss" soll der Task-Screen einen
+ * weißen, halbtransparenten Hintergrund hinter schwarzem Text erhalten.
  *************************************************************/
 .region-fluss .task-screen {
     background: rgba(255,255,255,0.5);
@@ -154,7 +161,7 @@ body {
 }
 
 /*************************************************************
- * PLATZHALTER-KLASSEN FÜR REGIONEN & FRAGEN (zur individuellen Anpassung)
+ * PLATZHALTER-KLASSEN FÜR REGIONEN & FRAGEN
  *************************************************************/
 .region-wald  {}
 .region-dorf  {}
