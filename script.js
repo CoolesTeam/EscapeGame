@@ -98,8 +98,7 @@ const questions = {
         ]
     }],
     "Der Hafen": [{
-        question: "Wie wird dieser Stamm beschrieben?"
-        Haec civitas longe plurimum totius Gallie.,
+        question: "Wie wird dieser Stamm beschrieben? Haec civitas longe plurimum totius Gallie.",
         answers: ["der größte Stamm", "der kleinste Stamm", "der mächtigste Stamm"],
         correct: 2
     }],
