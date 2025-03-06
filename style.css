@@ -1,16 +1,74 @@
 /*************************************************************
  * GRUNDLAYOUT / HINTERGRUND
  *************************************************************/
+/* Den Body-Background behalten wir wie gehabt. */
 body {
-    font-family: Comic Sans MS;
+    font-family: Arial, sans-serif;
     text-align: center;
     background: url("background.jpg") no-repeat center center fixed;
     background-size: cover;
     margin: 0;
     height: 100vh;
-    overflow: hidden;
+    overflow: hidden; 
     color: black;
 }
+
+/*************************************************************
+ * SCREENS LAYERN SICH PER ABSOLUTE
+ *************************************************************/
+/* Jeder Screen auf voller Größe; 
+   Wir regeln die Sichtbarkeit via display: none/block. */
+.welcome-screen, 
+.intro-screen, 
+.game-screen, 
+.subregion-screen, 
+.task-screen {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;  /* Alle Screens auf Ebene 10 */
+    display: none; /* Per default unsichtbar,
+                      außer 'welcome-screen' 
+                      -> (verändert im HTML) */
+}
+
+/* 
+  ABER: 
+  - welcome-screen ist initial display: flex (siehe Inline-CSS).
+  - intro-screen, game-screen, subregion-screen, task-screen -> 
+    style="display:none;" oder per JS. 
+*/
+
+/*************************************************************
+ * SCREENS, DIE INITIAL AN SIND
+ * -> welcome-screen 
+*************************************************************/
+.welcome-screen {
+    display: flex; /* => Startbildschirm anfangs sichtbar */
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0,0,0,0.5);
+}
+
+/* Der intro-screen & co. bekommen ihre 
+   display: none => block per JS. 
+   Also kein Muss hier, 
+   wir definieren aber align-items etc.  */
+.intro-screen {
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Der Rest 
+   game-screen, subregion-screen, task-screen
+   kann optional flex / block sein. 
+   => default: block
+*/
+
 
 /*************************************************************
  * OBEN RECHTS: STERNE-ANZEIGE
@@ -19,51 +77,32 @@ body {
     position: absolute;
     top: 20px;
     right: 20px;
+
     font-family: "Comic Sans MS", cursive, sans-serif;
-    font-size: 24px;  
-    color: red;       
+    font-size: 24px;
+    color: red;
     background: rgba(255, 255, 255, 0.6);
     padding: 10px;
     border-radius: 10px;
+    z-index: 999; /* darüber */
 }
 
 /*************************************************************
- * ALLGEMEINE TEXTE / KOMPONENTEN
+ * TEXTKOMPONENTEN
  *************************************************************/
 .title-text {
     font-size: 2em;
     font-weight: bold;
     margin: 10px 0;
 }
-
 .normal-text {
     margin: 10px 0;
     line-height: 1.4;
 }
 
 /*************************************************************
- * KLASSEN FÜR DIE SCREENS
+ * INTRO-BOX
  *************************************************************/
-.welcome-screen {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
-.intro-screen {
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0, 0, 0, 0.7);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
 .intro-box {
     background: rgba(255, 255, 255, 0.95);
     color: black;
@@ -76,38 +115,18 @@ body {
     margin: 0 auto;
 }
 
-.game-screen {
-    padding: 20px;
-}
-
-.subregion-screen {
-    padding: 20px;
-}
-
-.task-screen {
-    padding: 20px;
-}
-
-.subregion-container {
-    margin: 10px 0;
-}
-
-.answers-container {
-    margin: 10px 0;
-}
-
 /*************************************************************
- * BUTTON-KLASSEN
+ * BUTTONS
  *************************************************************/
 .button {
-    font-family: "Comic Sans MS", cursive, sans-serif; 
+    font-family: "Comic Sans MS", cursive, sans-serif;
     padding: 15px 30px;
     font-size: 18px;
     border: none;
     cursor: pointer;
-    transition: 0.3s;
     margin: 10px;
     border-radius: 8px;
+    transition: 0.3s;
 }
 
 .region-button {
@@ -128,7 +147,17 @@ body {
     border-radius: 8px;
 }
 
-/* Farbkodierung */
+.back-button {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 10px;
+    border: 2px solid white;
+    border-radius: 5px;
+}
+
+/*************************************************************
+ * FARBKLASSEN
+ *************************************************************/
 .matching-blue {
     background-color: blue !important;
     color: white !important;
@@ -146,16 +175,8 @@ body {
     color: white !important;
 }
 
-.back-button {
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
-    padding: 10px;
-    border: 2px solid white;
-    border-radius: 5px;
-}
-
 /*************************************************************
- * SPEZIELLE HINTERGRÜNDE (REGION WALD, FLUSS, ETC.)
+ * SPEZIELLE HINTERGRÜNDE
  *************************************************************/
 .wald-background {
     background: url("wald.jpg") no-repeat center center fixed !important;
@@ -168,14 +189,14 @@ body {
 }
 
 /*************************************************************
- * NUR IN REGION FLUSS: Weißer, halbtransparenter HINTERGRUND 
- * hinter der (schwarzen) Schrift 
+ * NUR IN DER REGION "FLUSS":
+ * Weißer, halbtransparenter Hintergrund hinter schwarzer Schrift
  *************************************************************/
 .region-fluss .title-text,
 .region-fluss .normal-text {
-    display: inline-block;               /* Zeigt den Bg an jeder Text-Zeile */
-    background: rgba(255,255,255,0.5);   /* Weiß mit 50% Transparenz */
-    color: black;                        /* Schwarze Schrift */
+    display: inline-block;
+    background: rgba(255,255,255,0.5);
+    color: black;
     padding: 10px;
     border-radius: 5px;
 }
