@@ -2,7 +2,7 @@
  * GRUNDLAYOUT / HINTERGRUND
  *************************************************************/
 body {
-    font-family: Comic Sans MS;
+    font-family: Arial, sans-serif;
     text-align: center;
     background: url("background.jpg") no-repeat center center fixed;
     background-size: cover;
@@ -184,8 +184,17 @@ body {
 }
 
 /*************************************************************
- * AB HIER: PLATZHALTER-KLASSEN FÜR REGIONEN & FRAGEN
- * (Individuelle Anpassungen möglich)
+ * INDIVIDUELLE STYLES FÜR DIE REGION FLUSS
+ * -> Schrift in Weiß (255,255,255) mit 50% Transparenz
+ *************************************************************/
+.region-fluss .title-text,
+.region-fluss .normal-text {
+    color: rgba(255, 255, 255, 0.5); 
+    /* => Du kannst die Farbe / Transparenz hier ändern */
+}
+
+/*************************************************************
+ * PLATZHALTER-KLASSEN FÜR REGIONEN & FRAGEN
  *************************************************************/
 .region-wald  {}
 .region-dorf  {}
