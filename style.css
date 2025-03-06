@@ -3,7 +3,7 @@
  *************************************************************/
 /* Den Body-Background behalten wir wie gehabt. */
 body {
-    font-family: Arial, sans-serif;
+    font-family: Comic Sans MS;
     text-align: center;
     background: url("background.jpg") no-repeat center center fixed;
     background-size: cover;
