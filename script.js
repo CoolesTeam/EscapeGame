@@ -77,12 +77,14 @@ const questions = {
     ],
     "Der Markt": [
       {
-        question: "Klicke die drei Stämme...",
+        question: "Klicke die drei Stämme...
+            ",
         answers: ["Belgae", "Gallia", "Aquitani", "Celtae", "Galli"],
         correct: [0, 2, 3]
       },
       {
-        question: "Markiere die beiden Flüsse.",
+        question: "Markiere die beiden Flüsse.
+          Gallia est omnis divisa in parttes tres, quarum unam incolunt Belgae, aliam Aquitani, tertiam qui ipsorum lingua Celtae nostra galli appellantur.",
         answers: ["Rhodano", "Garumna", "Belgarum", "Aquitani"],
         correct: [0, 1]
       }
@@ -97,7 +99,8 @@ const questions = {
         ]
     }],
     "Der Hafen": [{
-        question: "Wie wird dieser Stamm beschrieben?",
+        question: "Wie wird dieser Stamm beschrieben?"
+        Haec civitas longe plurimum totius Gallie.,
         answers: ["der größte Stamm", "der kleinste Stamm", "der mächtigste Stamm"],
         correct: 2
     }],
