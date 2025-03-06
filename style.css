@@ -1,74 +1,29 @@
 /*************************************************************
  * GRUNDLAYOUT / HINTERGRUND
  *************************************************************/
-/* Den Body-Background behalten wir wie gehabt. */
 body {
-    font-family: Comic Sans MS;
+    font-family: Arial, sans-serif;
     text-align: center;
     background: url("background.jpg") no-repeat center center fixed;
     background-size: cover;
     margin: 0;
-    height: 100vh;
-    overflow: hidden; 
+    min-height: 100vh;
+    overflow: hidden;
     color: black;
 }
 
 /*************************************************************
- * SCREENS LAYERN SICH PER ABSOLUTE
+ * ALLGEMEINE SCREEN-REGELN
+ * Wir verwenden hier die gemeinsame Klasse .screen für alle Screens.
  *************************************************************/
-/* Jeder Screen auf voller Größe; 
-   Wir regeln die Sichtbarkeit via display: none/block. */
-.welcome-screen, 
-.intro-screen, 
-.game-screen, 
-.subregion-screen, 
-.task-screen {
-    position: absolute;
-    top: 0; left: 0;
+.screen {
     width: 100%;
-    height: 100%;
-    z-index: 10;  /* Alle Screens auf Ebene 10 */
-    display: none; /* Per default unsichtbar,
-                      außer 'welcome-screen' 
-                      -> (verändert im HTML) */
+    min-height: 100vh;
 }
 
-/* 
-  ABER: 
-  - welcome-screen ist initial display: flex (siehe Inline-CSS).
-  - intro-screen, game-screen, subregion-screen, task-screen -> 
-    style="display:none;" oder per JS. 
-*/
-
-/*************************************************************
- * SCREENS, DIE INITIAL AN SIND
- * -> welcome-screen 
-*************************************************************/
-.welcome-screen {
-    display: flex; /* => Startbildschirm anfangs sichtbar */
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    background: rgba(0,0,0,0.5);
-}
-
-/* Der intro-screen & co. bekommen ihre 
-   display: none => block per JS. 
-   Also kein Muss hier, 
-   wir definieren aber align-items etc.  */
-.intro-screen {
-    background: rgba(0, 0, 0, 0.7);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-/* Der Rest 
-   game-screen, subregion-screen, task-screen
-   kann optional flex / block sein. 
-   => default: block
-*/
-
+/* Standardmäßig wird nur der Willkommens-Screen angezeigt */
+.welcome-screen { display: block; }
+.intro-screen, .game-screen, .subregion-screen, .task-screen { display: none; }
 
 /*************************************************************
  * OBEN RECHTS: STERNE-ANZEIGE
@@ -77,14 +32,13 @@ body {
     position: absolute;
     top: 20px;
     right: 20px;
-
     font-family: "Comic Sans MS", cursive, sans-serif;
     font-size: 24px;
     color: red;
-    background: rgba(255, 255, 255, 0.6);
+    background: rgba(255,255,255,0.6);
     padding: 10px;
     border-radius: 10px;
-    z-index: 999; /* darüber */
+    z-index: 1000;
 }
 
 /*************************************************************
@@ -104,14 +58,14 @@ body {
  * INTRO-BOX
  *************************************************************/
 .intro-box {
-    background: rgba(255, 255, 255, 0.95);
+    background: rgba(255,255,255,0.95);
     color: black;
     padding: 25px;
     border-radius: 10px;
     width: 60%;
     max-width: 600px;
     text-align: center;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+    box-shadow: 0px 4px 10px rgba(0,0,0,0.5);
     margin: 0 auto;
 }
 
@@ -131,24 +85,24 @@ body {
 
 .region-button {
     display: inline-block;
-    background-color: rgba(0, 123, 255, 0.8);
+    background-color: rgba(0,123,255,0.8);
     color: white;
 }
 
 .answer-button {
     background-color: #f0f0f0;
     color: black;
-    display: block; 
-    margin: 10px auto; 
+    display: block;
+    margin: 10px auto;
     width: 50%;
     padding: 10px 0;
     font-size: 16px;
-    border: 2px solid rgba(0, 123, 255, 0.8);
+    border: 2px solid rgba(0,123,255,0.8);
     border-radius: 8px;
 }
 
 .back-button {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(255,255,255,0.2);
     color: white;
     padding: 10px;
     border: 2px solid white;
@@ -156,7 +110,7 @@ body {
 }
 
 /*************************************************************
- * FARBKLASSEN
+ * FARBKLASSEN FÜR MEHRFACHAUSWAHL
  *************************************************************/
 .matching-blue {
     background-color: blue !important;
@@ -176,33 +130,31 @@ body {
 }
 
 /*************************************************************
- * SPEZIELLE HINTERGRÜNDE
+ * SPEZIELLE HINTERGRÜNDE FÜR REGIONEN
  *************************************************************/
 .wald-background {
     background: url("wald.jpg") no-repeat center center fixed !important;
     background-size: cover !important;
 }
-
 .fluss-background {
     background: url("fluss.jpg") no-repeat center center fixed !important;
     background-size: cover !important;
 }
 
 /*************************************************************
- * NUR IN DER REGION "FLUSS":
- * Weißer, halbtransparenter Hintergrund hinter schwarzer Schrift
+ * REGIONSSPEZIFISCHE STILE
+ * In der Region "Fluss" (über .region-fluss) erhält der gesamte Task-Screen
+ * einen weißen, halbtransparenten Hintergrund, den du hier anpassen kannst.
  *************************************************************/
-.region-fluss .title-text,
-.region-fluss .normal-text {
-    display: inline-block;
+.region-fluss .task-screen {
     background: rgba(255,255,255,0.5);
     color: black;
-    padding: 10px;
-    border-radius: 5px;
+    padding: 20px;
+    box-sizing: border-box;
 }
 
 /*************************************************************
- * PLATZHALTER-KLASSEN FÜR REGIONEN & FRAGEN
+ * PLATZHALTER-KLASSEN FÜR REGIONEN & FRAGEN (zur individuellen Anpassung)
  *************************************************************/
 .region-wald  {}
 .region-dorf  {}
