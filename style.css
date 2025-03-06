@@ -189,7 +189,7 @@ body {
  *************************************************************/
 .region-fluss .title-text,
 .region-fluss .normal-text {
-    color: rgba(255, 255, 255, 0.5); 
+    color: rgba(255, 255, 255, 0.9); 
     /* => Du kannst die Farbe / Transparenz hier ändern */
 }
 
