@@ -8,7 +8,6 @@ body {
     background-size: cover;
     margin: 0;
     height: 100vh;
-    /* Falls du Scrollen erlauben möchtest, entferne diese Zeile oder setze overflow: auto; */
     overflow: hidden;
     color: black;
 }
@@ -20,12 +19,9 @@ body {
     position: absolute;
     top: 20px;
     right: 20px;
-
-    /* Schrift anpassbar -> hier Comic Sans als Beispiel */
     font-family: "Comic Sans MS", cursive, sans-serif;
-    font-size: 24px;  /* Du kannst die Größe ändern */
-    color: red;       /* Du kannst die Farbe ändern */
-
+    font-size: 24px;  
+    color: red;       
     background: rgba(255, 255, 255, 0.6);
     padding: 10px;
     border-radius: 10px;
@@ -48,7 +44,6 @@ body {
 /*************************************************************
  * KLASSEN FÜR DIE SCREENS
  *************************************************************/
-/* Willkommensbildschirm */
 .welcome-screen {
     position: absolute;
     width: 100%;
@@ -60,12 +55,10 @@ body {
     align-items: center;
 }
 
-/* Erklärungsbildschirm (Info/Intro) */
 .intro-screen {
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
     background: rgba(0, 0, 0, 0.7);
-
     display: flex;
     justify-content: center;
     align-items: center;
@@ -83,24 +76,18 @@ body {
     margin: 0 auto;
 }
 
-/* Hauptbildschirm (Regionen) */
 .game-screen {
     padding: 20px;
 }
 
-/* Subregionen-Bildschirm */
 .subregion-screen {
     padding: 20px;
 }
 
-/* Aufgaben-Bildschirm */
 .task-screen {
     padding: 20px;
 }
 
-/*************************************************************
- * CONTAINER
- *************************************************************/
 .subregion-container {
     margin: 10px 0;
 }
@@ -113,7 +100,7 @@ body {
  * BUTTON-KLASSEN
  *************************************************************/
 .button {
-    font-family: "Comic Sans MS", cursive, sans-serif; /* Anpassbar */
+    font-family: "Comic Sans MS", cursive, sans-serif; 
     padding: 15px 30px;
     font-size: 18px;
     border: none;
@@ -123,14 +110,12 @@ body {
     border-radius: 8px;
 }
 
-/* Region-Buttons */
 .region-button {
     display: inline-block;
     background-color: rgba(0, 123, 255, 0.8);
     color: white;
 }
 
-/* Antwort-Buttons -> neutraler Hintergrund */
 .answer-button {
     background-color: #f0f0f0;
     color: black;
@@ -143,7 +128,7 @@ body {
     border-radius: 8px;
 }
 
-/* Farbklassen für Mehrfachauswahl (Blau, Gelb, Rosa, Grün) */
+/* Farbkodierung */
 .matching-blue {
     background-color: blue !important;
     color: white !important;
@@ -161,7 +146,6 @@ body {
     color: white !important;
 }
 
-/* Zurück-Buttons */
 .back-button {
     background: rgba(255, 255, 255, 0.2);
     color: white;
@@ -184,13 +168,16 @@ body {
 }
 
 /*************************************************************
- * INDIVIDUELLE STYLES FÜR DIE REGION FLUSS
- * -> Schrift in Weiß (255,255,255) mit 50% Transparenz
+ * NUR IN REGION FLUSS: Weißer, halbtransparenter HINTERGRUND 
+ * hinter der (schwarzen) Schrift 
  *************************************************************/
 .region-fluss .title-text,
 .region-fluss .normal-text {
-    color: rgba(255, 255, 255, 0.9); 
-    /* => Du kannst die Farbe / Transparenz hier ändern */
+    display: inline-block;               /* Zeigt den Bg an jeder Text-Zeile */
+    background: rgba(255,255,255,0.5);   /* Weiß mit 50% Transparenz */
+    color: black;                        /* Schwarze Schrift */
+    padding: 10px;
+    border-radius: 5px;
 }
 
 /*************************************************************
