@@ -7,19 +7,19 @@
 </head>
 <body>
 
-  <!-- Sterne-Anzeige oben rechts -->
+  <!-- Sterne-Anzeige OBEN RECHTS -->
   <div id="stars-info" class="stars-info">
     Sterne: <span id="stars-count">0</span>
   </div>
 
-  <!-- Willkommen-Screen -->
-  <div id="welcome-screen" class="welcome-screen">
+  <!-- Willkommen-Screen (immer sichtbar, wenn geladen) -->
+  <div id="welcome-screen" class="screen welcome-screen">
     <h1 class="title-text">Willkommen zum Escape Game Gallien!</h1>
     <button class="button" onclick="showIntro()">Weiter</button>
   </div>
 
   <!-- Intro-Screen -->
-  <div id="intro-screen" class="intro-screen" style="display:none;">
+  <div id="intro-screen" class="screen intro-screen" style="display: none;">
     <div class="intro-box">
       <h2 class="title-text">Deine Mission</h2>
       <p class="normal-text">
@@ -42,22 +42,22 @@
   </div>
 
   <!-- Game-Screen (Regionen) -->
-  <div id="game-screen" class="game-screen" style="display:none;">
+  <div id="game-screen" class="screen game-screen" style="display: none;">
     <h2 class="title-text">Wähle eine Region:</h2>
-    <button id="wald-button"  class="button region-button" onclick="showSubregions('wald')">Wald</button>
-    <button id="dorf-button"  class="button region-button" onclick="showSubregions('dorf')">Dorf</button>
+    <button id="wald-button" class="button region-button" onclick="showSubregions('wald')">Wald</button>
+    <button id="dorf-button" class="button region-button" onclick="showSubregions('dorf')">Dorf</button>
     <button id="fluss-button" class="button region-button" onclick="showSubregions('fluss')">Fluss</button>
   </div>
 
   <!-- Subregion-Screen -->
-  <div id="subregion-screen" class="subregion-screen" style="display:none;">
+  <div id="subregion-screen" class="screen subregion-screen" style="display: none;">
     <h2 class="title-text">Unterregion wählen</h2>
     <div id="subregion-container" class="subregion-container"></div>
     <button class="button back-button" onclick="backToRegions()">Zurück</button>
   </div>
 
   <!-- Task-Screen -->
-  <div id="task-screen" class="task-screen" style="display:none;">
+  <div id="task-screen" class="screen task-screen" style="display: none;">
     <h2 id="task-title" class="title-text"></h2>
     <p id="question-text" class="normal-text"></p>
     <div id="answers-container" class="answers-container"></div>
