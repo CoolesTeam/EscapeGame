@@ -20,7 +20,7 @@ let currentRegion = "";
 let currentSubregion = "";
 let selectedAnswers = [];
 
-// Für Subregionen mit mehreren Aufgaben
+// Indizes für Subregionen mit mehreren Aufgaben
 let dieBewohnerTaskIndex = 0;
 let marketTaskIndex = 0;
 
@@ -61,7 +61,7 @@ const questions = {
     }],
     "Die Bewohner": [
       {
-        question: "Übersetze: Dicebant servos nullus iuribus praeditos esse et penitus a dominis pendere",
+        question: "Übersetze: Dicebant servos mispel iuribus praeditos esse et penitus a dominis pendere",
         answers: [
             "Die Sklaven haben keine Rechte und sind abhängig von ihren Herren.",
             "Sie sagten, dass die Sklaven keinerlei Rechte hätten und vollständig von ihren Herren abhängig sind.",
@@ -325,7 +325,7 @@ function handleMultiChoice(index, button, correctAnswers, subregion) {
 }
 
 /***********************************************************
- *  FLUSS ABWÄRTS => 5er-Auswahl
+ *  FLUSS ABWÄRTS: 5-fach Mehrfachauswahl
  ***********************************************************/
 function setMatchingColors(index, button) {
     const colors = ["matching-blue", "matching-yellow", "matching-pink", "matching-green"];
@@ -356,7 +356,7 @@ function checkFiveAnswers(correctAnswers) {
 }
 
 /***********************************************************
- *  FLUSS AUFWÄRTS => Zuordnungs-Spiel
+ *  FLUSS AUFWÄRTS: Zuordnungs-Spiel (1 Versuch)
  ***********************************************************/
 const pairColors = ["matching-blue", "matching-yellow", "matching-pink", "matching-green"];
 let colorIndex = 0;
@@ -508,7 +508,8 @@ function applySubregionClass(subregion) {
     const taskScreen = document.getElementById("task-screen");
     taskScreen.classList.remove(
       "question-weg", "question-baum", "question-die-bewohner",
-      "question-der-markt", "question-fluss-aufwärts", "question-der-hafen", "question-fluss-abwärts"
+      "question-der-markt", "question-fluss-aufwärts",
+      "question-der-hafen", "question-fluss-abwärts"
     );
     const newClass = subregionToClassName(subregion);
     taskScreen.classList.add(newClass);
