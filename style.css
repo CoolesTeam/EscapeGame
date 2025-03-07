@@ -2,7 +2,7 @@
  * GRUNDLAYOUT / HINTERGRUND
  *************************************************************/
 body {
-    font-family: Arial, sans-serif;
+    font-family: "Comic Sans MS", cursive, sans-serif;
     text-align: center;
     background: url("background.jpg") no-repeat center center fixed;
     background-size: cover;
@@ -49,7 +49,7 @@ body {
     margin: 10px 0;
 }
 .normal-text {
-    margin: 10px 0;
+    margin: 10px 0 20px;
     line-height: 1.4;
 }
 
@@ -150,16 +150,15 @@ body {
 
 /*************************************************************
  * REGIONSSPEZIFISCHE STILE FÜR FLUSS
- * Nur bei den Textelementen im Task-Screen (Frage und Titel)
- * soll ein weißer, halbtransparenter Hintergrund erscheinen.
+ * Nur die Textelemente im Task-Screen (Frage & Titel)
+ * bekommen einen weißen, halbtransparenten Hintergrund.
  *************************************************************/
 .region-fluss .title-text,
 .region-fluss .normal-text {
-    background: rgba(255,255,255,0.5); /* Weiß, 50% transparent */
+    background: rgba(255,255,255,0.5);
     color: black;
     padding: 5px;
     border-radius: 5px;
-    /* Wir verwenden "display: inline" statt inline-block, um Verschiebungen zu vermeiden */
     display: inline;
 }
 
