@@ -2,7 +2,7 @@
  * GRUNDLAYOUT / HINTERGRUND
  *************************************************************/
 body {
-    font-family: Comic Sans MS;
+    font-family: Arial, sans-serif;
     text-align: center;
     background: url("background.jpg") no-repeat center center fixed;
     background-size: cover;
@@ -20,7 +20,7 @@ body {
     min-height: 100vh;
 }
 
-/* Initial nur welcome-screen sichtbar */
+/* Standardmäßig: Nur welcome-screen wird angezeigt */
 .welcome-screen { display: block; }
 .intro-screen, .game-screen, .subregion-screen, .task-screen { display: none; }
 
@@ -149,15 +149,17 @@ body {
 }
 
 /*************************************************************
- * REGIONSSPEZIFISCHE STILE
- * In der Region "Fluss" soll der Task-Screen einen
- * weißen, halbtransparenten Hintergrund hinter schwarzem Text erhalten.
+ * REGIONSSPEZIFISCHE STILE FÜR FLUSS
+ * Nur im Flussbereich sollen die Textpassagen (Titel und Frage)
+ * einen weißen Hintergrund mit 50% Transparenz erhalten.
  *************************************************************/
-.region-fluss .task-screen {
-    background: rgba(255,255,255,0.5);
+.region-fluss .title-text,
+.region-fluss .normal-text {
+    display: inline-block;
+    background: rgba(255,255,255,0.5); /* Weiß mit 50% Transparenz */
     color: black;
-    padding: 20px;
-    box-sizing: border-box;
+    padding: 10px;
+    border-radius: 5px;
 }
 
 /*************************************************************
