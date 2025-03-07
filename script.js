@@ -90,9 +90,9 @@ const questions = {
     "Fluss aufwärts": [{
         question: "Ordne die Begriffe richtig zu...",
         pairs: [
-            { term: "caelo", match: "Himmel" },
-            { term: "sacris", match: "Opfer" },
-            { term: "deos", match: "Götter" },
+            { term: "caelo",    match: "Himmel" },
+            { term: "sacris",   match: "Opfer" },
+            { term: "deos",     match: "Götter" },
             { term: "imperium", match: "Macht" }
         ]
     }],
@@ -126,8 +126,7 @@ function applySubregionClass(subregion) {
     const taskScreen = document.getElementById("task-screen");
     taskScreen.classList.remove(
       "question-weg", "question-baum", "question-die-bewohner",
-      "question-der-markt", "question-fluss-aufwärts",
-      "question-der-hafen", "question-fluss-abwärts"
+      "question-der-markt", "question-fluss-aufwärts", "question-der-hafen", "question-fluss-abwärts"
     );
     const newClass = subregionToClassName(subregion);
     taskScreen.classList.add(newClass);
@@ -164,7 +163,6 @@ function showSubregions(region) {
 
 /***********************************************************
  *  startTask(subregion)
- *  => Einmalige Beantwortung
  ***********************************************************/
 function startTask(subregion) {
     currentSubregion = subregion;
@@ -325,7 +323,7 @@ function handleMultiChoice(index, button, correctAnswers, subregion) {
 }
 
 /***********************************************************
- *  FLUSS ABWÄRTS: 5-fach Mehrfachauswahl
+ *  FLUSS ABWÄRTS: 5er-Auswahl
  ***********************************************************/
 function setMatchingColors(index, button) {
     const colors = ["matching-blue", "matching-yellow", "matching-pink", "matching-green"];
@@ -508,8 +506,7 @@ function applySubregionClass(subregion) {
     const taskScreen = document.getElementById("task-screen");
     taskScreen.classList.remove(
       "question-weg", "question-baum", "question-die-bewohner",
-      "question-der-markt", "question-fluss-aufwärts",
-      "question-der-hafen", "question-fluss-abwärts"
+      "question-der-markt", "question-fluss-aufwärts", "question-der-hafen", "question-fluss-abwärts"
     );
     const newClass = subregionToClassName(subregion);
     taskScreen.classList.add(newClass);
