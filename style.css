@@ -47,10 +47,12 @@ body {
     font-size: 2em;
     font-weight: bold;
     margin: 10px 0;
+    display: block;
 }
 .normal-text {
     margin: 10px 0 20px;
     line-height: 1.4;
+    display: block;
 }
 
 /*************************************************************
@@ -155,11 +157,11 @@ body {
  *************************************************************/
 .region-fluss .title-text,
 .region-fluss .normal-text {
-    background: rgba(255,255,255,0.5);
+    background: rgba(255,255,255,0.5); /* Weiß, 50% transparent */
     color: black;
     padding: 5px;
     border-radius: 5px;
-    display: inline;
+    display: block;
 }
 
 /*************************************************************
