@@ -90,9 +90,9 @@ const questions = {
     "Fluss aufwärts": [{
         question: "Ordne die Begriffe richtig zu...",
         pairs: [
-            { term: "caelo",    match: "Himmel" },
-            { term: "sacris",   match: "Opfer" },
-            { term: "deos",     match: "Götter" },
+            { term: "caelo", match: "Himmel" },
+            { term: "sacris", match: "Opfer" },
+            { term: "deos", match: "Götter" },
             { term: "imperium", match: "Macht" }
         ]
     }],
@@ -126,7 +126,8 @@ function applySubregionClass(subregion) {
     const taskScreen = document.getElementById("task-screen");
     taskScreen.classList.remove(
       "question-weg", "question-baum", "question-die-bewohner",
-      "question-der-markt", "question-fluss-aufwärts", "question-der-hafen", "question-fluss-abwärts"
+      "question-der-markt", "question-fluss-aufwärts",
+      "question-der-hafen", "question-fluss-abwärts"
     );
     const newClass = subregionToClassName(subregion);
     taskScreen.classList.add(newClass);
@@ -243,11 +244,11 @@ function startTask(subregion) {
                     setAnswerStatus(subregion, "correct");
                     stars++;
                     updateStars();
-                    alert("Richtig! ⭐ Du hast einen Stern erhalten.");
+                    alert("Richtig! Du hast eine Mispel erhalten.");
                     handleNextTask(subregion);
                 } else {
                     setAnswerStatus(subregion, "wrong");
-                    alert("Falsch! ❌ Keine Wiederholung möglich.");
+                    alert("Falsch! Keine Wiederholung möglich.");
                     handleNextTask(subregion);
                 }
             };
@@ -312,11 +313,11 @@ function handleMultiChoice(index, button, correctAnswers, subregion) {
             setAnswerStatus(subregion, "correct");
             stars++;
             updateStars();
-            alert("Richtig! ⭐ Du hast einen Stern erhalten.");
+            alert("Richtig! Du hast eine Mispel erhalten.");
             handleNextTask(subregion);
         } else {
             setAnswerStatus(subregion, "wrong");
-            alert("Falsch! ❌ Keine Wiederholung möglich.");
+            alert("Falsch! Keine Wiederholung möglich.");
             handleNextTask(subregion);
         }
     }
@@ -345,10 +346,10 @@ function checkFiveAnswers(correctAnswers) {
         setAnswerStatus(currentSubregion, "correct");
         stars++;
         updateStars();
-        alert("Richtig! ⭐ Du hast einen Stern erhalten.");
+        alert("Richtig! Du hast eine Mispel erhalten.");
     } else {
         setAnswerStatus(currentSubregion, "wrong");
-        alert("Falsch! ❌ Keine Wiederholung möglich.");
+        alert("Falsch! Keine Wiederholung möglich.");
     }
     setTimeout(backToSubregions, 1000);
 }
@@ -480,10 +481,10 @@ function checkFlussMatches(pairs) {
         setAnswerStatus(currentSubregion, "correct");
         stars++;
         updateStars();
-        alert("Richtig! ⭐ Du hast einen Stern erhalten.");
+        alert("Richtig! Du hast eine Mispel erhalten.");
     } else {
         setAnswerStatus(currentSubregion, "wrong");
-        alert("Falsch! ❌ Keine Wiederholung möglich.");
+        alert("Falsch! Keine Wiederholung möglich.");
     }
     setTimeout(backToSubregions, 1000);
 }
