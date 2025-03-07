@@ -507,7 +507,8 @@ function applySubregionClass(subregion) {
     const taskScreen = document.getElementById("task-screen");
     taskScreen.classList.remove(
       "question-weg", "question-baum", "question-die-bewohner",
-      "question-der-markt", "question-fluss-aufwärts", "question-der-hafen", "question-fluss-abwärts"
+      "question-der-markt", "question-fluss-aufwärts",
+      "question-der-hafen", "question-fluss-abwärts"
     );
     const newClass = subregionToClassName(subregion);
     taskScreen.classList.add(newClass);
