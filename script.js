@@ -101,11 +101,7 @@ const questions = {
         ],
         correct: 1
       },
-      {
-        question: "Gib den AcI-Auslöser an.",
-        answers: ["dicebant", "iuribus", "praeditos"],
-        correct: 0
-      },
+      
       {
         question: "Gib den AcI-Auslöser des Satzes an.",
         answers: ["dicebant", "nullis", "iuribus", "praeditos"],
