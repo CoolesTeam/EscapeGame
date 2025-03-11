@@ -25,7 +25,7 @@ let wegTaskIndex = 0;
 let dieBewohnerTaskIndex = 0;
 let marketTaskIndex = 0;
 
-// Status der Aufgaben: Für "Weg" jetzt Array mit drei Aufgaben, sonst wie gehabt
+// Status der Aufgaben
 let answeredStatus = {
     "Weg": ["unanswered", "unanswered", "unanswered"],
     "Baum": "unanswered",
@@ -245,10 +245,7 @@ function showSubregions(region) {
         btn.onclick = () => {
             if (region === "dorf" && sub === "Die Bewohner") dieBewohnerTaskIndex = 0;
             if (region === "dorf" && sub === "Der Markt") marketTaskIndex = 0;
-            if (region === "wald" && sub === "Weg") {
-                // Für "Weg" verwenden wir unseren neuen Index
-                // (Initialwert 0, später hochzählen)
-            }
+            // Für "Weg" wird kein Reset benötigt, da wegTaskIndex bereits initial 0 ist
             startTask(sub);
         };
         container.appendChild(btn);
@@ -369,11 +366,20 @@ function setAnswerStatus(subregion, result) {
 function handleNextTask(subregion) {
     let tasks = questions[subregion];
     if (Array.isArray(tasks) && tasks.length > 1) {
-        if (subregion === "Die Bewohner") dieBewohnerTaskIndex++;
-        if (subregion === "Der Markt") marketTaskIndex++;
-        if (subregion === "Weg") wegTaskIndex++;
+        if (subregion === "Die Bewohner") {
+            dieBewohnerTaskIndex++;
+        } else if (subregion === "Der Markt") {
+            marketTaskIndex++;
+        } else if (subregion === "Weg") {
+            wegTaskIndex++;
+        }
     }
-    setTimeout(backToSubregions, 1000);
+    // Bei "Weg" automatisch nächsten Task laden, falls vorhanden
+    if (subregion === "Weg" && wegTaskIndex < questions["Weg"].length) {
+        setTimeout(() => startTask("Weg"), 1000);
+    } else {
+        setTimeout(backToSubregions, 1000);
+    }
 }
 
 function handleMultiChoice(index, button, correctAnswers, subregion) {
