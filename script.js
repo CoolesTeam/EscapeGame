@@ -46,14 +46,35 @@ const subregions = {
 
 /***********************************************************
  *  FRAGEN & ANTWORTEN
- *  ACHTUNG: Bei "Die Bewohner" wurde die erste Frage angepasst.
+ *  ACHTUNG: In "Weg" wurden zwei weitere Aufgaben hinzugefügt.
  ***********************************************************/
 const questions = {
-    "Weg": [{
+    "Weg": [
+      {
         question: "Finde das Relativpronomen und klicke es an.",
         answers: ["Sunt", "item", "quae", "appellantur"],
         correct: 2
-    }],
+      },
+      {
+        question: "Finde die Verben und markiere sie!",
+        answers: ["Sunt", "item", "quae", "appellantur", "aleces"],
+        correct: [0, 3]
+      },
+      {
+        question: "Konjugiere die Verben in der richtigen Reihenfolge.",
+        ordering: true,
+        groups: [
+          {
+            prompt: "Konjugiere das Verb 'Sunt':",
+            words: ["sum", "es", "est", "sumus", "estis", "sunt"]
+          },
+          {
+            prompt: "Konjugiere das Verb 'Appellare':",
+            words: ["appello", "appellas", "appellat", "appellamus", "appellatis", "appellant"]
+          }
+        ]
+      }
+    ],
     "Baum": [{
         question: "Suche das Subjekt des Satzes...",
         answers: ["bos", "cervi figura", "cornibus", "quae", "nota sunt"],
@@ -109,7 +130,93 @@ const questions = {
 };
 
 /***********************************************************
- *  HILFSFUNKTIONEN FÜR REGION- & SUBREGION-KLASSEN
+ *  ORDERING AUFGABEN (NEU)
+ ***********************************************************/
+/* Globale Variablen für Ordering-Task */
+let currentOrderingGroups = null;
+let currentOrderingGroupIndex = 0;
+let currentOrderingSelection = [];
+
+function setupOrderingTask(groups) {
+    currentOrderingGroups = groups;
+    currentOrderingGroupIndex = 0;
+    currentOrderingSelection = [];
+    setupOrderingGroup(currentOrderingGroups[currentOrderingGroupIndex]);
+}
+
+function setupOrderingGroup(group) {
+    // Zeige den Prompt im Fragebereich
+    document.getElementById("question-text").textContent = group.prompt;
+    // Erstelle Buttons für die Wörter (shuffle optional)
+    let words = group.words.slice(); // Kopie
+    // Shuffle (optional – hier einfache Implementierung)
+    for (let i = words.length - 1; i > 0; i--) {
+        let j = Math.floor(Math.random() * (i + 1));
+        [words[i], words[j]] = [words[j], words[i]];
+    }
+    // Erstelle die Buttons
+    let container = document.getElementById("answers-container");
+    container.innerHTML = ""; // Leeren
+    currentOrderingSelection = [];
+    // Erstelle einen Container für die ausgewählte Reihenfolge
+    let orderDisplay = document.createElement("div");
+    orderDisplay.id = "order-display";
+    orderDisplay.style.marginBottom = "10px";
+    container.appendChild(orderDisplay);
+    // Erstelle Buttons für jedes Wort
+    words.forEach(word => {
+        let btn = document.createElement("button");
+        btn.textContent = word;
+        btn.classList.add("button", "answer-button");
+        btn.onclick = () => selectOrderingWord(word, btn, group);
+        container.appendChild(btn);
+    });
+}
+
+function selectOrderingWord(word, button, group) {
+    // Füge die Auswahl hinzu, deaktiviere Button
+    currentOrderingSelection.push(word);
+    button.disabled = true;
+    // Weise eine Farbe zu (wie bei Multi-Choice)
+    const colors = ["matching-blue", "matching-yellow", "matching-pink", "matching-green"];
+    let colorClass = colors[currentOrderingSelection.length % colors.length];
+    button.classList.add(colorClass);
+    // Zeige aktuelle Auswahl an
+    document.getElementById("order-display").textContent = "Auswahl: " + currentOrderingSelection.join(", ");
+    // Prüfe, ob alle Wörter ausgewählt wurden
+    if (currentOrderingSelection.length === group.words.length) {
+        checkOrderingGroup(group);
+    }
+}
+
+function checkOrderingGroup(group) {
+    let correct = true;
+    for (let i = 0; i < group.words.length; i++) {
+        if (currentOrderingSelection[i] !== group.words[i]) {
+            correct = false;
+            break;
+        }
+    }
+    if (correct) {
+        alert("Richtig! Du hast eine Mispel erhalten.");
+        stars++;
+        updateStars();
+        currentOrderingGroupIndex++;
+        if (currentOrderingGroupIndex < currentOrderingGroups.length) {
+            // Nächste Gruppe starten
+            setupOrderingGroup(currentOrderingGroups[currentOrderingGroupIndex]);
+        } else {
+            // Alle Ordering-Gruppen abgeschlossen
+            handleNextTask(currentSubregion);
+        }
+    } else {
+        alert("Falsch! Keine Wiederholung möglich.");
+        handleNextTask(currentSubregion);
+    }
+}
+
+/***********************************************************
+ *  HILFSFUNKTIONEN FÜR STANDARD-AUFGABEN
  ***********************************************************/
 function applyRegionClass(region) {
     document.body.classList.remove("region-wald", "region-dorf", "region-fluss");
@@ -211,6 +318,12 @@ function startTask(subregion) {
         answerContainer.appendChild(p);
     }
 
+    // Wenn es sich um eine Ordering-Aufgabe handelt
+    if (chosenTask.ordering) {
+        setupOrderingTask(chosenTask.groups);
+        return;
+    }
+
     if (subregion === "Fluss aufwärts") {
         setupMatchingGame(chosenTask.pairs);
         return;
@@ -237,7 +350,6 @@ function startTask(subregion) {
         let btn = document.createElement("button");
         btn.textContent = answer;
         btn.classList.add("button", "answer-button");
-
         if (!Array.isArray(chosenTask.correct)) {
             btn.onclick = () => {
                 if (idx === chosenTask.correct) {
@@ -305,7 +417,6 @@ function handleMultiChoice(index, button, correctAnswers, subregion) {
             alert(`Du kannst nur ${maxLen} Antworten auswählen!`);
         }
     }
-
     if (selectedAnswers.length === maxLen) {
         let sortedSel = [...selectedAnswers].sort();
         let sortedCor = [...correctAnswers].sort();
@@ -329,7 +440,6 @@ function handleMultiChoice(index, button, correctAnswers, subregion) {
 function setMatchingColors(index, button) {
     const colors = ["matching-blue", "matching-yellow", "matching-pink", "matching-green"];
     button.classList.remove(...colors);
-
     if (selectedAnswers.includes(index)) {
         selectedAnswers = selectedAnswers.filter(i => i !== index);
     } else {
@@ -355,142 +465,82 @@ function checkFiveAnswers(correctAnswers) {
 }
 
 /***********************************************************
- *  FLUSS AUFWÄRTS: Zuordnungs-Spiel (1 Versuch)
+ *  ORDERING AUFGABEN (NEU)
  ***********************************************************/
-const pairColors = ["matching-blue", "matching-yellow", "matching-pink", "matching-green"];
-let colorIndex = 0;
-let selectedTerm = null;
-let selectedMatch = null;
-let selectedPairs = {};
-let colorMap = {};
+let currentOrderingGroups = null;
+let currentOrderingGroupIndex = 0;
+let currentOrderingSelection = [];
 
-function setupMatchingGame(pairs) {
+function setupOrderingTask(groups) {
+    currentOrderingGroups = groups;
+    currentOrderingGroupIndex = 0;
+    currentOrderingSelection = [];
+    setupOrderingGroup(currentOrderingGroups[currentOrderingGroupIndex]);
+}
+
+function setupOrderingGroup(group) {
+    // Zeige den Prompt
+    document.getElementById("question-text").textContent = group.prompt;
+    // Erstelle zufällig sortierte Buttons für die Wörter
+    let words = group.words.slice();
+    for (let i = words.length - 1; i > 0; i--) {
+        let j = Math.floor(Math.random() * (i + 1));
+        [words[i], words[j]] = [words[j], words[i]];
+    }
     let container = document.getElementById("answers-container");
-    container.innerHTML = "<p>Verbinde Orange (lateinische Wörter) mit Hellblau (deutsche Bedeutung) per Klick!</p>";
-
-    selectedTerm = null;
-    selectedMatch = null;
-    selectedPairs = {};
-    colorMap = {};
-    colorIndex = 0;
-
-    let leftDiv = document.createElement("div");
-    let rightDiv = document.createElement("div");
-    leftDiv.style.display = "inline-block";
-    leftDiv.style.marginRight = "50px";
-    leftDiv.style.verticalAlign = "top";
-    rightDiv.style.display = "inline-block";
-    rightDiv.style.verticalAlign = "top";
-
-    pairs.forEach(pair => {
-        let leftBtn = document.createElement("button");
-        leftBtn.textContent = pair.term;
-        leftBtn.style.backgroundColor = "orange";
-        leftBtn.style.color = "white";
-        leftBtn.style.padding = "20px 30px";
-        leftBtn.style.fontSize = "16px";
-        leftBtn.style.margin = "5px";
-        leftBtn.onclick = () => selectFlussItem(pair.term, leftBtn, "term");
-        leftDiv.appendChild(leftBtn);
+    container.innerHTML = "";
+    currentOrderingSelection = [];
+    let orderDisplay = document.createElement("div");
+    orderDisplay.id = "order-display";
+    orderDisplay.style.marginBottom = "10px";
+    container.appendChild(orderDisplay);
+    words.forEach(word => {
+        let btn = document.createElement("button");
+        btn.textContent = word;
+        btn.classList.add("button", "answer-button");
+        btn.onclick = () => selectOrderingWord(word, btn, group);
+        container.appendChild(btn);
     });
-    pairs.forEach(pair => {
-        let rightBtn = document.createElement("button");
-        rightBtn.textContent = pair.match;
-        rightBtn.style.backgroundColor = "lightblue";
-        rightBtn.style.color = "black";
-        rightBtn.style.padding = "20px 30px";
-        rightBtn.style.fontSize = "16px";
-        rightBtn.style.margin = "5px";
-        rightBtn.onclick = () => selectFlussItem(pair.match, rightBtn, "match");
-        rightDiv.appendChild(rightBtn);
-    });
-    container.appendChild(leftDiv);
-    container.appendChild(rightDiv);
-
-    let checkBtn = document.createElement("button");
-    checkBtn.textContent = "Überprüfen";
-    checkBtn.classList.add("button");
-    checkBtn.style.marginTop = "20px";
-    checkBtn.onclick = () => checkFlussMatches(pairs);
-    container.appendChild(document.createElement("br"));
-    container.appendChild(checkBtn);
 }
 
-function selectFlussItem(value, button, type) {
-    if (type === "term") {
-        selectedTerm = { value, button };
-    } else {
-        selectedMatch = { value, button };
-    }
-
-    if (selectedTerm && selectedMatch) {
-        addPair(selectedTerm.value, selectedTerm.button, selectedMatch.value, selectedMatch.button);
-        selectedTerm = null;
-        selectedMatch = null;
+function selectOrderingWord(word, button, group) {
+    currentOrderingSelection.push(word);
+    button.disabled = true;
+    const colors = ["matching-blue", "matching-yellow", "matching-pink", "matching-green"];
+    let colorClass = colors[currentOrderingSelection.length % colors.length];
+    button.classList.add(colorClass);
+    document.getElementById("order-display").textContent = "Auswahl: " + currentOrderingSelection.join(", ");
+    if (currentOrderingSelection.length === group.words.length) {
+        checkOrderingGroup(group);
     }
 }
 
-function addPair(term, termBtn, match, matchBtn) {
-    if (selectedPairs[term]) {
-        let oldMatch = selectedPairs[term];
-        removeColor(term, oldMatch);
-        delete selectedPairs[term];
-    }
-    for (let t in selectedPairs) {
-        if (selectedPairs[t] === match) {
-            removeColor(t, match);
-            delete selectedPairs[t];
-            break;
-        }
-    }
-    selectedPairs[term] = match;
-    let c = pairColors[colorIndex];
-    colorIndex = (colorIndex + 1) % pairColors.length;
-    colorMap[term] = c;
-    colorMap[match] = c;
-    termBtn.classList.add(c);
-    matchBtn.classList.add(c);
-}
-
-function removeColor(term, match) {
-    let cTerm = colorMap[term];
-    let cMatch = colorMap[match];
-    if (cTerm) {
-        document.querySelectorAll("button").forEach(b => {
-            if (b.textContent === term) b.classList.remove(cTerm);
-        });
-        delete colorMap[term];
-    }
-    if (cMatch) {
-        document.querySelectorAll("button").forEach(b => {
-            if (b.textContent === match) b.classList.remove(cMatch);
-        });
-        delete colorMap[match];
-    }
-}
-
-function checkFlussMatches(pairs) {
+function checkOrderingGroup(group) {
     let correct = true;
-    for (let p of pairs) {
-        if (!selectedPairs[p.term] || selectedPairs[p.term] !== p.match) {
+    for (let i = 0; i < group.words.length; i++) {
+        if (currentOrderingSelection[i] !== group.words[i]) {
             correct = false;
             break;
         }
     }
     if (correct) {
-        setAnswerStatus(currentSubregion, "correct");
+        alert("Richtig! Du hast eine Mispel erhalten.");
         stars++;
         updateStars();
-        alert("Richtig! Du hast eine Mispel erhalten.");
+        currentOrderingGroupIndex++;
+        if (currentOrderingGroupIndex < currentOrderingGroups.length) {
+            setupOrderingGroup(currentOrderingGroups[currentOrderingGroupIndex]);
+        } else {
+            handleNextTask(currentSubregion);
+        }
     } else {
-        setAnswerStatus(currentSubregion, "wrong");
         alert("Falsch! Keine Wiederholung möglich.");
+        handleNextTask(currentSubregion);
     }
-    setTimeout(backToSubregions, 1000);
 }
 
 /***********************************************************
- *  applyRegionClass & applySubregionClass
+ *  STANDARD-FUNKTIONEN
  ***********************************************************/
 function applyRegionClass(region) {
     document.body.classList.remove("region-wald", "region-dorf", "region-fluss");
