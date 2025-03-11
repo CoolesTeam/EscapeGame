@@ -152,8 +152,8 @@ body {
 
 /*************************************************************
  * REGIONSSPEZIFISCHE STILE FÜR FLUSS
- * Nur die Texte im Task-Screen (Frage & Titel)
- * bekommen einen weißen, halbtransparenten Hintergrund – in Block-Darstellung.
+ * Nur die Texte im Task-Screen (Frage & Titel) bekommen
+ * einen weißen, halbtransparenten Hintergrund – in Block-Darstellung.
  *************************************************************/
 .region-fluss .title-text,
 .region-fluss .normal-text {
