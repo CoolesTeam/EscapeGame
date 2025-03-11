@@ -111,9 +111,7 @@ const questions = {
     "Der Markt": [
       {
         question: "Klicke die drei Stämme an:
-            Gallia est omnis divisa in partes tres, quarum unam 
-incolunt Belgae, aliam Aquitani, tertiam qui ipsorum lingua Celtae, 
-nostra Galli appellantur....",
+        sentence: "Gallia est omnis divisa in partes tres, quarum unam incolunt Belgae, aliam Aquitani, tertiam qui ipsorum lingua Celtae, nostra Galli appellantur...",
         answers: ["Belgae", "Gallia", "Aquitani", "Celtae", "Galli"],
         correct: [0, 2, 3]
       },
