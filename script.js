@@ -120,7 +120,8 @@ const questions = {
         correct: [0, 2, 3]
       },
       {
-        question: "Markiere die beiden Flüsse. Gallia est omnis divisa in parttes tres, quarum unam incolunt Belgae, aliam Aquitani, tertiam qui ipsorum lingua Celtae nostra galli appellantur.",
+        question: "Markiere die beiden Flüsse. Eorum una pars, quam Gallos obtinere dictum est, initium capit a flumine Rhodano, continetur Garumna flumine, Oceano, finibus Belgarum.
+.",
         answers: ["Rhodano", "Garumna", "Belgarum", "Aquitani"],
         correct: [0, 1]
       }
