@@ -28,7 +28,7 @@ let marketTaskIndex = 0;
 // Status der Aufgaben
 let answeredStatus = {
     "Weg": ["unanswered", "unanswered", "unanswered"],
-    "Baum": "unanswered",
+    "Baum": ["unanswered", "unanswered"],
     "Die Bewohner": ["unanswered", "unanswered"],
     "Der Markt": ["unanswered", "unanswered"],
     "Fluss aufwärts": "unanswered",
@@ -76,11 +76,19 @@ const questions = {
         ]
       }
     ],
-    "Baum": [{
+    "Baum": [
+      {
         question: "Suche das Subjekt des Satzes...",
         answers: ["bos", "cervi figura", "cornibus", "quae", "nota sunt"],
-        correct: 0
-    }],
+        correct: 0,
+        sentence: "Est bos cervi figura, cuius a media fronte inter aures unum cornu exsistit excelsius magisque directum his, quae nobis nota sunt, cornibus."
+      },
+      {
+        question: "Untersuche die Phrase: „quae nobis nota sunt” genauer und gib an, in welchem Kasus “nobis” steht. Klicke den richtigen Kasus an.",
+        answers: ["Nominativ", "Genitiv", "Dativ", "Akkusativ", "Ablativ"],
+        correct: 2
+      }
+    ],
     "Die Bewohner": [
       {
         question: "Übersetze: Dicebant servos mispel iuribus praeditos esse et penitus a dominis pendere",
@@ -245,7 +253,7 @@ function showSubregions(region) {
         btn.onclick = () => {
             if (region === "dorf" && sub === "Die Bewohner") dieBewohnerTaskIndex = 0;
             if (region === "dorf" && sub === "Der Markt") marketTaskIndex = 0;
-            // Für "Weg" wird kein Reset benötigt, da wegTaskIndex bereits initial 0 ist
+            // Für "Weg" wird der wegTaskIndex verwendet (initial 0)
             startTask(sub);
         };
         container.appendChild(btn);
@@ -374,7 +382,7 @@ function handleNextTask(subregion) {
             wegTaskIndex++;
         }
     }
-    // Bei "Weg" automatisch nächsten Task laden, falls vorhanden
+    // Bei "Weg" automatisch nächsten Task laden, wenn noch vorhanden
     if (subregion === "Weg" && wegTaskIndex < questions["Weg"].length) {
         setTimeout(() => startTask("Weg"), 1000);
     } else {
