@@ -22,10 +22,11 @@ let selectedAnswers = [];
 
 // Indizes für Subregionen mit mehreren Aufgaben
 let wegTaskIndex = 0;
+let baumTaskIndex = 0;
 let dieBewohnerTaskIndex = 0;
 let marketTaskIndex = 0;
 
-// Status der Aufgaben
+// Status der Aufgaben – für "Weg", "Baum", "Die Bewohner" und "Der Markt" als Array
 let answeredStatus = {
     "Weg": ["unanswered", "unanswered", "unanswered"],
     "Baum": ["unanswered", "unanswered"],
@@ -47,7 +48,8 @@ const subregions = {
 
 /***********************************************************
  *  FRAGEN & ANTWORTEN
- *  ACHTUNG: Für "Weg" wurden zwei weitere Aufgaben hinzugefügt.
+ *  ACHTUNG: Für "Weg" wurden drei Aufgaben hinzugefügt,
+ *  für "Baum" zwei Aufgaben.
  ***********************************************************/
 const questions = {
     "Weg": [
@@ -79,9 +81,9 @@ const questions = {
     "Baum": [
       {
         question: "Suche das Subjekt des Satzes...",
+        sentence: "Est bos cervi figura, cuius a media fronte inter aures unum cornu exsistit excelsius magisque directum his, quae nobis nota sunt, cornibus.",
         answers: ["bos", "cervi figura", "cornibus", "quae", "nota sunt"],
-        correct: 0,
-        sentence: "Est bos cervi figura, cuius a media fronte inter aures unum cornu exsistit excelsius magisque directum his, quae nobis nota sunt, cornibus."
+        correct: 0
       },
       {
         question: "Untersuche die Phrase: „quae nobis nota sunt” genauer und gib an, in welchem Kasus “nobis” steht. Klicke den richtigen Kasus an.",
@@ -253,7 +255,9 @@ function showSubregions(region) {
         btn.onclick = () => {
             if (region === "dorf" && sub === "Die Bewohner") dieBewohnerTaskIndex = 0;
             if (region === "dorf" && sub === "Der Markt") marketTaskIndex = 0;
-            // Für "Weg" wird der wegTaskIndex verwendet (initial 0)
+            if (region === "wald" && sub === "Weg") {
+                // Für "Weg" verwenden wir den Index wegTaskIndex (initial 0)
+            }
             startTask(sub);
         };
         container.appendChild(btn);
@@ -280,6 +284,8 @@ function startTask(subregion) {
             idx = marketTaskIndex;
         } else if (subregion === "Weg") {
             idx = wegTaskIndex;
+        } else if (subregion === "Baum") {
+            idx = baumTaskIndex;
         } else {
             idx = 0;
         }
@@ -365,6 +371,8 @@ function setAnswerStatus(subregion, result) {
             answeredStatus[subregion][marketTaskIndex] = result;
         } else if (subregion === "Weg") {
             answeredStatus[subregion][wegTaskIndex] = result;
+        } else if (subregion === "Baum") {
+            answeredStatus[subregion][baumTaskIndex] = result;
         }
     } else {
         answeredStatus[subregion] = result;
@@ -380,11 +388,14 @@ function handleNextTask(subregion) {
             marketTaskIndex++;
         } else if (subregion === "Weg") {
             wegTaskIndex++;
+        } else if (subregion === "Baum") {
+            baumTaskIndex++;
         }
     }
-    // Bei "Weg" automatisch nächsten Task laden, wenn noch vorhanden
-    if (subregion === "Weg" && wegTaskIndex < questions["Weg"].length) {
-        setTimeout(() => startTask("Weg"), 1000);
+    // Bei "Weg" und "Baum" automatisch nächsten Task laden, falls noch vorhanden
+    if ((subregion === "Weg" && wegTaskIndex < questions["Weg"].length) ||
+        (subregion === "Baum" && baumTaskIndex < questions["Baum"].length)) {
+        setTimeout(() => startTask(subregion), 1000);
     } else {
         setTimeout(backToSubregions, 1000);
     }
