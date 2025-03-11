@@ -157,7 +157,7 @@ body {
  *************************************************************/
 .region-fluss .title-text,
 .region-fluss .normal-text {
-    background: rgba(255,255,255,0.5); /* Weiß, 50% transparent */
+    background: rgba(255,255,255,0.5);
     color: black;
     padding: 5px;
     border-radius: 5px;
