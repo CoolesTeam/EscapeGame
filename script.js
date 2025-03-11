@@ -101,7 +101,11 @@ const questions = {
         ],
         correct: 1
       },
-      
+      {
+        question: "Gib den AcI-Auslöser an.",
+        answers: ["dicebant", "iuribus", "praeditos"],
+        correct: 0
+      },
       {
         question: "Gib den AcI-Auslöser des Satzes an.",
         answers: ["dicebant", "nullis", "iuribus", "praeditos"],
@@ -110,7 +114,7 @@ const questions = {
     ],
     "Der Markt": [
       {
-        question: "Klicke die drei Stämme an:
+        question: "Klicke die drei Stämme an:",
         sentence: "Gallia est omnis divisa in partes tres, quarum unam incolunt Belgae, aliam Aquitani, tertiam qui ipsorum lingua Celtae, nostra Galli appellantur...",
         answers: ["Belgae", "Gallia", "Aquitani", "Celtae", "Galli"],
         correct: [0, 2, 3]
