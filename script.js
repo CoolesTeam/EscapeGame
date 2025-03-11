@@ -26,7 +26,7 @@ let baumTaskIndex = 0;
 let dieBewohnerTaskIndex = 0;
 let marketTaskIndex = 0;
 
-// Status der Aufgaben – für "Weg", "Baum", "Die Bewohner" und "Der Markt" als Array
+// Status der Aufgaben – für Mehrfachaufgaben als Array
 let answeredStatus = {
     "Weg": ["unanswered", "unanswered", "unanswered"],
     "Baum": ["unanswered", "unanswered"],
@@ -49,7 +49,7 @@ const subregions = {
 /***********************************************************
  *  FRAGEN & ANTWORTEN
  *  ACHTUNG: Für "Weg" wurden drei Aufgaben hinzugefügt,
- *  für "Baum" zwei Aufgaben und für "Die Bewohner" jetzt drei.
+ *  für "Baum" zwei Aufgaben und für "Die Bewohner" drei Aufgaben.
  ***********************************************************/
 const questions = {
     "Weg": [
@@ -292,11 +292,20 @@ function startTask(subregion) {
         } else {
             idx = 0;
         }
-        if (status[idx] !== "unanswered") {
-            alert("Diese Aufgabe wurde bereits beantwortet. Keine Wiederholung möglich!");
+        // Überspringe bereits beantwortete Aufgaben (egal ob richtig oder falsch)
+        while (idx < tasks.length && status[idx] !== "unanswered") {
+            idx++;
+        }
+        if (idx >= tasks.length) {
+            alert("Alle Aufgaben in dieser Kategorie wurden bereits beantwortet.");
             backToSubregions();
             return;
         }
+        // Aktualisiere den entsprechenden Index
+        if (subregion === "Die Bewohner") dieBewohnerTaskIndex = idx;
+        else if (subregion === "Der Markt") marketTaskIndex = idx;
+        else if (subregion === "Weg") wegTaskIndex = idx;
+        else if (subregion === "Baum") baumTaskIndex = idx;
         chosenTask = tasks[idx];
     } else {
         if (status !== "unanswered") {
@@ -396,7 +405,8 @@ function handleNextTask(subregion) {
         }
     }
     if ((subregion === "Weg" && wegTaskIndex < questions["Weg"].length) ||
-        (subregion === "Baum" && baumTaskIndex < questions["Baum"].length)) {
+        (subregion === "Baum" && baumTaskIndex < questions["Baum"].length) ||
+        (subregion === "Die Bewohner" && dieBewohnerTaskIndex < questions["Die Bewohner"].length)) {
         setTimeout(() => startTask(subregion), 1000);
     } else {
         setTimeout(backToSubregions, 1000);
