@@ -101,7 +101,11 @@ const questions = {
         ],
         correct: 1
       },
-      
+      {
+        question: "Gib den AcI-Auslöser an.",
+        answers: ["dicebant", "iuribus", "praeditos"],
+        correct: 0
+      },
       {
         question: "Gib den AcI-Auslöser des Satzes an.",
         answers: ["dicebant", "nullis", "iuribus", "praeditos"],
@@ -256,7 +260,6 @@ function showSubregions(region) {
         btn.onclick = () => {
             if (region === "dorf" && sub === "Die Bewohner") dieBewohnerTaskIndex = 0;
             if (region === "dorf" && sub === "Der Markt") marketTaskIndex = 0;
-            // Für "Weg" und "Baum" nutzen wir die jeweiligen Indizes
             startTask(sub);
         };
         container.appendChild(btn);
@@ -288,7 +291,7 @@ function startTask(subregion) {
         } else {
             idx = 0;
         }
-        // Überspringe bereits beantwortete Aufgaben (egal ob richtig oder falsch)
+        // Überspringe bereits beantwortete Aufgaben
         while (idx < tasks.length && status[idx] !== "unanswered") {
             idx++;
         }
@@ -400,9 +403,12 @@ function handleNextTask(subregion) {
             baumTaskIndex++;
         }
     }
-    if ((subregion === "Weg" && wegTaskIndex < questions["Weg"].length) ||
+    if (
+        (subregion === "Weg" && wegTaskIndex < questions["Weg"].length) ||
         (subregion === "Baum" && baumTaskIndex < questions["Baum"].length) ||
-        (subregion === "Die Bewohner" && dieBewohnerTaskIndex < questions["Die Bewohner"].length)) {
+        (subregion === "Die Bewohner" && dieBewohnerTaskIndex < questions["Die Bewohner"].length) ||
+        (subregion === "Der Markt" && marketTaskIndex < questions["Der Markt"].length)
+    ) {
         setTimeout(() => startTask(subregion), 1000);
     } else {
         setTimeout(backToSubregions, 1000);
