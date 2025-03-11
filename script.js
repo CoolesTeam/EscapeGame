@@ -30,7 +30,7 @@ let marketTaskIndex = 0;
 let answeredStatus = {
     "Weg": ["unanswered", "unanswered", "unanswered"],
     "Baum": ["unanswered", "unanswered"],
-    "Die Bewohner": ["unanswered", "unanswered"],
+    "Die Bewohner": ["unanswered", "unanswered", "unanswered"],
     "Der Markt": ["unanswered", "unanswered"],
     "Fluss aufwärts": "unanswered",
     "Der Hafen": "unanswered",
@@ -49,7 +49,7 @@ const subregions = {
 /***********************************************************
  *  FRAGEN & ANTWORTEN
  *  ACHTUNG: Für "Weg" wurden drei Aufgaben hinzugefügt,
- *  für "Baum" zwei Aufgaben.
+ *  für "Baum" zwei Aufgaben und für "Die Bewohner" jetzt drei.
  ***********************************************************/
 const questions = {
     "Weg": [
@@ -104,6 +104,11 @@ const questions = {
       {
         question: "Gib den AcI-Auslöser an.",
         answers: ["dicebant", "iuribus", "praeditos"],
+        correct: 0
+      },
+      {
+        question: "Gib den AcI-Auslöser des Satzes an.",
+        answers: ["dicebant", "nullis", "iuribus", "praeditos"],
         correct: 0
       }
     ],
@@ -255,9 +260,7 @@ function showSubregions(region) {
         btn.onclick = () => {
             if (region === "dorf" && sub === "Die Bewohner") dieBewohnerTaskIndex = 0;
             if (region === "dorf" && sub === "Der Markt") marketTaskIndex = 0;
-            if (region === "wald" && sub === "Weg") {
-                // Für "Weg" verwenden wir den Index wegTaskIndex (initial 0)
-            }
+            // Für "Weg" und "Baum" nutzen wir die jeweiligen Indizes
             startTask(sub);
         };
         container.appendChild(btn);
@@ -392,7 +395,6 @@ function handleNextTask(subregion) {
             baumTaskIndex++;
         }
     }
-    // Bei "Weg" und "Baum" automatisch nächsten Task laden, falls noch vorhanden
     if ((subregion === "Weg" && wegTaskIndex < questions["Weg"].length) ||
         (subregion === "Baum" && baumTaskIndex < questions["Baum"].length)) {
         setTimeout(() => startTask(subregion), 1000);
