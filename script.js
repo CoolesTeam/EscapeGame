@@ -120,7 +120,7 @@ const questions = {
         correct: [0, 2, 3]
       },
       {
-        question: "Markiere die beiden Flüsse. Eorum una pars, quam Gallos obtinere dictum est, initium capit a flumine Rhodano, continetur Garumna flumine, Oceano, finibus Belgarum.
+        question: "Markiere die beiden Flüsse. Eorum una pars, quam Gallos obtinere dictum est, initium capit a flumine Rhodano, continetur Garumna flumine, Oceano, finibus Belgarum."
 .",
         answers: ["Rhodano", "Garumna", "Belgarum", "Aquitani"],
         correct: [0, 1]
