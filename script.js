@@ -35,7 +35,7 @@ let answeredStatus = {
     "Die Bewohner": ["unanswered", "unanswered", "unanswered"],
     "Der Markt": ["unanswered", "unanswered"],
     "Fluss aufwärts": ["unanswered", "unanswered", "unanswered"],
-    "Der Hafen": ["unanswered", "unanswered", "unanswered"],
+    "Der Hafen": ["unanswered", "unanswered", "unanswered", "unanswered", "unanswered"],
     "Fluss abwärts": "unanswered"
 };
 
@@ -50,9 +50,9 @@ const subregions = {
 
 /***********************************************************
  *  FRAGEN & ANTWORTEN
- *  ACHTUNG: Für "Weg" wurden drei Aufgaben hinzugefügt,
- *  für "Baum" zwei Aufgaben, für "Die Bewohner" drei Aufgaben,
- *  für "Fluss aufwärts" drei Aufgaben und für "Der Hafen" nun drei Aufgaben.
+ *  ACHTUNG: Für "Weg" wurden drei Aufgaben, für "Baum" zwei,
+ *  für "Die Bewohner" drei, für "Fluss aufwärts" drei und für "Der Hafen"
+ *  nun fünf Aufgaben hinzugefügt.
  ***********************************************************/
 const questions = {
     "Weg": [
@@ -162,6 +162,16 @@ const questions = {
       },
       {
         question: "Unteraufgabe: Die meisten Krieger kämpften in spezieller Ausrüstung.",
+        answers: ["Wahr", "Falsch"],
+        correct: 1
+      },
+      {
+        question: "Ranglisten:\nDie Gesellschaft in Gallien war stark hierarchisch strukturiert. An der Spitze standen die Druiden, die nicht nur religiöse Führer, sondern auch Berater und Lehrer waren. Ihnen folgten die Kriegshäuptlinge, die militärische Anführer der Stämme darstellten. Die breite Masse bestand aus Bauern und Handwerkern, während die Sklaven am unteren Ende der sozialen Hierarchie standen.\n\nWer stand an der Spitze der gallischen Gesellschaft?",
+        answers: ["Die Bauern", "Die Sklaven", "Die Druiden"],
+        correct: 2
+      },
+      {
+        question: "Unteraufgabe: Die Kriegshäuptlinge waren die obersten religiösen Führer in Gallien.",
         answers: ["Wahr", "Falsch"],
         correct: 1
       }
