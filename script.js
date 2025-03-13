@@ -25,7 +25,8 @@ let wegTaskIndex = 0;
 let baumTaskIndex = 0;
 let dieBewohnerTaskIndex = 0;
 let marketTaskIndex = 0;
-let flussAufwaertsTaskIndex = 0;  // Neuer Index für Fluss aufwärts
+let flussAufwaertsTaskIndex = 0;
+let hafenTaskIndex = 0;  // Neuer Index für "Der Hafen"
 
 // Status der Aufgaben – für Mehrfachaufgaben als Array
 let answeredStatus = {
@@ -33,8 +34,8 @@ let answeredStatus = {
     "Baum": ["unanswered", "unanswered"],
     "Die Bewohner": ["unanswered", "unanswered", "unanswered"],
     "Der Markt": ["unanswered", "unanswered"],
-    "Fluss aufwärts": ["unanswered", "unanswered", "unanswered"],  // Jetzt 3 Aufgaben
-    "Der Hafen": "unanswered",
+    "Fluss aufwärts": ["unanswered", "unanswered", "unanswered"],
+    "Der Hafen": ["unanswered", "unanswered", "unanswered"],
     "Fluss abwärts": "unanswered"
 };
 
@@ -50,7 +51,8 @@ const subregions = {
 /***********************************************************
  *  FRAGEN & ANTWORTEN
  *  ACHTUNG: Für "Weg" wurden drei Aufgaben hinzugefügt,
- *  für "Baum" zwei Aufgaben und für "Die Bewohner" drei Aufgaben.
+ *  für "Baum" zwei Aufgaben, für "Die Bewohner" drei Aufgaben,
+ *  für "Fluss aufwärts" drei Aufgaben und für "Der Hafen" nun drei Aufgaben.
  ***********************************************************/
 const questions = {
     "Weg": [
@@ -147,11 +149,23 @@ const questions = {
         ]
       }
     ],
-    "Der Hafen": [{
+    "Der Hafen": [
+      {
         question: "Wie wird dieser Stamm beschrieben? Haec civitas longe plurimum totius Gallie.",
         answers: ["der größte Stamm", "der kleinste Stamm", "der mächtigste Stamm"],
         correct: 2
-    }],
+      },
+      {
+        question: "Krieger:\nEinheitliche Uniformen wie die der Römer gab es bei den Galliern nicht. Manche hochgestellten Krieger trugen bronzene Brustpanzer, doch ein so großes metallenes Objekt war sehr teuer. Die meisten Krieger haben wohl in ihrer Alltagskleidung gekämpft, natürlich ergänzt um Schwert und Schild, der Standardausrüstung für den gallischen Kämpfer.\nGlaubt man den lateinischen Historikern, traten sie oft auch mit nacktem Oberkörper zur Schlacht an.\n\nWas trugen die hochgestellten Krieger der Gallier laut dem Text?",
+        answers: ["Einheitliche Uniformen", "Bronzene Brustpanzer", "Roben"],
+        correct: 1
+      },
+      {
+        question: "Unteraufgabe: Die meisten Krieger kämpften in spezieller Ausrüstung.",
+        answers: ["Wahr", "Falsch"],
+        correct: 1
+      }
+    ],
     "Fluss abwärts": [{
         question: "Markiere alle Adjektive...",
         answers: ["publica", "controversiis", "privata", "disciplinae", "magnus", "magno", "omnibus", "interpretantur"],
@@ -274,6 +288,8 @@ function showSubregions(region) {
         btn.onclick = () => {
             if (region === "dorf" && sub === "Die Bewohner") dieBewohnerTaskIndex = 0;
             if (region === "dorf" && sub === "Der Markt") marketTaskIndex = 0;
+            if (region === "fluss" && sub === "Fluss aufwärts") flussAufwaertsTaskIndex = 0;
+            if (region === "fluss" && sub === "Der Hafen") hafenTaskIndex = 0;
             startTask(sub);
         };
         container.appendChild(btn);
@@ -304,6 +320,8 @@ function startTask(subregion) {
             idx = baumTaskIndex;
         } else if (subregion === "Fluss aufwärts") {
             idx = flussAufwaertsTaskIndex;
+        } else if (subregion === "Der Hafen") {
+            idx = hafenTaskIndex;
         } else {
             idx = 0;
         }
@@ -322,6 +340,7 @@ function startTask(subregion) {
         else if (subregion === "Weg") wegTaskIndex = idx;
         else if (subregion === "Baum") baumTaskIndex = idx;
         else if (subregion === "Fluss aufwärts") flussAufwaertsTaskIndex = idx;
+        else if (subregion === "Der Hafen") hafenTaskIndex = idx;
         chosenTask = tasks[idx];
     } else {
         if (status !== "unanswered") {
@@ -346,7 +365,7 @@ function startTask(subregion) {
         setupOrderingTask(chosenTask.groups);
         return;
     }
-    if (subregion === "Fluss aufwärts" && chosenTask.pairs) {
+    if ((subregion === "Fluss aufwärts" || (subregion === "Der Hafen" && chosenTask.pairs)) && chosenTask.pairs) {
         setupMatchingGame(chosenTask.pairs);
         return;
     }
@@ -365,7 +384,7 @@ function startTask(subregion) {
         });
         return;
     }
-    chosenTask.answers.forEach((answer, idx) => {
+    chosenTask.answers && chosenTask.answers.forEach((answer, idx) => {
         let btn = document.createElement("button");
         btn.textContent = answer;
         btn.classList.add("button", "answer-button");
@@ -403,6 +422,8 @@ function setAnswerStatus(subregion, result) {
             answeredStatus[subregion][baumTaskIndex] = result;
         } else if (subregion === "Fluss aufwärts") {
             answeredStatus[subregion][flussAufwaertsTaskIndex] = result;
+        } else if (subregion === "Der Hafen") {
+            answeredStatus[subregion][hafenTaskIndex] = result;
         }
     } else {
         answeredStatus[subregion] = result;
@@ -422,6 +443,8 @@ function handleNextTask(subregion) {
             baumTaskIndex++;
         } else if (subregion === "Fluss aufwärts") {
             flussAufwaertsTaskIndex++;
+        } else if (subregion === "Der Hafen") {
+            hafenTaskIndex++;
         }
     }
     if (
@@ -429,7 +452,8 @@ function handleNextTask(subregion) {
         (subregion === "Baum" && baumTaskIndex < questions["Baum"].length) ||
         (subregion === "Die Bewohner" && dieBewohnerTaskIndex < questions["Die Bewohner"].length) ||
         (subregion === "Der Markt" && marketTaskIndex < questions["Der Markt"].length) ||
-        (subregion === "Fluss aufwärts" && flussAufwaertsTaskIndex < questions["Fluss aufwärts"].length)
+        (subregion === "Fluss aufwärts" && flussAufwaertsTaskIndex < questions["Fluss aufwärts"].length) ||
+        (subregion === "Der Hafen" && hafenTaskIndex < questions["Der Hafen"].length)
     ) {
         setTimeout(() => startTask(subregion), 1000);
     } else {
