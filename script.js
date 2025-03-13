@@ -25,7 +25,7 @@ let wegTaskIndex = 0;
 let baumTaskIndex = 0;
 let dieBewohnerTaskIndex = 0;
 let marketTaskIndex = 0;
-let flussAufwaertsTaskIndex = 0; // Neuer Index für Fluss aufwärts
+let flussAufwaertsTaskIndex = 0; // Neuer Index für "Fluss aufwärts"
 
 // Status der Aufgaben – alle Kategorien als Array geführt
 let answeredStatus = {
@@ -50,8 +50,7 @@ const subregions = {
 /***********************************************************
  *  FRAGEN & ANTWORTEN
  *  ACHTUNG: Für "Weg" wurden drei Aufgaben hinzugefügt,
- *  für "Baum" zwei, für "Die Bewohner" drei und für "Fluss aufwärts"
- *  drei Aufgaben (inkl. Merktext und Unteraufgabe).
+ *  für "Baum" zwei, für "Die Bewohner" drei und für "Fluss aufwärts" drei.
  ***********************************************************/
 const questions = {
     "Weg": [
@@ -224,6 +223,7 @@ function checkOrderingGroup(group) {
     }
     if (correct) {
         alert("Richtig! Du hast eine Mispel erhalten.");
+        setAnswerStatus(currentSubregion, "correct");
         stars++;
         updateStars();
         currentOrderingGroupIndex++;
@@ -234,6 +234,7 @@ function checkOrderingGroup(group) {
         }
     } else {
         alert("Falsch! Keine Wiederholung möglich.");
+        setAnswerStatus(currentSubregion, "wrong");
         handleNextTask(currentSubregion);
     }
 }
@@ -330,7 +331,6 @@ function startTask(subregion) {
         else if (subregion === "Fluss aufwärts") flussAufwaertsTaskIndex = idx;
         chosenTask = tasks[idx];
     } else {
-        // Für Kategorien mit nur einer Aufgabe (als Array geführt)
         if (Array.isArray(status)) {
             if (status[0] !== "unanswered") {
                 alert("Diese Aufgabe wurde bereits beantwortet. Keine Wiederholung möglich!");
