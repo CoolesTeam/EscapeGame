@@ -27,6 +27,7 @@ let dieBewohnerTaskIndex = 0;
 let marketTaskIndex = 0;
 let flussAufwaertsTaskIndex = 0;
 let hafenTaskIndex = 0;
+let flussAbwaertsTaskIndex = 0;  // Neuer Index für "Fluss abwärts"
 
 // Status der Aufgaben – für Mehrfachaufgaben als Array
 let answeredStatus = {
@@ -302,6 +303,7 @@ function showSubregions(region) {
             if (region === "dorf" && sub === "Der Markt") marketTaskIndex = 0;
             if (region === "fluss" && sub === "Fluss aufwärts") flussAufwaertsTaskIndex = 0;
             if (region === "fluss" && sub === "Der Hafen") hafenTaskIndex = 0;
+            if (region === "fluss" && sub === "Fluss abwärts") flussAbwaertsTaskIndex = 0;
             startTask(sub);
         };
         container.appendChild(btn);
@@ -334,6 +336,8 @@ function startTask(subregion) {
             idx = flussAufwaertsTaskIndex;
         } else if (subregion === "Der Hafen") {
             idx = hafenTaskIndex;
+        } else if (subregion === "Fluss abwärts") {
+            idx = flussAbwaertsTaskIndex;
         } else {
             idx = 0;
         }
@@ -353,6 +357,7 @@ function startTask(subregion) {
         else if (subregion === "Baum") baumTaskIndex = idx;
         else if (subregion === "Fluss aufwärts") flussAufwaertsTaskIndex = idx;
         else if (subregion === "Der Hafen") hafenTaskIndex = idx;
+        else if (subregion === "Fluss abwärts") flussAbwaertsTaskIndex = idx;
         chosenTask = tasks[idx];
     } else {
         if (status !== "unanswered") {
@@ -437,7 +442,7 @@ function setAnswerStatus(subregion, result) {
         } else if (subregion === "Der Hafen") {
             answeredStatus[subregion][hafenTaskIndex] = result;
         } else if (subregion === "Fluss abwärts") {
-            answeredStatus[subregion][/* entsprechender Index */] = result;
+            answeredStatus[subregion][flussAbwaertsTaskIndex] = result;
         }
     } else {
         answeredStatus[subregion] = result;
@@ -460,8 +465,7 @@ function handleNextTask(subregion) {
         } else if (subregion === "Der Hafen") {
             hafenTaskIndex++;
         } else if (subregion === "Fluss abwärts") {
-            // Für Fluss abwärts den Index erhöhen, hier nutzen wir z. B. eine Variable,
-            // falls mehrere Aufgaben in dieser Kategorie definiert sind.
+            flussAbwaertsTaskIndex++;
         }
     }
     if (
@@ -471,7 +475,7 @@ function handleNextTask(subregion) {
         (subregion === "Der Markt" && marketTaskIndex < questions["Der Markt"].length) ||
         (subregion === "Fluss aufwärts" && flussAufwaertsTaskIndex < questions["Fluss aufwärts"].length) ||
         (subregion === "Der Hafen" && hafenTaskIndex < questions["Der Hafen"].length) ||
-        (subregion === "Fluss abwärts" && /* entsprechender Index < Anzahl der Aufgaben */ true)
+        (subregion === "Fluss abwärts" && flussAbwaertsTaskIndex < questions["Fluss abwärts"].length)
     ) {
         setTimeout(() => startTask(subregion), 1000);
     } else {
