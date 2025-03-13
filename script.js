@@ -26,7 +26,7 @@ let baumTaskIndex = 0;
 let dieBewohnerTaskIndex = 0;
 let marketTaskIndex = 0;
 let flussAufwaertsTaskIndex = 0;
-let hafenTaskIndex = 0;  // Neuer Index für "Der Hafen"
+let hafenTaskIndex = 0;
 
 // Status der Aufgaben – für Mehrfachaufgaben als Array
 let answeredStatus = {
@@ -35,8 +35,8 @@ let answeredStatus = {
     "Die Bewohner": ["unanswered", "unanswered", "unanswered"],
     "Der Markt": ["unanswered", "unanswered"],
     "Fluss aufwärts": ["unanswered", "unanswered", "unanswered"],
-    "Der Hafen": ["unanswered", "unanswered", "unanswered", "unanswered", "unanswered"],
-    "Fluss abwärts": "unanswered"
+    "Der Hafen": ["unanswered", "unanswered", "unanswered"],
+    "Fluss abwärts": ["unanswered", "unanswered", "unanswered"]
 };
 
 /***********************************************************
@@ -50,9 +50,9 @@ const subregions = {
 
 /***********************************************************
  *  FRAGEN & ANTWORTEN
- *  ACHTUNG: Für "Weg" wurden drei Aufgaben, für "Baum" zwei,
- *  für "Die Bewohner" drei, für "Fluss aufwärts" drei und für "Der Hafen"
- *  nun fünf Aufgaben hinzugefügt.
+ *  ACHTUNG: Für "Weg" wurden drei Aufgaben, für "Baum" zwei, 
+ *  für "Die Bewohner" drei, für "Fluss aufwärts" drei, für "Der Hafen" drei 
+ *  und für "Fluss abwärts" nun drei Aufgaben definiert.
  ***********************************************************/
 const questions = {
     "Weg": [
@@ -164,6 +164,13 @@ const questions = {
         question: "Unteraufgabe: Die meisten Krieger kämpften in spezieller Ausrüstung.",
         answers: ["Wahr", "Falsch"],
         correct: 1
+      }
+    ],
+    "Fluss abwärts": [
+      {
+        question: "Markiere alle Adjektive...",
+        answers: ["publica", "controversiis", "privata", "disciplinae", "magnus", "magno", "omnibus", "interpretantur"],
+        correct: [0, 2, 4, 5, 6]
       },
       {
         question: "Ranglisten:\nDie Gesellschaft in Gallien war stark hierarchisch strukturiert. An der Spitze standen die Druiden, die nicht nur religiöse Führer, sondern auch Berater und Lehrer waren. Ihnen folgten die Kriegshäuptlinge, die militärische Anführer der Stämme darstellten. Die breite Masse bestand aus Bauern und Handwerkern, während die Sklaven am unteren Ende der sozialen Hierarchie standen.\n\nWer stand an der Spitze der gallischen Gesellschaft?",
@@ -175,12 +182,7 @@ const questions = {
         answers: ["Wahr", "Falsch"],
         correct: 1
       }
-    ],
-    "Fluss abwärts": [{
-        question: "Markiere alle Adjektive...",
-        answers: ["publica", "controversiis", "privata", "disciplinae", "magnus", "magno", "omnibus", "interpretantur"],
-        correct: [0, 2, 4, 5, 6]
-    }]
+    ]
 };
 
 /***********************************************************
@@ -434,6 +436,8 @@ function setAnswerStatus(subregion, result) {
             answeredStatus[subregion][flussAufwaertsTaskIndex] = result;
         } else if (subregion === "Der Hafen") {
             answeredStatus[subregion][hafenTaskIndex] = result;
+        } else if (subregion === "Fluss abwärts") {
+            answeredStatus[subregion][/* entsprechender Index */] = result;
         }
     } else {
         answeredStatus[subregion] = result;
@@ -455,6 +459,9 @@ function handleNextTask(subregion) {
             flussAufwaertsTaskIndex++;
         } else if (subregion === "Der Hafen") {
             hafenTaskIndex++;
+        } else if (subregion === "Fluss abwärts") {
+            // Für Fluss abwärts den Index erhöhen, hier nutzen wir z. B. eine Variable,
+            // falls mehrere Aufgaben in dieser Kategorie definiert sind.
         }
     }
     if (
@@ -463,7 +470,8 @@ function handleNextTask(subregion) {
         (subregion === "Die Bewohner" && dieBewohnerTaskIndex < questions["Die Bewohner"].length) ||
         (subregion === "Der Markt" && marketTaskIndex < questions["Der Markt"].length) ||
         (subregion === "Fluss aufwärts" && flussAufwaertsTaskIndex < questions["Fluss aufwärts"].length) ||
-        (subregion === "Der Hafen" && hafenTaskIndex < questions["Der Hafen"].length)
+        (subregion === "Der Hafen" && hafenTaskIndex < questions["Der Hafen"].length) ||
+        (subregion === "Fluss abwärts" && /* entsprechender Index < Anzahl der Aufgaben */ true)
     ) {
         setTimeout(() => startTask(subregion), 1000);
     } else {
