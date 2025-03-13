@@ -25,17 +25,17 @@ let wegTaskIndex = 0;
 let baumTaskIndex = 0;
 let dieBewohnerTaskIndex = 0;
 let marketTaskIndex = 0;
-let flussAufwaertsTaskIndex = 0; // Index für "Fluss aufwärts"
+let flussAufwaertsTaskIndex = 0;  // Neuer Index für Fluss aufwärts
 
-// Status der Aufgaben – alle Kategorien als Array geführt
+// Status der Aufgaben – für Mehrfachaufgaben als Array
 let answeredStatus = {
     "Weg": ["unanswered", "unanswered", "unanswered"],
     "Baum": ["unanswered", "unanswered"],
     "Die Bewohner": ["unanswered", "unanswered", "unanswered"],
     "Der Markt": ["unanswered", "unanswered"],
-    "Fluss aufwärts": ["unanswered", "unanswered", "unanswered"],
-    "Der Hafen": ["unanswered"],
-    "Fluss abwärts": ["unanswered"]
+    "Fluss aufwärts": ["unanswered", "unanswered", "unanswered"],  // Jetzt 3 Aufgaben
+    "Der Hafen": "unanswered",
+    "Fluss abwärts": "unanswered"
 };
 
 /***********************************************************
@@ -49,9 +49,8 @@ const subregions = {
 
 /***********************************************************
  *  FRAGEN & ANTWORTEN
- *  ACHTUNG: Für "Weg" gibt es drei Aufgaben, für "Baum" zwei, 
- *  für "Die Bewohner" drei, für "Der Markt" zwei und für 
- *  "Fluss aufwärts" drei (inklusive Merktext und Unteraufgabe).
+ *  ACHTUNG: Für "Weg" wurden drei Aufgaben hinzugefügt,
+ *  für "Baum" zwei Aufgaben und für "Die Bewohner" drei Aufgaben.
  ***********************************************************/
 const questions = {
     "Weg": [
@@ -129,6 +128,16 @@ const questions = {
     ],
     "Fluss aufwärts": [
       {
+        question: "Merktext: Frauen trugen einfache Kleider und Röcke, die gerade oder als Glockenrock geschnitten waren. Auch Blusen und Röcke sind belegt, manche Darstellungen auf römischen Fresken zeigen auch keltische Frauen in Pumpenhosen ähnlich den Bracae, darüber trugen Frauen zuweilen wie die Männer einen Chiton, der jedoch länger war und meist bis zu den Knöcheln reichte. Das obere Ende des Chitons wurde über Brust und Rücken umgeschlagen und mit Fibeln über den Schultern zusammengesteckt.\n\nWelche Art von Kleidung trugen die Frauen laut dem Text?",
+        answers: ["Hosen und T-Shirts", "Einfache Kleider und Röcke", "Anzüge"],
+        correct: 1
+      },
+      {
+        question: "Unteraufgabe: Wahr oder Falsch: Frauen trugen immer einen Chiton, der bis zu den Knien reichte?",
+        answers: ["Wahr", "Falsch"],
+        correct: 0
+      },
+      {
         question: "Ordne die Begriffe richtig zu...",
         pairs: [
             { term: "caelo", match: "Himmel" },
@@ -136,33 +145,18 @@ const questions = {
             { term: "deos", match: "Götter" },
             { term: "imperium", match: "Macht" }
         ]
-      },
-      {
-        question: "Welche Art von Kleidung trugen die Frauen laut dem Text?",
-        sentence: "Frauen trugen einfache Kleider und Röcke, die gerade oder als Glockenrock geschnitten waren. Auch Blusen und Röcke sind belegt, manche Darstellungen auf römischen Fresken zeigen auch keltische Frauen in Pumpenhosen ähnlich den Bracae, darüber trugen Frauen zuweilen wie die Männer einen Chiton, der jedoch länger war und meist bis zu den Knöcheln reichte. Das obere Ende des Chitons wurde über Brust und Rücken umgeschlagen und mit Fibeln über den Schultern zusammengesteckt.",
-        answers: ["Hosen und T-Shirts", "Einfache Kleider und Röcke", "Anzüge"],
-        correct: 1
-      },
-      {
-        question: "Wahr oder Falsch: Frauen trugen immer einen Chiton, der bis zu den Knöcheln reichte?",
-        answers: ["Wahr", "Falsch"],
-        correct: 0
       }
     ],
-    "Der Hafen": [
-      {
+    "Der Hafen": [{
         question: "Wie wird dieser Stamm beschrieben? Haec civitas longe plurimum totius Gallie.",
         answers: ["der größte Stamm", "der kleinste Stamm", "der mächtigste Stamm"],
         correct: 2
-      }
-    ],
-    "Fluss abwärts": [
-      {
+    }],
+    "Fluss abwärts": [{
         question: "Markiere alle Adjektive...",
         answers: ["publica", "controversiis", "privata", "disciplinae", "magnus", "magno", "omnibus", "interpretantur"],
         correct: [0, 2, 4, 5, 6]
-      }
-    ]
+    }]
 };
 
 /***********************************************************
@@ -224,7 +218,6 @@ function checkOrderingGroup(group) {
     }
     if (correct) {
         alert("Richtig! Du hast eine Mispel erhalten.");
-        setAnswerStatus(currentSubregion, "correct");
         stars++;
         updateStars();
         currentOrderingGroupIndex++;
@@ -235,7 +228,6 @@ function checkOrderingGroup(group) {
         }
     } else {
         alert("Falsch! Keine Wiederholung möglich.");
-        setAnswerStatus(currentSubregion, "wrong");
         handleNextTask(currentSubregion);
     }
 }
@@ -245,8 +237,8 @@ function checkOrderingGroup(group) {
  ***********************************************************/
 function applyRegionClass(region) {
     document.body.classList.remove("region-wald", "region-dorf", "region-fluss");
-    if (region === "wald") document.body.classList.add("region-wald");
-    if (region === "dorf") document.body.classList.add("region-dorf");
+    if (region === "wald")  document.body.classList.add("region-wald");
+    if (region === "dorf")  document.body.classList.add("region-dorf");
     if (region === "fluss") document.body.classList.add("region-fluss");
 }
 
@@ -268,7 +260,7 @@ function applySubregionClass(subregion) {
 function showSubregions(region) {
     currentRegion = region;
     document.body.classList.remove("wald-background", "fluss-background");
-    if (region === "wald") document.body.classList.add("wald-background");
+    if (region === "wald")  document.body.classList.add("wald-background");
     if (region === "fluss") document.body.classList.add("fluss-background");
     applyRegionClass(region);
     document.getElementById("game-screen").style.display = "none";
@@ -325,31 +317,17 @@ function startTask(subregion) {
             return;
         }
         // Aktualisiere den entsprechenden Index
-        if (subregion === "Die Bewohner") {
-            dieBewohnerTaskIndex = idx;
-        } else if (subregion === "Der Markt") {
-            marketTaskIndex = idx;
-        } else if (subregion === "Weg") {
-            wegTaskIndex = idx;
-        } else if (subregion === "Baum") {
-            baumTaskIndex = idx;
-        } else if (subregion === "Fluss aufwärts") {
-            flussAufwaertsTaskIndex = idx;
-        }
+        if (subregion === "Die Bewohner") dieBewohnerTaskIndex = idx;
+        else if (subregion === "Der Markt") marketTaskIndex = idx;
+        else if (subregion === "Weg") wegTaskIndex = idx;
+        else if (subregion === "Baum") baumTaskIndex = idx;
+        else if (subregion === "Fluss aufwärts") flussAufwaertsTaskIndex = idx;
         chosenTask = tasks[idx];
     } else {
-        if (Array.isArray(status)) {
-            if (status[0] !== "unanswered") {
-                alert("Diese Aufgabe wurde bereits beantwortet. Keine Wiederholung möglich!");
-                backToSubregions();
-                return;
-            }
-        } else {
-            if (status !== "unanswered") {
-                alert("Diese Aufgabe wurde bereits beantwortet. Keine Wiederholung möglich!");
-                backToSubregions();
-                return;
-            }
+        if (status !== "unanswered") {
+            alert("Diese Aufgabe wurde bereits beantwortet. Keine Wiederholung möglich!");
+            backToSubregions();
+            return;
         }
         chosenTask = tasks[0];
     }
@@ -368,7 +346,7 @@ function startTask(subregion) {
         setupOrderingTask(chosenTask.groups);
         return;
     }
-    if (subregion === "Fluss aufwärts") {
+    if (subregion === "Fluss aufwärts" && chosenTask.pairs) {
         setupMatchingGame(chosenTask.pairs);
         return;
     }
@@ -427,11 +405,7 @@ function setAnswerStatus(subregion, result) {
             answeredStatus[subregion][flussAufwaertsTaskIndex] = result;
         }
     } else {
-        if (Array.isArray(answeredStatus[subregion])) {
-            answeredStatus[subregion][0] = result;
-        } else {
-            answeredStatus[subregion] = result;
-        }
+        answeredStatus[subregion] = result;
     }
 }
 
@@ -647,28 +621,6 @@ function checkFlussMatches(pairs) {
         alert("Falsch! Keine Wiederholung möglich.");
     }
     setTimeout(backToSubregions, 1000);
-}
-
-function applyRegionClass(region) {
-    document.body.classList.remove("region-wald", "region-dorf", "region-fluss");
-    if (region === "wald") document.body.classList.add("region-wald");
-    if (region === "dorf") document.body.classList.add("region-dorf");
-    if (region === "fluss") document.body.classList.add("region-fluss");
-}
-
-function subregionToClassName(subregion) {
-    return "question-" + subregion.toLowerCase().replace(/\s+/g, "-").replace(/[^\w-]/g, "");
-}
-
-function applySubregionClass(subregion) {
-    const taskScreen = document.getElementById("task-screen");
-    taskScreen.classList.remove(
-      "question-weg", "question-baum", "question-die-bewohner",
-      "question-der-markt", "question-fluss-aufwärts",
-      "question-der-hafen", "question-fluss-abwärts"
-    );
-    const newClass = subregionToClassName(subregion);
-    taskScreen.classList.add(newClass);
 }
 
 function updateStars() {
