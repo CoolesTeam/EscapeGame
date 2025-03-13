@@ -26,15 +26,15 @@ let baumTaskIndex = 0;
 let dieBewohnerTaskIndex = 0;
 let marketTaskIndex = 0;
 
-// Status der Aufgaben – für Mehrfachaufgaben als Array
+// Status der Aufgaben – alle Kategorien als Array geführt
 let answeredStatus = {
     "Weg": ["unanswered", "unanswered", "unanswered"],
     "Baum": ["unanswered", "unanswered"],
     "Die Bewohner": ["unanswered", "unanswered", "unanswered"],
     "Der Markt": ["unanswered", "unanswered"],
-    "Fluss aufwärts": "unanswered",
-    "Der Hafen": "unanswered",
-    "Fluss abwärts": "unanswered"
+    "Fluss aufwärts": ["unanswered"],
+    "Der Hafen": ["unanswered"],
+    "Fluss abwärts": ["unanswered"]
 };
 
 /***********************************************************
@@ -49,8 +49,9 @@ const subregions = {
 /***********************************************************
  *  FRAGEN & ANTWORTEN
  *  ACHTUNG: Für "Weg" wurden drei Aufgaben hinzugefügt,
- *  für "Baum" zwei Aufgaben, für "Die Bewohner" drei Aufgaben,
- *  und in "Fluss aufwärts" gibt es nun drei Aufgaben.
+ *  für "Baum" zwei, für "Die Bewohner" drei und für "Fluss aufwärts"
+ *  drei Aufgaben (inkl. Merktext und Unteraufgabe) – alle Aufgaben
+ *  sind nur einmal machbar.
  ***********************************************************/
 const questions = {
     "Weg": [
@@ -322,10 +323,19 @@ function startTask(subregion) {
         else if (subregion === "Baum") baumTaskIndex = idx;
         chosenTask = tasks[idx];
     } else {
-        if (status !== "unanswered") {
-            alert("Diese Aufgabe wurde bereits beantwortet. Keine Wiederholung möglich!");
-            backToSubregions();
-            return;
+        // Für Kategorien mit einer Frage (als Array geführt)
+        if (Array.isArray(status)) {
+            if (status[0] !== "unanswered") {
+                alert("Diese Aufgabe wurde bereits beantwortet. Keine Wiederholung möglich!");
+                backToSubregions();
+                return;
+            }
+        } else {
+            if (status !== "unanswered") {
+                alert("Diese Aufgabe wurde bereits beantwortet. Keine Wiederholung möglich!");
+                backToSubregions();
+                return;
+            }
         }
         chosenTask = tasks[0];
     }
@@ -401,7 +411,11 @@ function setAnswerStatus(subregion, result) {
             answeredStatus[subregion][baumTaskIndex] = result;
         }
     } else {
-        answeredStatus[subregion] = result;
+        if (Array.isArray(answeredStatus[subregion])) {
+            answeredStatus[subregion][0] = result;
+        } else {
+            answeredStatus[subregion] = result;
+        }
     }
 }
 
