@@ -157,7 +157,7 @@ const questions = {
         correct: 2
       },
       {
-        question: "Krieger:\nEinheitliche Uniformen wie die der Römer gab es bei den Galliern nicht. Manche hochgestellten Krieger trugen bronzene Brustpanzer, doch ein so großes metallenes Objekt war sehr teuer. Die meisten Krieger haben wohl in ihrer Alltagskleidung gekämpft, natürlich ergänzt um Schwert und Schild, der Standardausrüstung für den gallischen Kämpfer.\nGlaubt man den lateinischen Historikern, traten sie oft auch mit nacktem Oberkörper zur Schlacht an.\n\nWas trugen die hochgestellten Krieger der Gallier laut dem Text?",
+        question: "Krieger:\nEinheitliche Uniformen wie die der Römer gab es bei den Galliern nicht. Manche hochgestellten Krieger trugen bronzene Brustpanzer, doch ein so großes metallenes Objekt war sehr teuer. Die meisten Krieger haben wohl in ihrer Alltagskleidung gekämpft, ergänzt um Schwert und Schild – der Standardausrüstung für den gallischen Kämpfer.\nGlaubt man den lateinischen Historikern, traten sie oft auch mit nacktem Oberkörper zur Schlacht an.\n\nWas trugen die hochgestellten Krieger der Gallier laut dem Text?",
         answers: ["Einheitliche Uniformen", "Bronzene Brustpanzer", "Roben"],
         correct: 1
       },
@@ -378,15 +378,8 @@ function startTask(subregion) {
         p.textContent = chosenTask.sentence;
         answerContainer.appendChild(p);
     }
-    if (chosenTask.ordering) {
-        setupOrderingTask(chosenTask.groups);
-        return;
-    }
-    if ((subregion === "Fluss aufwärts" || (subregion === "Der Hafen" && chosenTask.pairs)) && chosenTask.pairs) {
-        setupMatchingGame(chosenTask.pairs);
-        return;
-    }
-    if (subregion === "Fluss abwärts") {
+    // Nur wenn ein Matching-Spiel vorliegt (Erkennung über "pairs")
+    if (subregion === "Fluss abwärts" && chosenTask.pairs) {
         let submitBtn = document.createElement("button");
         submitBtn.textContent = "Bestätigen";
         submitBtn.classList.add("button", "submit-button");
@@ -401,6 +394,7 @@ function startTask(subregion) {
         });
         return;
     }
+    // Standard-Multiple-Choice (inkl. Fluss abwärts, wenn kein Matching-Spiel)
     chosenTask.answers && chosenTask.answers.forEach((answer, idx) => {
         let btn = document.createElement("button");
         btn.textContent = answer;
