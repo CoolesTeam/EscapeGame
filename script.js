@@ -25,9 +25,9 @@ let wegTaskIndex = 0;
 let baumTaskIndex = 0;
 let dieBewohnerTaskIndex = 0;
 let marketTaskIndex = 0;
-let flussAufwaertsTaskIndex = 0; // Neuer Index für "Fluss aufwärts"
+let flussAufwaertsTaskIndex = 0; // neuer Index für "Fluss aufwärts"
 
-// Status der Aufgaben – alle Kategorien als Array geführt
+// Status der Aufgaben – alle Kategorien werden als Array geführt
 let answeredStatus = {
     "Weg": ["unanswered", "unanswered", "unanswered"],
     "Baum": ["unanswered", "unanswered"],
@@ -49,8 +49,9 @@ const subregions = {
 
 /***********************************************************
  *  FRAGEN & ANTWORTEN
- *  ACHTUNG: Für "Weg" wurden drei Aufgaben hinzugefügt,
- *  für "Baum" zwei, für "Die Bewohner" drei und für "Fluss aufwärts" drei.
+ *  ACHTUNG: Für "Weg" gibt es drei Aufgaben, für "Baum" zwei, 
+ *  für "Die Bewohner" drei, für "Der Markt" zwei und für 
+ *  "Fluss aufwärts" drei (inklusive Merktext und Unteraufgabe).
  ***********************************************************/
 const questions = {
     "Weg": [
@@ -143,7 +144,7 @@ const questions = {
         correct: 1
       },
       {
-        question: "Wahr oder Falsch: Frauen trugen immer einen Chiton, der bis zu den Knien reichte?",
+        question: "Wahr oder Falsch: Frauen trugen immer einen Chiton, der bis zu den Knöcheln reichte?",
         answers: ["Wahr", "Falsch"],
         correct: 0
       }
@@ -244,8 +245,8 @@ function checkOrderingGroup(group) {
  ***********************************************************/
 function applyRegionClass(region) {
     document.body.classList.remove("region-wald", "region-dorf", "region-fluss");
-    if (region === "wald")  document.body.classList.add("region-wald");
-    if (region === "dorf")  document.body.classList.add("region-dorf");
+    if (region === "wald") document.body.classList.add("region-wald");
+    if (region === "dorf") document.body.classList.add("region-dorf");
     if (region === "fluss") document.body.classList.add("region-fluss");
 }
 
@@ -267,7 +268,7 @@ function applySubregionClass(subregion) {
 function showSubregions(region) {
     currentRegion = region;
     document.body.classList.remove("wald-background", "fluss-background");
-    if (region === "wald")  document.body.classList.add("wald-background");
+    if (region === "wald") document.body.classList.add("wald-background");
     if (region === "fluss") document.body.classList.add("fluss-background");
     applyRegionClass(region);
     document.getElementById("game-screen").style.display = "none";
@@ -324,11 +325,17 @@ function startTask(subregion) {
             return;
         }
         // Aktualisiere den entsprechenden Index
-        if (subregion === "Die Bewohner") dieBewohnerTaskIndex = idx;
-        else if (subregion === "Der Markt") marketTaskIndex = idx;
-        else if (subregion === "Weg") wegTaskIndex = idx;
-        else if (subregion === "Baum") baumTaskIndex = idx;
-        else if (subregion === "Fluss aufwärts") flussAufwaertsTaskIndex = idx;
+        if (subregion === "Die Bewohner") {
+            dieBewohnerTaskIndex = idx;
+        } else if (subregion === "Der Markt") {
+            marketTaskIndex = idx;
+        } else if (subregion === "Weg") {
+            wegTaskIndex = idx;
+        } else if (subregion === "Baum") {
+            baumTaskIndex = idx;
+        } else if (subregion === "Fluss aufwärts") {
+            flussAufwaertsTaskIndex = idx;
+        }
         chosenTask = tasks[idx];
     } else {
         if (Array.isArray(status)) {
@@ -644,8 +651,8 @@ function checkFlussMatches(pairs) {
 
 function applyRegionClass(region) {
     document.body.classList.remove("region-wald", "region-dorf", "region-fluss");
-    if (region === "wald")  document.body.classList.add("region-wald");
-    if (region === "dorf")  document.body.classList.add("region-dorf");
+    if (region === "wald") document.body.classList.add("region-wald");
+    if (region === "dorf") document.body.classList.add("region-dorf");
     if (region === "fluss") document.body.classList.add("region-fluss");
 }
 
