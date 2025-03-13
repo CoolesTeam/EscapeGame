@@ -25,6 +25,7 @@ let wegTaskIndex = 0;
 let baumTaskIndex = 0;
 let dieBewohnerTaskIndex = 0;
 let marketTaskIndex = 0;
+let flussAufwaertsTaskIndex = 0; // Neuer Index für Fluss aufwärts
 
 // Status der Aufgaben – alle Kategorien als Array geführt
 let answeredStatus = {
@@ -32,7 +33,7 @@ let answeredStatus = {
     "Baum": ["unanswered", "unanswered"],
     "Die Bewohner": ["unanswered", "unanswered", "unanswered"],
     "Der Markt": ["unanswered", "unanswered"],
-    "Fluss aufwärts": ["unanswered"],
+    "Fluss aufwärts": ["unanswered", "unanswered", "unanswered"],
     "Der Hafen": ["unanswered"],
     "Fluss abwärts": ["unanswered"]
 };
@@ -50,8 +51,7 @@ const subregions = {
  *  FRAGEN & ANTWORTEN
  *  ACHTUNG: Für "Weg" wurden drei Aufgaben hinzugefügt,
  *  für "Baum" zwei, für "Die Bewohner" drei und für "Fluss aufwärts"
- *  drei Aufgaben (inkl. Merktext und Unteraufgabe) – alle Aufgaben
- *  sind nur einmal machbar.
+ *  drei Aufgaben (inkl. Merktext und Unteraufgabe).
  ***********************************************************/
 const questions = {
     "Weg": [
@@ -149,16 +149,20 @@ const questions = {
         correct: 0
       }
     ],
-    "Der Hafen": [{
+    "Der Hafen": [
+      {
         question: "Wie wird dieser Stamm beschrieben? Haec civitas longe plurimum totius Gallie.",
         answers: ["der größte Stamm", "der kleinste Stamm", "der mächtigste Stamm"],
         correct: 2
-    }],
-    "Fluss abwärts": [{
+      }
+    ],
+    "Fluss abwärts": [
+      {
         question: "Markiere alle Adjektive...",
         answers: ["publica", "controversiis", "privata", "disciplinae", "magnus", "magno", "omnibus", "interpretantur"],
         correct: [0, 2, 4, 5, 6]
-    }]
+      }
+    ]
 };
 
 /***********************************************************
@@ -304,6 +308,8 @@ function startTask(subregion) {
             idx = wegTaskIndex;
         } else if (subregion === "Baum") {
             idx = baumTaskIndex;
+        } else if (subregion === "Fluss aufwärts") {
+            idx = flussAufwaertsTaskIndex;
         } else {
             idx = 0;
         }
@@ -321,9 +327,10 @@ function startTask(subregion) {
         else if (subregion === "Der Markt") marketTaskIndex = idx;
         else if (subregion === "Weg") wegTaskIndex = idx;
         else if (subregion === "Baum") baumTaskIndex = idx;
+        else if (subregion === "Fluss aufwärts") flussAufwaertsTaskIndex = idx;
         chosenTask = tasks[idx];
     } else {
-        // Für Kategorien mit einer Frage (als Array geführt)
+        // Für Kategorien mit nur einer Aufgabe (als Array geführt)
         if (Array.isArray(status)) {
             if (status[0] !== "unanswered") {
                 alert("Diese Aufgabe wurde bereits beantwortet. Keine Wiederholung möglich!");
@@ -409,6 +416,8 @@ function setAnswerStatus(subregion, result) {
             answeredStatus[subregion][wegTaskIndex] = result;
         } else if (subregion === "Baum") {
             answeredStatus[subregion][baumTaskIndex] = result;
+        } else if (subregion === "Fluss aufwärts") {
+            answeredStatus[subregion][flussAufwaertsTaskIndex] = result;
         }
     } else {
         if (Array.isArray(answeredStatus[subregion])) {
@@ -430,13 +439,16 @@ function handleNextTask(subregion) {
             wegTaskIndex++;
         } else if (subregion === "Baum") {
             baumTaskIndex++;
+        } else if (subregion === "Fluss aufwärts") {
+            flussAufwaertsTaskIndex++;
         }
     }
     if (
         (subregion === "Weg" && wegTaskIndex < questions["Weg"].length) ||
         (subregion === "Baum" && baumTaskIndex < questions["Baum"].length) ||
         (subregion === "Die Bewohner" && dieBewohnerTaskIndex < questions["Die Bewohner"].length) ||
-        (subregion === "Der Markt" && marketTaskIndex < questions["Der Markt"].length)
+        (subregion === "Der Markt" && marketTaskIndex < questions["Der Markt"].length) ||
+        (subregion === "Fluss aufwärts" && flussAufwaertsTaskIndex < questions["Fluss aufwärts"].length)
     ) {
         setTimeout(() => startTask(subregion), 1000);
     } else {
