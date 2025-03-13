@@ -25,9 +25,9 @@ let wegTaskIndex = 0;
 let baumTaskIndex = 0;
 let dieBewohnerTaskIndex = 0;
 let marketTaskIndex = 0;
-let flussAufwaertsTaskIndex = 0; // neuer Index für "Fluss aufwärts"
+let flussAufwaertsTaskIndex = 0; // Index für "Fluss aufwärts"
 
-// Status der Aufgaben – alle Kategorien werden als Array geführt
+// Status der Aufgaben – alle Kategorien als Array geführt
 let answeredStatus = {
     "Weg": ["unanswered", "unanswered", "unanswered"],
     "Baum": ["unanswered", "unanswered"],
@@ -139,7 +139,7 @@ const questions = {
       },
       {
         question: "Welche Art von Kleidung trugen die Frauen laut dem Text?",
-        sentence: "Männerkleidung: Frauen trugen einfache Kleider und Röcke, die gerade oder als Glockenrock geschnitten waren. Auch Blusen und Röcke sind belegt, manche Darstellungen auf römischen Fresken zeigen auch keltische Frauen in Pumpenhosen ähnlich den Bracae, darüber trugen Frauen zuweilen wie die Männer einen Chiton, der jedoch länger war und meist bis zu den Knöcheln reichte. Das obere Ende des Chitons wurde über Brust und Rücken umgeschlagen und mit Fibeln über den Schultern zusammengesteckt.",
+        sentence: "Frauen trugen einfache Kleider und Röcke, die gerade oder als Glockenrock geschnitten waren. Auch Blusen und Röcke sind belegt, manche Darstellungen auf römischen Fresken zeigen auch keltische Frauen in Pumpenhosen ähnlich den Bracae, darüber trugen Frauen zuweilen wie die Männer einen Chiton, der jedoch länger war und meist bis zu den Knöcheln reichte. Das obere Ende des Chitons wurde über Brust und Rücken umgeschlagen und mit Fibeln über den Schultern zusammengesteckt.",
         answers: ["Hosen und T-Shirts", "Einfache Kleider und Röcke", "Anzüge"],
         correct: 1
       },
