@@ -49,7 +49,8 @@ const subregions = {
 /***********************************************************
  *  FRAGEN & ANTWORTEN
  *  ACHTUNG: Für "Weg" wurden drei Aufgaben hinzugefügt,
- *  für "Baum" zwei Aufgaben und für "Die Bewohner" drei Aufgaben.
+ *  für "Baum" zwei Aufgaben, für "Die Bewohner" drei Aufgaben,
+ *  und in "Fluss aufwärts" gibt es nun drei Aufgaben.
  ***********************************************************/
 const questions = {
     "Weg": [
@@ -125,7 +126,8 @@ const questions = {
         correct: [0, 1]
       }
     ],
-    "Fluss aufwärts": [{
+    "Fluss aufwärts": [
+      {
         question: "Ordne die Begriffe richtig zu...",
         pairs: [
             { term: "caelo", match: "Himmel" },
@@ -133,7 +135,19 @@ const questions = {
             { term: "deos", match: "Götter" },
             { term: "imperium", match: "Macht" }
         ]
-    }],
+      },
+      {
+        question: "Welche Art von Kleidung trugen die Frauen laut dem Text?",
+        sentence: "Männerkleidung: Frauen trugen einfache Kleider und Röcke, die gerade oder als Glockenrock geschnitten waren. Auch Blusen und Röcke sind belegt, manche Darstellungen auf römischen Fresken zeigen auch keltische Frauen in Pumpenhosen ähnlich den Bracae, darüber trugen Frauen zuweilen wie die Männer einen Chiton, der jedoch länger war und meist bis zu den Knöcheln reichte. Das obere Ende des Chitons wurde über Brust und Rücken umgeschlagen und mit Fibeln über den Schultern zusammengesteckt.",
+        answers: ["Hosen und T-Shirts", "Einfache Kleider und Röcke", "Anzüge"],
+        correct: 1
+      },
+      {
+        question: "Wahr oder Falsch: Frauen trugen immer einen Chiton, der bis zu den Knien reichte?",
+        answers: ["Wahr", "Falsch"],
+        correct: 0
+      }
+    ],
     "Der Hafen": [{
         question: "Wie wird dieser Stamm beschrieben? Haec civitas longe plurimum totius Gallie.",
         answers: ["der größte Stamm", "der kleinste Stamm", "der mächtigste Stamm"],
