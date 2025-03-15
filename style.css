@@ -162,15 +162,29 @@ body {
 }
 
 /*************************************************************
- * SPEZIFISCHE Regeln für Überschriften in den Screens
+ * SPEZIFISCHE Regeln für Überschriften und Frage-Texte
  *************************************************************/
-.subregion-screen .title-text,
-.task-screen .title-text,
-.task-screen .normal-text {
-    background: rgba(255,255,255,0.8); /* 80% Deckkraft */
+/* Im Game-Screen soll "Wähle eine Region:" ohne Hintergrund sein */
+#game-screen .title-text {
+    background: none;
+    padding: 0;
+}
+
+/* In der Subregion-Auswahl ("Unterregion wählen") soll der Hintergrund
+   nur den Textbereich umfassen. */
+#subregion-screen .title-text {
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.8);
     padding: 5px 10px;
     border-radius: 5px;
-    display: block; /* Block-Level, damit sie untereinander stehen */
-    width: auto;
-    margin: 0 auto;
+}
+
+/* Im Task-Screen: Überschrift (#task-title) und Fragetext (#question-text)
+   sollen als inline-block erscheinen, sodass der Hintergrund nur den Text umschließt. */
+#task-title, #question-text {
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.8);
+    padding: 5px 10px;
+    border-radius: 5px;
+    margin: 10px auto;
 }
