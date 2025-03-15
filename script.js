@@ -29,7 +29,7 @@ let flussAufwaertsTaskIndex = 0;
 let hafenTaskIndex = 0;
 let flussAbwaertsTaskIndex = 0;  // Neuer Index für "Fluss abwärts"
 
-// Die Status-Arrays dienen nur als Platzhalter, um zu signalisieren, dass eine Aufgabe bereits abgearbeitet wurde.
+// Jede Aufgabe wird einmal abgearbeitet – die Indizes werden fortlaufend erhöht.
 let answeredStatus = {
     "Weg": ["unanswered", "unanswered", "unanswered", "unanswered"],
     "Baum": ["unanswered", "unanswered"],
@@ -88,23 +88,23 @@ const questions = {
     "Baum": [
       {
         question: "Suche das Subjekt des Satzes...",
-        sentence: "Est bos cervi figura, cuius a media fronte inter aures unum cornu exsistit excelsius magisque directum his, quae nobis nota sunt, cornibus.",
+        sentence: "Est bos cervi figura, cuius ...",
         answers: ["bos", "cervi figura", "cornibus", "quae", "nota sunt"],
         correct: 0
       },
       {
-        question: "Untersuche die Phrase: „quae nobis nota sunt” genauer und gib an, in welchem Kasus “nobis” steht. Klicke den richtigen Kasus an.",
+        question: "Untersuche die Phrase: „quae nobis nota sunt” und gib an, in welchem Kasus “nobis” steht.",
         answers: ["Nominativ", "Genitiv", "Dativ", "Akkusativ", "Ablativ"],
         correct: 2
       }
     ],
     "Die Bewohner": [
       {
-        question: "Übersetze: Dicebant servos mispel iuribus praeditos esse et penitus a dominis pendere",
+        question: "Übersetze: Dicebant servos ...",
         answers: [
-            "Die Sklaven haben keine Rechte und sind abhängig von ihren Herren.",
-            "Sie sagten, dass die Sklaven keinerlei Rechte hätten und vollständig von ihren Herren abhängig sind.",
-            "Die Sklaven sagen, dass sie keine Rechte haben und abhängig von ihren Herren sind."
+            "Die Sklaven haben keine Rechte ...",
+            "Sie sagten, dass die Sklaven keinerlei Rechte hätten ...",
+            "Die Sklaven sagen, dass sie keine Rechte haben ..."
         ],
         correct: 1
       },
@@ -122,19 +122,19 @@ const questions = {
     "Der Markt": [
       {
         question: "Klicke die drei Stämme an:",
-        sentence: "Gallia est omnis divisa in partes tres, quarum unam incolunt Belgae, aliam Aquitani, tertiam qui ipsorum lingua Celtae, nostra Galli appellantur...",
+        sentence: "Gallia est omnis divisa ...",
         answers: ["Belgae", "Gallia", "Aquitani", "Celtae", "Galli"],
         correct: [0, 2, 3]
       },
       {
-        question: "Markiere die beiden Flüsse. Eorum una pars, quam Gallos obtinere dictum ist, initium capit a flumine Rhodano, continetur Garumna flumine, Oceano, finibus Belgarum.",
+        question: "Markiere die beiden Flüsse.",
         answers: ["Rhodano", "Garumna", "Belgarum", "Aquitani"],
         correct: [0, 1]
       }
     ],
     "Fluss aufwärts": [
       {
-        question: "Merktext: Frauen trugen einfache Kleider und Röcke, die gerade oder als Glockenrock geschnitten waren. Auch Blusen und Röcke sind belegt, manche Darstellungen auf römischen Fresken zeigen auch keltische Frauen in Pumpenhosen ähnlich den Bracae, darüber trugen Frauen zuweilen wie die Männer einen Chiton, der jedoch länger war und meist bis zu den Knöcheln reichte. Das obere Ende des Chitons wurde über Brust und Rücken umgeschlagen und mit Fibeln über den Schultern zusammengesteckt.\n\nWelche Art von Kleidung trugen die Frauen laut dem Text?",
+        question: "Merktext: Frauen trugen einfache Kleider und Röcke ...",
         answers: ["Hosen und T-Shirts", "Einfache Kleider und Röcke", "Anzüge"],
         correct: 1
       },
@@ -155,12 +155,12 @@ const questions = {
     ],
     "Der Hafen": [
       {
-        question: "Wie wird dieser Stamm beschrieben? Haec civitas longe plurimum totius Gallie.",
+        question: "Wie wird dieser Stamm beschrieben?",
         answers: ["der größte Stamm", "der kleinste Stamm", "der mächtigste Stamm"],
         correct: 2
       },
       {
-        question: "Krieger:\nEinheitliche Uniformen wie die der Römer gab es bei den Galliern nicht. Manche hochgestellten Krieger trugen bronzene Brustpanzer, doch ein so großes metallenes Objekt war sehr teuer. Die meisten Krieger haben wohl in ihrer Alltagskleidung gekämpft, ergänzt um Schwert und Schild – der Standardausrüstung für den gallischen Kämpfer.\nGlaubt man den lateinischen Historikern, traten sie oft auch mit nacktem Oberkörper zur Schlacht an.\n\nWas trugen die hochgestellten Krieger der Gallier laut dem Text?",
+        question: "Krieger: Einheitliche Uniformen ...\n\nWas trugen die hochgestellten Krieger der Gallier laut dem Text?",
         answers: ["Einheitliche Uniformen", "Bronzene Brustpanzer", "Roben"],
         correct: 1
       },
@@ -177,7 +177,7 @@ const questions = {
         correct: [0, 2, 4, 5, 6]
       },
       {
-        question: "Ranglisten:\nDie Gesellschaft in Gallien war stark hierarchisch strukturiert. An der Spitze standen die Druiden, die nicht nur religiöse Führer, sondern auch Berater und Lehrer waren. Ihnen folgten die Kriegshäuptlinge, die militärische Anführer der Stämme darstellten. Die breite Masse bestand aus Bauern und Handwerkern, während die Sklaven am unteren Ende der sozialen Hierarchie standen.\n\nWer stand an der Spitze der gallischen Gesellschaft?",
+        question: "Ranglisten: Wer stand an der Spitze der gallischen Gesellschaft?",
         answers: ["Die Bauern", "Die Sklaven", "Die Druiden"],
         correct: 2
       },
@@ -254,7 +254,6 @@ function checkOrderingGroup(group) {
     } else {
         alert("Falsch! Keine Wiederholung möglich.");
     }
-    // Wechsel immer zur nächsten Ordering-Gruppe, auch wenn falsch
     currentOrderingGroupIndex++;
     if (currentOrderingGroupIndex < currentOrderingGroups.length) {
         setupOrderingGroup(currentOrderingGroups[currentOrderingGroupIndex]);
@@ -262,6 +261,327 @@ function checkOrderingGroup(group) {
         handleNextTask(currentSubregion);
     }
 }
+
+/***********************************************************
+ *  STANDARD-FUNKTIONEN
+ ***********************************************************/
+function updateStars() {
+    document.getElementById("stars-count").textContent = stars;
+}
+
+function applyRegionClass(region) {
+    document.body.classList.remove("region-wald", "region-dorf", "region-fluss");
+    if (region === "wald") document.body.classList.add("region-wald");
+    if (region === "dorf") document.body.classList.add("region-dorf");
+    if (region === "fluss") document.body.classList.add("region-fluss");
+}
+
+function subregionToClassName(subregion) {
+    return "question-" + subregion.toLowerCase().replace(/\s+/g, "-").replace(/[^\w-]/g, "");
+}
+
+function applySubregionClass(subregion) {
+    const taskScreen = document.getElementById("task-screen");
+    taskScreen.classList.remove("question-weg", "question-baum", "question-die-bewohner", "question-der-markt", "question-fluss-aufwärts", "question-der-hafen", "question-fluss-abwärts");
+    const newClass = subregionToClassName(subregion);
+    taskScreen.classList.add(newClass);
+}
+
+function backToRegions() {
+    document.body.classList.remove("wald-background", "fluss-background");
+    document.getElementById("subregion-screen").style.display = "none";
+    document.getElementById("game-screen").style.display = "block";
+}
+
+function backToSubregions() {
+    document.getElementById("task-screen").style.display = "none";
+    document.getElementById("subregion-screen").style.display = "block";
+}
+
+/***********************************************************
+ *  TASK-ABLAUF
+ ***********************************************************/
+function showSubregions(region) {
+    currentRegion = region;
+    document.body.classList.remove("wald-background", "fluss-background");
+    if (region === "wald") document.body.classList.add("wald-background");
+    if (region === "fluss") document.body.classList.add("fluss-background");
+    applyRegionClass(region);
+    document.getElementById("game-screen").style.display = "none";
+    document.getElementById("subregion-screen").style.display = "block";
+    let container = document.getElementById("subregion-container");
+    container.innerHTML = "";
+    subregions[region].forEach(sub => {
+        let btn = document.createElement("button");
+        btn.textContent = sub;
+        btn.classList.add("button", "subregion-button");
+        btn.onclick = () => {
+            if (region === "dorf" && sub === "Die Bewohner") dieBewohnerTaskIndex = 0;
+            if (region === "dorf" && sub === "Der Markt") marketTaskIndex = 0;
+            if (region === "fluss" && sub === "Fluss aufwärts") flussAufwaertsTaskIndex = 0;
+            if (region === "fluss" && sub === "Der Hafen") hafenTaskIndex = 0;
+            if (region === "fluss" && sub === "Fluss abwärts") flussAbwaertsTaskIndex = 0;
+            startTask(sub);
+        };
+        container.appendChild(btn);
+    });
+}
+
+function startTask(subregion) {
+    currentSubregion = subregion;
+    applySubregionClass(subregion);
+    document.getElementById("subregion-screen").style.display = "none";
+    document.getElementById("task-screen").style.display = "block";
+    let tasks = questions[subregion];
+    let idx;
+    switch(subregion) {
+      case "Die Bewohner": idx = dieBewohnerTaskIndex; break;
+      case "Der Markt": idx = marketTaskIndex; break;
+      case "Weg": idx = wegTaskIndex; break;
+      case "Baum": idx = baumTaskIndex; break;
+      case "Fluss aufwärts": idx = flussAufwaertsTaskIndex; break;
+      case "Der Hafen": idx = hafenTaskIndex; break;
+      case "Fluss abwärts": idx = flussAbwaertsTaskIndex; break;
+      default: idx = 0;
+    }
+    if (idx >= tasks.length) {
+        alert("Alle Aufgaben in dieser Kategorie wurden bereits abgearbeitet.");
+        backToSubregions();
+        return;
+    }
+    let chosenTask = tasks[idx];
+    document.getElementById("task-title").textContent = `Aufgabe in ${subregion}`;
+    document.getElementById("question-text").textContent = chosenTask.question;
+    let answerContainer = document.getElementById("answers-container");
+    answerContainer.innerHTML = "";
+    selectedAnswers = [];
+    if (chosenTask.sentence) {
+        let p = document.createElement("p");
+        p.style.fontStyle = "italic";
+        p.textContent = chosenTask.sentence;
+        answerContainer.appendChild(p);
+    }
+    if (chosenTask.ordering === true) {
+        setupOrderingTask(chosenTask.groups);
+        return;
+    }
+    if ((subregion === "Fluss aufwärts" || (subregion === "Der Hafen" && chosenTask.pairs)) && chosenTask.pairs) {
+        setupMatchingGame(chosenTask.pairs);
+        return;
+    }
+    if (subregion === "Fluss abwärts") {
+        let submitBtn = document.createElement("button");
+        submitBtn.textContent = "Bestätigen";
+        submitBtn.classList.add("button", "submit-button");
+        submitBtn.onclick = () => checkFiveAnswers(chosenTask.correct);
+        answerContainer.appendChild(submitBtn);
+        chosenTask.answers.forEach((answer, i) => {
+            let btn = document.createElement("button");
+            btn.textContent = answer;
+            btn.classList.add("button", "answer-button");
+            btn.onclick = () => setMatchingColors(i, btn);
+            answerContainer.appendChild(btn);
+        });
+        return;
+    }
+    chosenTask.answers && chosenTask.answers.forEach((answer, i) => {
+        let btn = document.createElement("button");
+        btn.textContent = answer;
+        btn.classList.add("button", "answer-button");
+        if (!Array.isArray(chosenTask.correct)) {
+            btn.onclick = () => {
+                if (i === chosenTask.correct) {
+                    setAnswerStatus(subregion, "correct");
+                    stars++;
+                    updateStars();
+                    alert("Richtig! Du hast eine Mispel erhalten.");
+                    handleNextTask(subregion);
+                } else {
+                    setAnswerStatus(subregion, "wrong");
+                    alert("Falsch! Keine Wiederholung möglich.");
+                    handleNextTask(subregion);
+                }
+            };
+        } else {
+            btn.onclick = () => handleMultiChoice(i, btn, chosenTask.correct, subregion);
+        }
+        answerContainer.appendChild(btn);
+    });
+}
+
+function setAnswerStatus(subregion, result) {
+    let tasks = questions[subregion];
+    if (Array.isArray(tasks) && tasks.length > 1) {
+        switch(subregion) {
+          case "Die Bewohner": answeredStatus[subregion][dieBewohnerTaskIndex] = result; break;
+          case "Der Markt": answeredStatus[subregion][marketTaskIndex] = result; break;
+          case "Weg": answeredStatus[subregion][wegTaskIndex] = result; break;
+          case "Baum": answeredStatus[subregion][baumTaskIndex] = result; break;
+          case "Fluss aufwärts": answeredStatus[subregion][flussAufwaertsTaskIndex] = result; break;
+          case "Der Hafen": answeredStatus[subregion][hafenTaskIndex] = result; break;
+          case "Fluss abwärts": answeredStatus[subregion][flussAbwaertsTaskIndex] = result; break;
+        }
+    } else {
+        answeredStatus[subregion] = result;
+    }
+}
+
+function handleNextTask(subregion) {
+    let tasks = questions[subregion];
+    if (Array.isArray(tasks) && tasks.length > 1) {
+        switch(subregion) {
+          case "Die Bewohner": dieBewohnerTaskIndex++; break;
+          case "Der Markt": marketTaskIndex++; break;
+          case "Weg": wegTaskIndex++; break;
+          case "Baum": baumTaskIndex++; break;
+          case "Fluss aufwärts": flussAufwaertsTaskIndex++; break;
+          case "Der Hafen": hafenTaskIndex++; break;
+          case "Fluss abwärts": flussAbwaertsTaskIndex++; break;
+        }
+    }
+    if (
+        (subregion === "Weg" && wegTaskIndex < questions["Weg"].length) ||
+        (subregion === "Baum" && baumTaskIndex < questions["Baum"].length) ||
+        (subregion === "Die Bewohner" && dieBewohnerTaskIndex < questions["Die Bewohner"].length) ||
+        (subregion === "Der Markt" && marketTaskIndex < questions["Der Markt"].length) ||
+        (subregion === "Fluss aufwärts" && flussAufwaertsTaskIndex < questions["Fluss aufwärts"].length) ||
+        (subregion === "Der Hafen" && hafenTaskIndex < questions["Der Hafen"].length) ||
+        (subregion === "Fluss abwärts" && flussAbwaertsTaskIndex < questions["Fluss abwärts"].length)
+    ) {
+        setTimeout(() => startTask(subregion), 1000);
+    } else {
+        setTimeout(backToSubregions, 1000);
+    }
+}
+
+function handleMultiChoice(i, button, correctAnswers, subregion) {
+    let maxLen = correctAnswers.length;
+    if (selectedAnswers.includes(i)) {
+        selectedAnswers = selectedAnswers.filter(idx => idx !== i);
+        button.style.backgroundColor = "#f0f0f0";
+        button.style.color = "black";
+    } else {
+        if (selectedAnswers.length < maxLen) {
+            selectedAnswers.push(i);
+            button.style.backgroundColor = "orange";
+            button.style.color = "white";
+        } else {
+            alert(`Du kannst nur ${maxLen} Antworten auswählen!`);
+        }
+    }
+    if (selectedAnswers.length === maxLen) {
+        let sortedSel = [...selectedAnswers].sort();
+        let sortedCor = [...correctAnswers].sort();
+        if (JSON.stringify(sortedSel) === JSON.stringify(sortedCor)) {
+            setAnswerStatus(subregion, "correct");
+            stars++;
+            updateStars();
+            alert("Richtig! Du hast eine Mispel erhalten.");
+            handleNextTask(subregion);
+        } else {
+            setAnswerStatus(subregion, "wrong");
+            alert("Falsch! Keine Wiederholung möglich.");
+            handleNextTask(subregion);
+        }
+    }
+}
+
+function setMatchingColors(i, button) {
+    const colors = ["matching-blue", "matching-yellow", "matching-pink", "matching-green"];
+    button.classList.remove(...colors);
+    if (selectedAnswers.includes(i)) {
+        selectedAnswers = selectedAnswers.filter(idx => idx !== i);
+    } else {
+        selectedAnswers.push(i);
+        let c = colors[selectedAnswers.length % colors.length];
+        button.classList.add(c);
+    }
+}
+
+function checkFiveAnswers(correctAnswers) {
+    selectedAnswers.sort();
+    correctAnswers.sort();
+    if (JSON.stringify(selectedAnswers) === JSON.stringify(correctAnswers)) {
+        setAnswerStatus(currentSubregion, "correct");
+        stars++;
+        updateStars();
+        alert("Richtig! Du hast eine Mispel erhalten.");
+    } else {
+        setAnswerStatus(currentSubregion, "wrong");
+        alert("Falsch! Keine Wiederholung möglich.");
+    }
+    setTimeout(() => handleNextTask(currentSubregion), 1000);
+}
+
+// Matching-Funktionen
+const pairColors = ["matching-blue", "matching-yellow", "matching-pink", "matching-green"];
+let colorIndex = 0;
+let selectedTerm = null;
+let selectedMatch = null;
+let selectedPairs = {};
+let colorMap = {};
+
+function setupMatchingGame(pairs) {
+    let container = document.getElementById("answers-container");
+    container.innerHTML = "<p>Verbinde Orange (lateinische Wörter) mit Hellblau (deutsche Bedeutung) per Klick!</p>";
+    selectedTerm = null;
+    selectedMatch = null;
+    selectedPairs = {};
+    colorMap = {};
+    colorIndex = 0;
+    let leftDiv = document.createElement("div");
+    let rightDiv = document.createElement("div");
+    leftDiv.style.display = "inline-block";
+    leftDiv.style.marginRight = "50px";
+    leftDiv.style.verticalAlign = "top";
+    rightDiv.style.display = "inline-block";
+    rightDiv.style.verticalAlign = "top";
+    pairs.forEach(pair => {
+        let leftBtn = document.createElement("button");
+        leftBtn.textContent = pair.term;
+        leftBtn.style.backgroundColor = "orange";
+        leftBtn.style.color = "white";
+        leftBtn.style.padding = "20px 30px";
+        leftBtn.style.fontSize = "16px";
+        leftBtn.style.margin = "5px";
+        leftBtn.onclick = () => selectFlussItem(pair.term, leftBtn, "term");
+        leftDiv.appendChild(leftBtn);
+    });
+    pairs.forEach(pair => {
+        let rightBtn = document.createElement("button");
+        rightBtn.textContent = pair.match;
+        rightBtn.style.backgroundColor = "lightblue";
+        rightBtn.style.color = "black";
+        rightBtn.style.padding = "20px 30px";
+        rightBtn.style.fontSize = "16px";
+        rightBtn.style.margin = "5px";
+        rightBtn.onclick = () => selectFlussItem(pair.match, rightBtn, "match");
+        rightDiv.appendChild(rightBtn);
+    });
+    container.appendChild(leftDiv);
+    container.appendChild(rightDiv);
+    let checkBtn = document.createElement("button");
+    checkBtn.textContent = "Überprüfen";
+    checkBtn.classList.add("button");
+    checkBtn.style.marginTop = "20px";
+    checkBtn.onclick = () => checkFlussMatches(pairs);
+    container.appendChild(document.createElement("br"));
+    container.appendChild(checkBtn);
+}
+
+function selectFlussItem(value, button, type) {
+    if (type === "term") {
+        selectedTerm = { value, button };
+    } else {
+        selectedMatch = { value, button };
+    }
+    if (selectedTerm && selectedMatch) {
+        addPair(selectedTerm.value, selectedTerm.button, selectedMatch.value, selectedMatch.button);
+        selectedTerm = null;
+        selectedMatch = null;
+    }
+}
+
 
 /***********************************************************
  *  STANDARD-FUNKTIONEN
