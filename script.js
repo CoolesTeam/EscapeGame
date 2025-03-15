@@ -136,7 +136,7 @@ const questions = {
   ],
   "Fluss aufwärts": [
     {
-      question: "Merktext: Frauen trugen einfache Kleider und Röcke, die gerade oder als Glockenrock geschnitten waren. Manche Darstellungen au Römischen Fresken zeigen auch kletische Frauen in Pumpenhosen. Darüber trugen wie Männer eien Chiton, der jedoch länger war und meist bis zu den Knöcheln reichte. Das obere Ende wurde über der brust und dem Rücken umgeschlagen und mit Fieben zusammengesteckt.",
+      question: "Merktext: Frauen trugen einfache Kleider und Röcke, die gerade oder als Glockenrock geschnitten waren. Manche Darstellungen au Römischen Fresken zeigen auch kletische Frauen in Pumpenhosen. Darüber trugen wie Männer eien Chiton, der jedoch länger war und meist bis zu den Knöcheln reichte. Das obere Ende wurde über der brust und dem Rücken umgeschlagen und mit Fieben zusammengesteckt.   Welche Art von kleidung trugen die Frauen laut dem Text ",
       answers: ["Hosen und T-Shirts", "Einfache Kleider und Röcke", "Anzüge"],
       correct: 1
     },
@@ -179,7 +179,7 @@ const questions = {
       correct: [0, 2, 4, 5, 6]
     },
     {
-      question: "Ranglisten: Die Gesellschaft der Gallier war stark hierarchisch struckturiert. An der Spitze standen die Druiden, die nicht nur relligiöse Führer, sondern auch politische Berater und Lehrer waren. Ihnen folgten die Kriegeshäupinge, die militärische Anführer der Stämme darstellten. Die breite Masse bestand aus bauern und handwerkern, während Sklaven am unteren Ende der sozialen Hierarchie standen. Wer stand an der Spitze der gallischen Gesellschaft?",
+      question: "Ranglisten: Die Gesellschaft der Gallier war stark hierarchisch struckturiert. An der Spitze standen die Druiden, die nicht nur relligiöse Führer, sondern auch politische Berater und Lehrer waren. Ihnen folgten die Kriegeshäupinge, die militärische Anführer der Stämme darstellten. Die breite Masse bestand aus bauern und handwerkern, während Sklaven am unteren Ende der sozialen Hierarchie standen.     Wer stand an der Spitze der gallischen Gesellschaft?",
       answers: ["Die Bauern", "Die Sklaven", "Die Druiden"],
       correct: 2
     },
