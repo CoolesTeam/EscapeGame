@@ -170,8 +170,7 @@ body {
     padding: 0;
 }
 
-/* In der Subregion-Auswahl ("Unterregion wählen") soll der Hintergrund
-   nur den Textbereich umfassen. */
+/* In der Subregion-Auswahl ("Unterregion wählen") – Hintergrund nur hinter dem Text */
 #subregion-screen .title-text {
     display: inline-block;
     background: rgba(255, 255, 255, 0.8);
@@ -179,8 +178,7 @@ body {
     border-radius: 5px;
 }
 
-/* Im Task-Screen: Überschrift (#task-title) und Fragetext (#question-text)
-   sollen als inline-block erscheinen, sodass der Hintergrund nur den Text umschließt. */
+/* Im Task-Screen sollen Überschrift (#task-title) und Fragetext (#question-text) als inline-block erscheinen */
 #task-title, #question-text {
     display: inline-block;
     background: rgba(255, 255, 255, 0.8);
