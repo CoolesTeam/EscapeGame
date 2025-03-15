@@ -432,29 +432,7 @@ function startTask(subregion) {
     setupMatchingGame(chosenTask.pairs);
     return;
   }
-  if (subregion === "Fluss abwärts") {
-    chosenTask.answers.forEach((answer, i) => {
-      let btn = document.createElement("button");
-      btn.textContent = answer;
-      btn.classList.add("button", "answer-button");
-      btn.onclick = () => {
-        if (i === chosenTask.correct) {
-          setAnswerStatus(subregion, "correct");
-          stars++;
-          updateStars();
-          alert("Richtig! Du hast eine Mispel erhalten.");
-          handleNextTask(subregion);
-        } else {
-          setAnswerStatus(subregion, "wrong");
-          alert("Falsch! Keine Wiederholung möglich.");
-          handleNextTask(subregion);
-        }
-      };
-      answerContainer.appendChild(btn);
-    });
-    return;
-  }
-  // Standard-Multiple-Choice für alle anderen Fälle:
+  // Standard-Multiple-Choice:
   chosenTask.answers && chosenTask.answers.forEach((answer, i) => {
     let btn = document.createElement("button");
     btn.textContent = answer;
