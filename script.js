@@ -203,6 +203,7 @@ function setupOrderingTask(groups) {
 function setupOrderingGroup(group) {
   document.getElementById("question-text").textContent = group.prompt;
   let words = group.words.slice();
+  // Zufällige Reihenfolge der Wörter
   for (let i = words.length - 1; i > 0; i--) {
     let j = Math.floor(Math.random() * (i + 1));
     [words[i], words[j]] = [words[j], words[i]];
@@ -397,30 +398,22 @@ function startTask(subregion) {
     setupOrderingTask(chosenTask.groups);
     return;
   }
-  // Wenn die Aufgabe Matching-Paare hat, nutze Matching
   if (chosenTask.pairs) {
     setupMatchingGame(chosenTask.pairs);
     return;
   }
-  // Falls es sich um "Fluss abwärts" handelt, aber KEINE Matching-Aufgabe (Standard-MC)
   if (subregion === "Fluss abwärts") {
+    // Für "Fluss abwärts" Standard-MC: Wir fügen hier einen "Bestätigen"-Button hinzu.
+    let submitBtn = document.createElement("button");
+    submitBtn.textContent = "Bestätigen";
+    submitBtn.classList.add("button", "submit-button");
+    submitBtn.onclick = () => checkFiveAnswers(chosenTask.correct);
+    answerContainer.appendChild(submitBtn);
     chosenTask.answers.forEach((answer, i) => {
       let btn = document.createElement("button");
       btn.textContent = answer;
       btn.classList.add("button", "answer-button");
-      btn.onclick = () => {
-        if (i === chosenTask.correct) {
-          setAnswerStatus(subregion, "correct");
-          stars++;
-          updateStars();
-          alert("Richtig! Du hast eine Mispel erhalten.");
-          handleNextTask(subregion);
-        } else {
-          setAnswerStatus(subregion, "wrong");
-          alert("Falsch! Keine Wiederholung möglich.");
-          handleNextTask(subregion);
-        }
-      };
+      btn.onclick = () => setMatchingColors(i, btn);
       answerContainer.appendChild(btn);
     });
     return;
@@ -512,8 +505,8 @@ function handleMultiChoice(i, button, correctAnswers, subregion) {
     }
   }
   if (selectedAnswers.length === maxLen) {
-    let sortedSel = [...selectedAnswers].sort();
-    let sortedCor = [...correctAnswers].sort();
+    let sortedSel = [...selectedAnswers].sort((a, b) => a - b);
+    let sortedCor = [...correctAnswers].sort((a, b) => a - b);
     if (JSON.stringify(sortedSel) === JSON.stringify(sortedCor)) {
       setAnswerStatus(subregion, "correct");
       stars++;
@@ -541,8 +534,9 @@ function setMatchingColors(i, button) {
 }
 
 function checkFiveAnswers(correctAnswers) {
-  selectedAnswers.sort();
-  correctAnswers.sort();
+  // Verwende einen numerischen Vergleich für die Sortierung
+  selectedAnswers.sort((a, b) => a - b);
+  correctAnswers.sort((a, b) => a - b);
   if (JSON.stringify(selectedAnswers) === JSON.stringify(correctAnswers)) {
     setAnswerStatus(currentSubregion, "correct");
     stars++;
@@ -614,7 +608,6 @@ function setupMatchingGame(pairs) {
   colorIndex = 0;
   let leftDiv = document.createElement("div");
   let rightDiv = document.createElement("div");
-  /* Buttons untereinander */
   leftDiv.style.display = "block";
   rightDiv.style.display = "block";
   leftDiv.style.margin = "10px auto";
