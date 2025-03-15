@@ -306,18 +306,21 @@ function backToSubregions() {
  *  TASK-ABLAUF
  ***********************************************************/
 function showSubregions(region) {
-    // Überprüfe, ob in den Kategorien "dorf" und "fluss" alle Aufgaben abgearbeitet wurden.
+    // Prüfe, ob in den Regionen Dorf und Fluss bereits alle Aufgaben abgearbeitet wurden
     if (region === "dorf") {
-      if (dieBewohnerTaskIndex >= questions["Die Bewohner"].length && marketTaskIndex >= questions["Der Markt"].length) {
-         alert("Kategorie Dorf wurde bereits abgeschlossen.");
-         return;
-      }
+        if (dieBewohnerTaskIndex >= questions["Die Bewohner"].length &&
+            marketTaskIndex >= questions["Der Markt"].length) {
+          alert("Kategorie Dorf wurde bereits abgeschlossen.");
+          return;
+        }
     }
     if (region === "fluss") {
-      if (flussAufwaertsTaskIndex >= questions["Fluss aufwärts"].length && hafenTaskIndex >= questions["Der Hafen"].length && flussAbwaertsTaskIndex >= questions["Fluss abwärts"].length) {
-         alert("Kategorie Fluss wurde bereits abgeschlossen.");
-         return;
-      }
+        if (flussAufwaertsTaskIndex >= questions["Fluss aufwärts"].length &&
+            hafenTaskIndex >= questions["Der Hafen"].length &&
+            flussAbwaertsTaskIndex >= questions["Fluss abwärts"].length) {
+          alert("Kategorie Fluss wurde bereits abgeschlossen.");
+          return;
+        }
     }
     
     currentRegion = region;
