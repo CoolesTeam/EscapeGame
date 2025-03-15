@@ -29,7 +29,7 @@ let flussAufwaertsTaskIndex = 0;
 let hafenTaskIndex = 0;
 let flussAbwaertsTaskIndex = 0;  // Neuer Index für "Fluss abwärts"
 
-// Status der Aufgaben – für Mehrfachaufgaben als Array
+// Status der Aufgaben – jede Aufgabe wird genau einmal abgearbeitet
 let answeredStatus = {
     "Weg": ["unanswered", "unanswered", "unanswered"],
     "Baum": ["unanswered", "unanswered"],
@@ -346,8 +346,8 @@ function startTask(subregion) {
             idx++;
         }
         if (idx >= tasks.length) {
-            alert("Alle Aufgaben in dieser Kategorie wurden bereits beantwortet.");
-            backToSubregions();
+            alert("Alle Aufgaben in dieser Kategorie wurden bereits abgearbeitet.");
+            handleNextTask(subregion);
             return;
         }
         // Aktualisiere den entsprechenden Index
@@ -362,7 +362,7 @@ function startTask(subregion) {
     } else {
         if (status !== "unanswered") {
             alert("Diese Aufgabe wurde bereits beantwortet. Keine Wiederholung möglich!");
-            backToSubregions();
+            handleNextTask(subregion);
             return;
         }
         chosenTask = tasks[0];
@@ -378,17 +378,17 @@ function startTask(subregion) {
         p.textContent = chosenTask.sentence;
         answerContainer.appendChild(p);
     }
-    // Wenn Ordering-Aufgabe (Konjugiere die Verben) → dann starten wir den Ordering-Task
+    // Falls es sich um einen Ordering-Aufgabe handelt (z. B. "Konjugiere die Verben")
     if (chosenTask.ordering === true) {
         setupOrderingTask(chosenTask.groups);
         return;
     }
-    // Falls es Matching-Aufgaben gibt (über pairs) – diese werden separat behandelt
+    // Falls Matching-Aufgaben existieren (über pairs)
     if ((subregion === "Fluss aufwärts" || (subregion === "Der Hafen" && chosenTask.pairs)) && chosenTask.pairs) {
         setupMatchingGame(chosenTask.pairs);
         return;
     }
-    // Falls es sich um Fluss abwärts handelt und kein Matching vorliegt, behandeln wir es als Standard-MC
+    // Falls es sich um Fluss abwärts handelt und kein Matching vorliegt, als Standard-MC
     if (subregion === "Fluss abwärts") {
         let submitBtn = document.createElement("button");
         submitBtn.textContent = "Bestätigen";
@@ -483,6 +483,7 @@ function handleNextTask(subregion) {
     ) {
         setTimeout(() => startTask(subregion), 1000);
     } else {
+        // Wenn alle Aufgaben abgearbeitet wurden, kehre zur Subregionsauswahl zurück
         setTimeout(backToSubregions, 1000);
     }
 }
@@ -543,7 +544,8 @@ function checkFiveAnswers(correctAnswers) {
         setAnswerStatus(currentSubregion, "wrong");
         alert("Falsch! Keine Wiederholung möglich.");
     }
-    setTimeout(backToSubregions, 1000);
+    // Hier werden nun weitere Aufgaben abgearbeitet
+    setTimeout(() => handleNextTask(currentSubregion), 1000);
 }
 
 const pairColors = ["matching-blue", "matching-yellow", "matching-pink", "matching-green"];
@@ -670,7 +672,7 @@ function checkFlussMatches(pairs) {
         setAnswerStatus(currentSubregion, "wrong");
         alert("Falsch! Keine Wiederholung möglich.");
     }
-    setTimeout(backToSubregions, 1000);
+    setTimeout(() => handleNextTask(currentSubregion), 1000);
 }
 
 function updateStars() {
