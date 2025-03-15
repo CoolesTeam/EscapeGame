@@ -293,8 +293,13 @@ function backToRegions() {
 }
 
 function backToSubregions() {
-  document.getElementById("task-screen").style.display = "none";
-  document.getElementById("subregion-screen").style.display = "block";
+  // Vor Rückkehr prüfen: Wenn alle Kategorien abgeschlossen sind, Endbild anzeigen
+  if (checkGameComplete()) {
+    showEndScreen();
+  } else {
+    document.getElementById("task-screen").style.display = "none";
+    document.getElementById("subregion-screen").style.display = "block";
+  }
 }
 
 /***********************************************************
@@ -318,6 +323,32 @@ function checkFlussMatches(pairs) {
     alert("Falsch! Keine Wiederholung möglich.");
   }
   setTimeout(() => handleNextTask(currentSubregion), 1000);
+}
+
+/***********************************************************
+ *  FUNKTIONEN FÜR GAME-COMPLETION
+ ***********************************************************/
+function checkGameComplete() {
+  return (
+    wegTaskIndex >= questions["Weg"].length &&
+    baumTaskIndex >= questions["Baum"].length &&
+    dieBewohnerTaskIndex >= questions["Die Bewohner"].length &&
+    marketTaskIndex >= questions["Der Markt"].length &&
+    flussAufwaertsTaskIndex >= questions["Fluss aufwärts"].length &&
+    hafenTaskIndex >= questions["Der Hafen"].length &&
+    flussAbwaertsTaskIndex >= questions["Fluss abwärts"].length
+  );
+}
+
+function showEndScreen() {
+  // Verberge alle Screens
+  document.getElementById("welcome-screen").style.display = "none";
+  document.getElementById("intro-screen").style.display = "none";
+  document.getElementById("game-screen").style.display = "none";
+  document.getElementById("subregion-screen").style.display = "none";
+  document.getElementById("task-screen").style.display = "none";
+  // Zeige den End-Screen
+  document.getElementById("end-screen").style.display = "flex";
 }
 
 /***********************************************************
@@ -394,22 +425,42 @@ function startTask(subregion) {
     p.textContent = chosenTask.sentence;
     answerContainer.appendChild(p);
   }
-  // Falls es sich um eine Ordering-Aufgabe handelt:
   if (chosenTask.ordering === true) {
     setupOrderingTask(chosenTask.groups);
     return;
   }
-  // Falls es Matching-Paare gibt, nutze die Matching-Funktion:
   if (chosenTask.pairs) {
     setupMatchingGame(chosenTask.pairs);
     return;
   }
-  // Standard-Multiple-Choice (auch für Fluss abwärts, wenn keine pairs vorhanden):
+  if (subregion === "Fluss abwärts") {
+    // Für Fluss abwärts erfolgt die Auswertung direkt per Klick
+    chosenTask.answers.forEach((answer, i) => {
+      let btn = document.createElement("button");
+      btn.textContent = answer;
+      btn.classList.add("button", "answer-button");
+      btn.onclick = () => {
+        if (i === chosenTask.correct) {
+          setAnswerStatus(subregion, "correct");
+          stars++;
+          updateStars();
+          alert("Richtig! Du hast eine Mispel erhalten.");
+          handleNextTask(subregion);
+        } else {
+          setAnswerStatus(subregion, "wrong");
+          alert("Falsch! Keine Wiederholung möglich.");
+          handleNextTask(subregion);
+        }
+      };
+      answerContainer.appendChild(btn);
+    });
+    return;
+  }
+  // Standard-Multiple-Choice für alle anderen Fälle:
   chosenTask.answers && chosenTask.answers.forEach((answer, i) => {
     let btn = document.createElement("button");
     btn.textContent = answer;
     btn.classList.add("button", "answer-button");
-    // Für standardmäßige Multiple-Choice-Fragen erfolgt die Auswertung direkt per Klick:
     if (!Array.isArray(chosenTask.correct)) {
       btn.onclick = () => {
         if (i === chosenTask.correct) {
@@ -460,6 +511,10 @@ function handleNextTask(subregion) {
       case "Der Hafen": hafenTaskIndex++; break;
       case "Fluss abwärts": flussAbwaertsTaskIndex++; break;
     }
+  }
+  if (checkGameComplete()) {
+    setTimeout(showEndScreen, 1000);
+    return;
   }
   if (
     (subregion === "Weg" && wegTaskIndex < questions["Weg"].length) ||
@@ -586,7 +641,7 @@ function removeColor(term, match) {
 
 function setupMatchingGame(pairs) {
   let container = document.getElementById("answers-container");
-  container.innerHTML = "";
+  container.innerHTML = "<p>Verbinde Orange (lateinische Wörter) mit Hellblau (deutsche Bedeutung) per Klick!</p>";
   selectedTerm = null;
   selectedMatch = null;
   selectedPairs = {};
@@ -658,6 +713,1042 @@ function backToRegions() {
 }
 
 function backToSubregions() {
+  if (checkGameComplete()) {
+    showEndScreen();
+  } else {
+    document.getElementById("task-screen").style.display = "none";
+    document.getElementById("subregion-screen").style.display = "block";
+  }
+}
+
+/***********************************************************
+ *  CHECK-FUNKTION FÜR MATCHING (Überprüfen-Button)
+ ***********************************************************/
+function checkFlussMatches(pairs) {
+  let correct = true;
+  for (let p of pairs) {
+    if (!selectedPairs[p.term] || selectedPairs[p.term] !== p.match) {
+      correct = false;
+      break;
+    }
+  }
+  if (correct) {
+    setAnswerStatus(currentSubregion, "correct");
+    stars++;
+    updateStars();
+    alert("Richtig! Du hast eine Mispel erhalten.");
+  } else {
+    setAnswerStatus(currentSubregion, "wrong");
+    alert("Falsch! Keine Wiederholung möglich.");
+  }
+  setTimeout(() => handleNextTask(currentSubregion), 1000);
+}
+
+/***********************************************************
+ *  FUNKTIONEN FÜR GAME-COMPLETION
+ ***********************************************************/
+function checkGameComplete() {
+  return (
+    wegTaskIndex >= questions["Weg"].length &&
+    baumTaskIndex >= questions["Baum"].length &&
+    dieBewohnerTaskIndex >= questions["Die Bewohner"].length &&
+    marketTaskIndex >= questions["Der Markt"].length &&
+    flussAufwaertsTaskIndex >= questions["Fluss aufwärts"].length &&
+    hafenTaskIndex >= questions["Der Hafen"].length &&
+    flussAbwaertsTaskIndex >= questions["Fluss abwärts"].length
+  );
+}
+
+function showEndScreen() {
+  // Alle Screens ausblenden
+  document.getElementById("welcome-screen").style.display = "none";
+  document.getElementById("intro-screen").style.display = "none";
+  document.getElementById("game-screen").style.display = "none";
+  document.getElementById("subregion-screen").style.display = "none";
   document.getElementById("task-screen").style.display = "none";
+  // End-Screen einblenden (wird in index.html definiert)
+  document.getElementById("end-screen").style.display = "flex";
+}
+
+/***********************************************************
+ *  TASK-ABLAUF
+ ***********************************************************/
+function showSubregions(region) {
+  if (region === "dorf") {
+    if (dieBewohnerTaskIndex >= questions["Die Bewohner"].length &&
+        marketTaskIndex >= questions["Der Markt"].length) {
+      alert("Kategorie Dorf wurde bereits abgeschlossen.");
+      return;
+    }
+  }
+  if (region === "fluss") {
+    if (flussAufwaertsTaskIndex >= questions["Fluss aufwärts"].length &&
+        hafenTaskIndex >= questions["Der Hafen"].length &&
+        flussAbwaertsTaskIndex >= questions["Fluss abwärts"].length) {
+      alert("Kategorie Fluss wurde bereits abgeschlossen.");
+      return;
+    }
+  }
+  
+  currentRegion = region;
+  document.body.classList.remove("wald-background", "fluss-background");
+  if (region === "wald") document.body.classList.add("wald-background");
+  if (region === "fluss") document.body.classList.add("fluss-background");
+  applyRegionClass(region);
+  document.getElementById("game-screen").style.display = "none";
   document.getElementById("subregion-screen").style.display = "block";
+  let container = document.getElementById("subregion-container");
+  container.innerHTML = "";
+  subregions[region].forEach(sub => {
+    let btn = document.createElement("button");
+    btn.textContent = sub;
+    btn.classList.add("button", "subregion-button");
+    btn.onclick = () => {
+      startTask(sub);
+    };
+    container.appendChild(btn);
+  });
+}
+
+function startTask(subregion) {
+  currentSubregion = subregion;
+  applySubregionClass(subregion);
+  document.getElementById("subregion-screen").style.display = "none";
+  document.getElementById("task-screen").style.display = "block";
+  let tasks = questions[subregion];
+  let idx;
+  switch (subregion) {
+    case "Die Bewohner": idx = dieBewohnerTaskIndex; break;
+    case "Der Markt": idx = marketTaskIndex; break;
+    case "Weg": idx = wegTaskIndex; break;
+    case "Baum": idx = baumTaskIndex; break;
+    case "Fluss aufwärts": idx = flussAufwaertsTaskIndex; break;
+    case "Der Hafen": idx = hafenTaskIndex; break;
+    case "Fluss abwärts": idx = flussAbwaertsTaskIndex; break;
+    default: idx = 0;
+  }
+  if (idx >= tasks.length) {
+    alert("Alle Aufgaben in dieser Kategorie wurden bereits abgearbeitet.");
+    backToSubregions();
+    return;
+  }
+  let chosenTask = tasks[idx];
+  document.getElementById("task-title").textContent = `Aufgabe in ${subregion}`;
+  document.getElementById("question-text").textContent = chosenTask.question;
+  let answerContainer = document.getElementById("answers-container");
+  answerContainer.innerHTML = "";
+  selectedAnswers = [];
+  if (chosenTask.sentence) {
+    let p = document.createElement("p");
+    p.style.fontStyle = "italic";
+    p.textContent = chosenTask.sentence;
+    answerContainer.appendChild(p);
+  }
+  if (chosenTask.ordering === true) {
+    setupOrderingTask(chosenTask.groups);
+    return;
+  }
+  if (chosenTask.pairs) {
+    setupMatchingGame(chosenTask.pairs);
+    return;
+  }
+  if (subregion === "Fluss abwärts") {
+    // Hier erfolgt die Standard-MC-Auswertung direkt per Klick (ohne separaten Bestätigungs-Button)
+    chosenTask.answers.forEach((answer, i) => {
+      let btn = document.createElement("button");
+      btn.textContent = answer;
+      btn.classList.add("button", "answer-button");
+      btn.onclick = () => {
+        if (i === chosenTask.correct) {
+          setAnswerStatus(subregion, "correct");
+          stars++;
+          updateStars();
+          alert("Richtig! Du hast eine Mispel erhalten.");
+          handleNextTask(subregion);
+        } else {
+          setAnswerStatus(subregion, "wrong");
+          alert("Falsch! Keine Wiederholung möglich.");
+          handleNextTask(subregion);
+        }
+      };
+      answerContainer.appendChild(btn);
+    });
+    return;
+  }
+  // Standard-Multiple-Choice für alle anderen Fälle:
+  chosenTask.answers && chosenTask.answers.forEach((answer, i) => {
+    let btn = document.createElement("button");
+    btn.textContent = answer;
+    btn.classList.add("button", "answer-button");
+    if (!Array.isArray(chosenTask.correct)) {
+      btn.onclick = () => {
+        if (i === chosenTask.correct) {
+          setAnswerStatus(subregion, "correct");
+          stars++;
+          updateStars();
+          alert("Richtig! Du hast eine Mispel erhalten.");
+          handleNextTask(subregion);
+        } else {
+          setAnswerStatus(subregion, "wrong");
+          alert("Falsch! Keine Wiederholung möglich.");
+          handleNextTask(subregion);
+        }
+      };
+    } else {
+      btn.onclick = () => handleMultiChoice(i, btn, chosenTask.correct, subregion);
+    }
+    answerContainer.appendChild(btn);
+  });
+}
+
+function setAnswerStatus(subregion, result) {
+  let tasks = questions[subregion];
+  if (Array.isArray(tasks) && tasks.length > 1) {
+    switch (subregion) {
+      case "Die Bewohner": answeredStatus[subregion][dieBewohnerTaskIndex] = result; break;
+      case "Der Markt": answeredStatus[subregion][marketTaskIndex] = result; break;
+      case "Weg": answeredStatus[subregion][wegTaskIndex] = result; break;
+      case "Baum": answeredStatus[subregion][baumTaskIndex] = result; break;
+      case "Fluss aufwärts": answeredStatus[subregion][flussAufwaertsTaskIndex] = result; break;
+      case "Der Hafen": answeredStatus[subregion][hafenTaskIndex] = result; break;
+      case "Fluss abwärts": answeredStatus[subregion][flussAbwaertsTaskIndex] = result; break;
+    }
+  } else {
+    answeredStatus[subregion] = result;
+  }
+}
+
+function handleNextTask(subregion) {
+  let tasks = questions[subregion];
+  if (Array.isArray(tasks) && tasks.length > 1) {
+    switch (subregion) {
+      case "Die Bewohner": dieBewohnerTaskIndex++; break;
+      case "Der Markt": marketTaskIndex++; break;
+      case "Weg": wegTaskIndex++; break;
+      case "Baum": baumTaskIndex++; break;
+      case "Fluss aufwärts": flussAufwaertsTaskIndex++; break;
+      case "Der Hafen": hafenTaskIndex++; break;
+      case "Fluss abwärts": flussAbwaertsTaskIndex++; break;
+    }
+  }
+  if (checkGameComplete()) {
+    setTimeout(showEndScreen, 1000);
+    return;
+  }
+  if (
+    (subregion === "Weg" && wegTaskIndex < questions["Weg"].length) ||
+    (subregion === "Baum" && baumTaskIndex < questions["Baum"].length) ||
+    (subregion === "Die Bewohner" && dieBewohnerTaskIndex < questions["Die Bewohner"].length) ||
+    (subregion === "Der Markt" && marketTaskIndex < questions["Der Markt"].length) ||
+    (subregion === "Fluss aufwärts" && flussAufwaertsTaskIndex < questions["Fluss aufwärts"].length) ||
+    (subregion === "Der Hafen" && hafenTaskIndex < questions["Der Hafen"].length) ||
+    (subregion === "Fluss abwärts" && flussAbwaertsTaskIndex < questions["Fluss abwärts"].length)
+  ) {
+    setTimeout(() => startTask(subregion), 1000);
+  } else {
+    setTimeout(backToSubregions, 1000);
+  }
+}
+
+function handleMultiChoice(i, button, correctAnswers, subregion) {
+  let maxLen = correctAnswers.length;
+  if (selectedAnswers.includes(i)) {
+    selectedAnswers = selectedAnswers.filter(idx => idx !== i);
+    button.style.backgroundColor = "#f0f0f0";
+    button.style.color = "black";
+  } else {
+    if (selectedAnswers.length < maxLen) {
+      selectedAnswers.push(i);
+      button.style.backgroundColor = "orange";
+      button.style.color = "white";
+    } else {
+      alert(`Du kannst nur ${maxLen} Antworten auswählen!`);
+    }
+  }
+  if (selectedAnswers.length === maxLen) {
+    let sortedSel = [...selectedAnswers].sort((a, b) => a - b);
+    let sortedCor = [...correctAnswers].sort((a, b) => a - b);
+    if (JSON.stringify(sortedSel) === JSON.stringify(sortedCor)) {
+      setAnswerStatus(subregion, "correct");
+      stars++;
+      updateStars();
+      alert("Richtig! Du hast eine Mispel erhalten.");
+      handleNextTask(subregion);
+    } else {
+      setAnswerStatus(subregion, "wrong");
+      alert("Falsch! Keine Wiederholung möglich.");
+      handleNextTask(subregion);
+    }
+  }
+}
+
+function setMatchingColors(i, button) {
+  const colors = ["matching-blue", "matching-yellow", "matching-pink", "matching-green"];
+  button.classList.remove(...colors);
+  if (selectedAnswers.includes(i)) {
+    selectedAnswers = selectedAnswers.filter(idx => idx !== i);
+  } else {
+    selectedAnswers.push(i);
+    let c = colors[selectedAnswers.length % colors.length];
+    button.classList.add(c);
+  }
+}
+
+function checkFiveAnswers(correctAnswers) {
+  selectedAnswers.sort((a, b) => a - b);
+  correctAnswers.sort((a, b) => a - b);
+  if (JSON.stringify(selectedAnswers) === JSON.stringify(correctAnswers)) {
+    setAnswerStatus(currentSubregion, "correct");
+    stars++;
+    updateStars();
+    alert("Richtig! Du hast eine Mispel erhalten.");
+  } else {
+    setAnswerStatus(currentSubregion, "wrong");
+    alert("Falsch! Keine Wiederholung möglich.");
+  }
+  setTimeout(() => handleNextTask(currentSubregion), 1000);
+}
+
+/***********************************************************
+ *  MATCHING-FUNKTIONEN
+ ***********************************************************/
+const pairColors = ["matching-blue", "matching-yellow", "matching-pink", "matching-green"];
+let colorIndex = 0;
+let selectedTerm = null;
+let selectedMatch = null;
+let selectedPairs = {};
+let colorMap = {};
+
+function addPair(term, termBtn, match, matchBtn) {
+  if (selectedPairs[term]) {
+    let oldMatch = selectedPairs[term];
+    removeColor(term, oldMatch);
+    delete selectedPairs[term];
+  }
+  for (let t in selectedPairs) {
+    if (selectedPairs[t] === match) {
+      removeColor(t, match);
+      delete selectedPairs[t];
+      break;
+    }
+  }
+  selectedPairs[term] = match;
+  let c = pairColors[colorIndex];
+  colorIndex = (colorIndex + 1) % pairColors.length;
+  colorMap[term] = c;
+  colorMap[match] = c;
+  termBtn.classList.add(c);
+  matchBtn.classList.add(c);
+}
+
+function removeColor(term, match) {
+  let cTerm = colorMap[term];
+  let cMatch = colorMap[match];
+  if (cTerm) {
+    document.querySelectorAll("button").forEach(b => {
+      if (b.textContent === term) b.classList.remove(cTerm);
+    });
+    delete colorMap[term];
+  }
+  if (cMatch) {
+    document.querySelectorAll("button").forEach(b => {
+      if (b.textContent === match) b.classList.remove(cMatch);
+    });
+    delete colorMap[match];
+  }
+}
+
+function setupMatchingGame(pairs) {
+  let container = document.getElementById("answers-container");
+  container.innerHTML = "<p>Verbinde Orange (lateinische Wörter) mit Hellblau (deutsche Bedeutung) per Klick!</p>";
+  selectedTerm = null;
+  selectedMatch = null;
+  selectedPairs = {};
+  colorMap = {};
+  colorIndex = 0;
+  let leftDiv = document.createElement("div");
+  let rightDiv = document.createElement("div");
+  leftDiv.style.display = "block";
+  rightDiv.style.display = "block";
+  leftDiv.style.margin = "10px auto";
+  rightDiv.style.margin = "10px auto";
+  pairs.forEach(pair => {
+    let leftBtn = document.createElement("button");
+    leftBtn.textContent = pair.term;
+    leftBtn.style.backgroundColor = "orange";
+    leftBtn.style.color = "white";
+    leftBtn.style.padding = "20px 30px";
+    leftBtn.style.fontSize = "16px";
+    leftBtn.style.margin = "5px";
+    leftBtn.onclick = () => selectFlussItem(pair.term, leftBtn, "term");
+    leftDiv.appendChild(leftBtn);
+  });
+  pairs.forEach(pair => {
+    let rightBtn = document.createElement("button");
+    rightBtn.textContent = pair.match;
+    rightBtn.style.backgroundColor = "lightblue";
+    rightBtn.style.color = "black";
+    rightBtn.style.padding = "20px 30px";
+    rightBtn.style.fontSize = "16px";
+    rightBtn.style.margin = "5px";
+    rightBtn.onclick = () => selectFlussItem(pair.match, rightBtn, "match");
+    rightDiv.appendChild(rightBtn);
+  });
+  container.appendChild(leftDiv);
+  container.appendChild(rightDiv);
+  let checkBtn = document.createElement("button");
+  checkBtn.textContent = "Überprüfen";
+  checkBtn.classList.add("button");
+  checkBtn.style.marginTop = "20px";
+  checkBtn.onclick = () => checkFlussMatches(pairs);
+  container.appendChild(document.createElement("br"));
+  container.appendChild(checkBtn);
+}
+
+function selectFlussItem(value, button, type) {
+  if (type === "term") {
+    selectedTerm = { value, button };
+  } else {
+    selectedMatch = { value, button };
+  }
+  if (selectedTerm && selectedMatch) {
+    addPair(selectedTerm.value, selectedTerm.button, selectedMatch.value, selectedMatch.button);
+    selectedTerm = null;
+    selectedMatch = null;
+  }
+}
+
+/***********************************************************
+ *  STANDARD-FUNKTIONEN (updateStars, backToRegions, backToSubregions)
+ ***********************************************************/
+function updateStars() {
+  document.getElementById("stars-count").textContent = stars;
+}
+
+function backToRegions() {
+  document.body.classList.remove("wald-background", "fluss-background");
+  document.getElementById("subregion-screen").style.display = "none";
+  document.getElementById("game-screen").style.display = "block";
+}
+
+function backToSubregions() {
+  if (checkGameComplete()) {
+    showEndScreen();
+  } else {
+    document.getElementById("task-screen").style.display = "none";
+    document.getElementById("subregion-screen").style.display = "block";
+  }
+}
+
+/***********************************************************
+ *  CHECK-FUNKTION FÜR MATCHING (Überprüfen-Button)
+ ***********************************************************/
+function checkFlussMatches(pairs) {
+  let correct = true;
+  for (let p of pairs) {
+    if (!selectedPairs[p.term] || selectedPairs[p.term] !== p.match) {
+      correct = false;
+      break;
+    }
+  }
+  if (correct) {
+    setAnswerStatus(currentSubregion, "correct");
+    stars++;
+    updateStars();
+    alert("Richtig! Du hast eine Mispel erhalten.");
+  } else {
+    setAnswerStatus(currentSubregion, "wrong");
+    alert("Falsch! Keine Wiederholung möglich.");
+  }
+  setTimeout(() => handleNextTask(currentSubregion), 1000);
+}
+
+/***********************************************************
+ *  FUNKTIONEN FÜR GAME-COMPLETION
+ ***********************************************************/
+function checkGameComplete() {
+  return (
+    wegTaskIndex >= questions["Weg"].length &&
+    baumTaskIndex >= questions["Baum"].length &&
+    dieBewohnerTaskIndex >= questions["Die Bewohner"].length &&
+    marketTaskIndex >= questions["Der Markt"].length &&
+    flussAufwaertsTaskIndex >= questions["Fluss aufwärts"].length &&
+    hafenTaskIndex >= questions["Der Hafen"].length &&
+    flussAbwaertsTaskIndex >= questions["Fluss abwärts"].length
+  );
+}
+
+function showEndScreen() {
+  // Alle Screens ausblenden
+  document.getElementById("welcome-screen").style.display = "none";
+  document.getElementById("intro-screen").style.display = "none";
+  document.getElementById("game-screen").style.display = "none";
+  document.getElementById("subregion-screen").style.display = "none";
+  document.getElementById("task-screen").style.display = "none";
+  // End-Screen anzeigen
+  document.getElementById("end-screen").style.display = "flex";
+}
+
+/***********************************************************
+ *  TASK-ABLAUF
+ ***********************************************************/
+function showSubregions(region) {
+  if (region === "dorf") {
+    if (dieBewohnerTaskIndex >= questions["Die Bewohner"].length &&
+        marketTaskIndex >= questions["Der Markt"].length) {
+      alert("Kategorie Dorf wurde bereits abgeschlossen.");
+      return;
+    }
+  }
+  if (region === "fluss") {
+    if (flussAufwaertsTaskIndex >= questions["Fluss aufwärts"].length &&
+        hafenTaskIndex >= questions["Der Hafen"].length &&
+        flussAbwaertsTaskIndex >= questions["Fluss abwärts"].length) {
+      alert("Kategorie Fluss wurde bereits abgeschlossen.");
+      return;
+    }
+  }
+  
+  currentRegion = region;
+  document.body.classList.remove("wald-background", "fluss-background");
+  if (region === "wald") document.body.classList.add("wald-background");
+  if (region === "fluss") document.body.classList.add("fluss-background");
+  applyRegionClass(region);
+  document.getElementById("game-screen").style.display = "none";
+  document.getElementById("subregion-screen").style.display = "block";
+  let container = document.getElementById("subregion-container");
+  container.innerHTML = "";
+  subregions[region].forEach(sub => {
+    let btn = document.createElement("button");
+    btn.textContent = sub;
+    btn.classList.add("button", "subregion-button");
+    btn.onclick = () => {
+      startTask(sub);
+    };
+    container.appendChild(btn);
+  });
+}
+
+function startTask(subregion) {
+  currentSubregion = subregion;
+  applySubregionClass(subregion);
+  document.getElementById("subregion-screen").style.display = "none";
+  document.getElementById("task-screen").style.display = "block";
+  let tasks = questions[subregion];
+  let idx;
+  switch (subregion) {
+    case "Die Bewohner": idx = dieBewohnerTaskIndex; break;
+    case "Der Markt": idx = marketTaskIndex; break;
+    case "Weg": idx = wegTaskIndex; break;
+    case "Baum": idx = baumTaskIndex; break;
+    case "Fluss aufwärts": idx = flussAufwaertsTaskIndex; break;
+    case "Der Hafen": idx = hafenTaskIndex; break;
+    case "Fluss abwärts": idx = flussAbwaertsTaskIndex; break;
+    default: idx = 0;
+  }
+  if (idx >= tasks.length) {
+    alert("Alle Aufgaben in dieser Kategorie wurden bereits abgearbeitet.");
+    backToSubregions();
+    return;
+  }
+  let chosenTask = tasks[idx];
+  document.getElementById("task-title").textContent = `Aufgabe in ${subregion}`;
+  document.getElementById("question-text").textContent = chosenTask.question;
+  let answerContainer = document.getElementById("answers-container");
+  answerContainer.innerHTML = "";
+  selectedAnswers = [];
+  if (chosenTask.sentence) {
+    let p = document.createElement("p");
+    p.style.fontStyle = "italic";
+    p.textContent = chosenTask.sentence;
+    answerContainer.appendChild(p);
+  }
+  if (chosenTask.ordering === true) {
+    setupOrderingTask(chosenTask.groups);
+    return;
+  }
+  if (chosenTask.pairs) {
+    setupMatchingGame(chosenTask.pairs);
+    return;
+  }
+  if (subregion === "Fluss abwärts") {
+    chosenTask.answers.forEach((answer, i) => {
+      let btn = document.createElement("button");
+      btn.textContent = answer;
+      btn.classList.add("button", "answer-button");
+      btn.onclick = () => {
+        if (i === chosenTask.correct) {
+          setAnswerStatus(subregion, "correct");
+          stars++;
+          updateStars();
+          alert("Richtig! Du hast eine Mispel erhalten.");
+          handleNextTask(subregion);
+        } else {
+          setAnswerStatus(subregion, "wrong");
+          alert("Falsch! Keine Wiederholung möglich.");
+          handleNextTask(subregion);
+        }
+      };
+      answerContainer.appendChild(btn);
+    });
+    return;
+  }
+  // Standard-Multiple-Choice für alle anderen Fälle:
+  chosenTask.answers && chosenTask.answers.forEach((answer, i) => {
+    let btn = document.createElement("button");
+    btn.textContent = answer;
+    btn.classList.add("button", "answer-button");
+    if (!Array.isArray(chosenTask.correct)) {
+      btn.onclick = () => {
+        if (i === chosenTask.correct) {
+          setAnswerStatus(subregion, "correct");
+          stars++;
+          updateStars();
+          alert("Richtig! Du hast eine Mispel erhalten.");
+          handleNextTask(subregion);
+        } else {
+          setAnswerStatus(subregion, "wrong");
+          alert("Falsch! Keine Wiederholung möglich.");
+          handleNextTask(subregion);
+        }
+      };
+    } else {
+      btn.onclick = () => handleMultiChoice(i, btn, chosenTask.correct, subregion);
+    }
+    answerContainer.appendChild(btn);
+  });
+}
+
+function setAnswerStatus(subregion, result) {
+  let tasks = questions[subregion];
+  if (Array.isArray(tasks) && tasks.length > 1) {
+    switch (subregion) {
+      case "Die Bewohner": answeredStatus[subregion][dieBewohnerTaskIndex] = result; break;
+      case "Der Markt": answeredStatus[subregion][marketTaskIndex] = result; break;
+      case "Weg": answeredStatus[subregion][wegTaskIndex] = result; break;
+      case "Baum": answeredStatus[subregion][baumTaskIndex] = result; break;
+      case "Fluss aufwärts": answeredStatus[subregion][flussAufwaertsTaskIndex] = result; break;
+      case "Der Hafen": answeredStatus[subregion][hafenTaskIndex] = result; break;
+      case "Fluss abwärts": answeredStatus[subregion][flussAbwaertsTaskIndex] = result; break;
+    }
+  } else {
+    answeredStatus[subregion] = result;
+  }
+}
+
+function handleNextTask(subregion) {
+  let tasks = questions[subregion];
+  if (Array.isArray(tasks) && tasks.length > 1) {
+    switch (subregion) {
+      case "Die Bewohner": dieBewohnerTaskIndex++; break;
+      case "Der Markt": marketTaskIndex++; break;
+      case "Weg": wegTaskIndex++; break;
+      case "Baum": baumTaskIndex++; break;
+      case "Fluss aufwärts": flussAufwaertsTaskIndex++; break;
+      case "Der Hafen": hafenTaskIndex++; break;
+      case "Fluss abwärts": flussAbwaertsTaskIndex++; break;
+    }
+  }
+  if (checkGameComplete()) {
+    setTimeout(showEndScreen, 1000);
+    return;
+  }
+  if (
+    (subregion === "Weg" && wegTaskIndex < questions["Weg"].length) ||
+    (subregion === "Baum" && baumTaskIndex < questions["Baum"].length) ||
+    (subregion === "Die Bewohner" && dieBewohnerTaskIndex < questions["Die Bewohner"].length) ||
+    (subregion === "Der Markt" && marketTaskIndex < questions["Der Markt"].length) ||
+    (subregion === "Fluss aufwärts" && flussAufwaertsTaskIndex < questions["Fluss aufwärts"].length) ||
+    (subregion === "Der Hafen" && hafenTaskIndex < questions["Der Hafen"].length) ||
+    (subregion === "Fluss abwärts" && flussAbwaertsTaskIndex < questions["Fluss abwärts"].length)
+  ) {
+    setTimeout(() => startTask(subregion), 1000);
+  } else {
+    setTimeout(backToSubregions, 1000);
+  }
+}
+
+function handleMultiChoice(i, button, correctAnswers, subregion) {
+  let maxLen = correctAnswers.length;
+  if (selectedAnswers.includes(i)) {
+    selectedAnswers = selectedAnswers.filter(idx => idx !== i);
+    button.style.backgroundColor = "#f0f0f0";
+    button.style.color = "black";
+  } else {
+    if (selectedAnswers.length < maxLen) {
+      selectedAnswers.push(i);
+      button.style.backgroundColor = "orange";
+      button.style.color = "white";
+    } else {
+      alert(`Du kannst nur ${maxLen} Antworten auswählen!`);
+    }
+  }
+  if (selectedAnswers.length === maxLen) {
+    let sortedSel = [...selectedAnswers].sort((a, b) => a - b);
+    let sortedCor = [...correctAnswers].sort((a, b) => a - b);
+    if (JSON.stringify(sortedSel) === JSON.stringify(sortedCor)) {
+      setAnswerStatus(subregion, "correct");
+      stars++;
+      updateStars();
+      alert("Richtig! Du hast eine Mispel erhalten.");
+      handleNextTask(subregion);
+    } else {
+      setAnswerStatus(subregion, "wrong");
+      alert("Falsch! Keine Wiederholung möglich.");
+      handleNextTask(subregion);
+    }
+  }
+}
+
+function setMatchingColors(i, button) {
+  const colors = ["matching-blue", "matching-yellow", "matching-pink", "matching-green"];
+  button.classList.remove(...colors);
+  if (selectedAnswers.includes(i)) {
+    selectedAnswers = selectedAnswers.filter(idx => idx !== i);
+  } else {
+    selectedAnswers.push(i);
+    let c = colors[selectedAnswers.length % colors.length];
+    button.classList.add(c);
+  }
+}
+
+function checkFiveAnswers(correctAnswers) {
+  selectedAnswers.sort((a, b) => a - b);
+  correctAnswers.sort((a, b) => a - b);
+  if (JSON.stringify(selectedAnswers) === JSON.stringify(correctAnswers)) {
+    setAnswerStatus(currentSubregion, "correct");
+    stars++;
+    updateStars();
+    alert("Richtig! Du hast eine Mispel erhalten.");
+  } else {
+    setAnswerStatus(currentSubregion, "wrong");
+    alert("Falsch! Keine Wiederholung möglich.");
+  }
+  setTimeout(() => handleNextTask(currentSubregion), 1000);
+}
+
+/***********************************************************
+ *  MATCHING-FUNKTIONEN
+ ***********************************************************/
+const pairColors = ["matching-blue", "matching-yellow", "matching-pink", "matching-green"];
+let colorIndex = 0;
+let selectedTerm = null;
+let selectedMatch = null;
+let selectedPairs = {};
+let colorMap = {};
+
+function addPair(term, termBtn, match, matchBtn) {
+  if (selectedPairs[term]) {
+    let oldMatch = selectedPairs[term];
+    removeColor(term, oldMatch);
+    delete selectedPairs[term];
+  }
+  for (let t in selectedPairs) {
+    if (selectedPairs[t] === match) {
+      removeColor(t, match);
+      delete selectedPairs[t];
+      break;
+    }
+  }
+  selectedPairs[term] = match;
+  let c = pairColors[colorIndex];
+  colorIndex = (colorIndex + 1) % pairColors.length;
+  colorMap[term] = c;
+  colorMap[match] = c;
+  termBtn.classList.add(c);
+  matchBtn.classList.add(c);
+}
+
+function removeColor(term, match) {
+  let cTerm = colorMap[term];
+  let cMatch = colorMap[match];
+  if (cTerm) {
+    document.querySelectorAll("button").forEach(b => {
+      if (b.textContent === term) b.classList.remove(cTerm);
+    });
+    delete colorMap[term];
+  }
+  if (cMatch) {
+    document.querySelectorAll("button").forEach(b => {
+      if (b.textContent === match) b.classList.remove(cMatch);
+    });
+    delete colorMap[match];
+  }
+}
+
+function setupMatchingGame(pairs) {
+  let container = document.getElementById("answers-container");
+  container.innerHTML = "<p>Verbinde Orange (lateinische Wörter) mit Hellblau (deutsche Bedeutung) per Klick!</p>";
+  selectedTerm = null;
+  selectedMatch = null;
+  selectedPairs = {};
+  colorMap = {};
+  colorIndex = 0;
+  let leftDiv = document.createElement("div");
+  let rightDiv = document.createElement("div");
+  leftDiv.style.display = "block";
+  rightDiv.style.display = "block";
+  leftDiv.style.margin = "10px auto";
+  rightDiv.style.margin = "10px auto";
+  pairs.forEach(pair => {
+    let leftBtn = document.createElement("button");
+    leftBtn.textContent = pair.term;
+    leftBtn.style.backgroundColor = "orange";
+    leftBtn.style.color = "white";
+    leftBtn.style.padding = "20px 30px";
+    leftBtn.style.fontSize = "16px";
+    leftBtn.style.margin = "5px";
+    leftBtn.onclick = () => selectFlussItem(pair.term, leftBtn, "term");
+    leftDiv.appendChild(leftBtn);
+  });
+  pairs.forEach(pair => {
+    let rightBtn = document.createElement("button");
+    rightBtn.textContent = pair.match;
+    rightBtn.style.backgroundColor = "lightblue";
+    rightBtn.style.color = "black";
+    rightBtn.style.padding = "20px 30px";
+    rightBtn.style.fontSize = "16px";
+    rightBtn.style.margin = "5px";
+    rightBtn.onclick = () => selectFlussItem(pair.match, rightBtn, "match");
+    rightDiv.appendChild(rightBtn);
+  });
+  container.appendChild(leftDiv);
+  container.appendChild(rightDiv);
+  let checkBtn = document.createElement("button");
+  checkBtn.textContent = "Überprüfen";
+  checkBtn.classList.add("button");
+  checkBtn.style.marginTop = "20px";
+  checkBtn.onclick = () => checkFlussMatches(pairs);
+  container.appendChild(document.createElement("br"));
+  container.appendChild(checkBtn);
+}
+
+function selectFlussItem(value, button, type) {
+  if (type === "term") {
+    selectedTerm = { value, button };
+  } else {
+    selectedMatch = { value, button };
+  }
+  if (selectedTerm && selectedMatch) {
+    addPair(selectedTerm.value, selectedTerm.button, selectedMatch.value, selectedMatch.button);
+    selectedTerm = null;
+    selectedMatch = null;
+  }
+}
+
+/***********************************************************
+ *  STANDARD-FUNKTIONEN (updateStars, backToRegions, backToSubregions)
+ ***********************************************************/
+function updateStars() {
+  document.getElementById("stars-count").textContent = stars;
+}
+
+function backToRegions() {
+  document.body.classList.remove("wald-background", "fluss-background");
+  document.getElementById("subregion-screen").style.display = "none";
+  document.getElementById("game-screen").style.display = "block";
+}
+
+function backToSubregions() {
+  if (checkGameComplete()) {
+    showEndScreen();
+  } else {
+    document.getElementById("task-screen").style.display = "none";
+    document.getElementById("subregion-screen").style.display = "block";
+  }
+}
+
+/***********************************************************
+ *  CHECK-FUNKTION FÜR MATCHING (Überprüfen-Button)
+ ***********************************************************/
+function checkFlussMatches(pairs) {
+  let correct = true;
+  for (let p of pairs) {
+    if (!selectedPairs[p.term] || selectedPairs[p.term] !== p.match) {
+      correct = false;
+      break;
+    }
+  }
+  if (correct) {
+    setAnswerStatus(currentSubregion, "correct");
+    stars++;
+    updateStars();
+    alert("Richtig! Du hast eine Mispel erhalten.");
+  } else {
+    setAnswerStatus(currentSubregion, "wrong");
+    alert("Falsch! Keine Wiederholung möglich.");
+  }
+  setTimeout(() => handleNextTask(currentSubregion), 1000);
+}
+
+/***********************************************************
+ *  FUNKTIONEN FÜR GAME-COMPLETION
+ ***********************************************************/
+function checkGameComplete() {
+  return (
+    wegTaskIndex >= questions["Weg"].length &&
+    baumTaskIndex >= questions["Baum"].length &&
+    dieBewohnerTaskIndex >= questions["Die Bewohner"].length &&
+    marketTaskIndex >= questions["Der Markt"].length &&
+    flussAufwaertsTaskIndex >= questions["Fluss aufwärts"].length &&
+    hafenTaskIndex >= questions["Der Hafen"].length &&
+    flussAbwaertsTaskIndex >= questions["Fluss abwärts"].length
+  );
+}
+
+function showEndScreen() {
+  // Alle Screens ausblenden
+  document.getElementById("welcome-screen").style.display = "none";
+  document.getElementById("intro-screen").style.display = "none";
+  document.getElementById("game-screen").style.display = "none";
+  document.getElementById("subregion-screen").style.display = "none";
+  document.getElementById("task-screen").style.display = "none";
+  // End-Screen einblenden (in index.html definiert)
+  document.getElementById("end-screen").style.display = "flex";
+}
+
+/***********************************************************
+ *  TASK-ABLAUF
+ ***********************************************************/
+function showSubregions(region) {
+  if (region === "dorf") {
+    if (dieBewohnerTaskIndex >= questions["Die Bewohner"].length &&
+        marketTaskIndex >= questions["Der Markt"].length) {
+      alert("Kategorie Dorf wurde bereits abgeschlossen.");
+      return;
+    }
+  }
+  if (region === "fluss") {
+    if (flussAufwaertsTaskIndex >= questions["Fluss aufwärts"].length &&
+        hafenTaskIndex >= questions["Der Hafen"].length &&
+        flussAbwaertsTaskIndex >= questions["Fluss abwärts"].length) {
+      alert("Kategorie Fluss wurde bereits abgeschlossen.");
+      return;
+    }
+  }
+  
+  currentRegion = region;
+  document.body.classList.remove("wald-background", "fluss-background");
+  if (region === "wald") document.body.classList.add("wald-background");
+  if (region === "fluss") document.body.classList.add("fluss-background");
+  applyRegionClass(region);
+  document.getElementById("game-screen").style.display = "none";
+  document.getElementById("subregion-screen").style.display = "block";
+  let container = document.getElementById("subregion-container");
+  container.innerHTML = "";
+  subregions[region].forEach(sub => {
+    let btn = document.createElement("button");
+    btn.textContent = sub;
+    btn.classList.add("button", "subregion-button");
+    btn.onclick = () => {
+      startTask(sub);
+    };
+    container.appendChild(btn);
+  });
+}
+
+function startTask(subregion) {
+  currentSubregion = subregion;
+  applySubregionClass(subregion);
+  document.getElementById("subregion-screen").style.display = "none";
+  document.getElementById("task-screen").style.display = "block";
+  let tasks = questions[subregion];
+  let idx;
+  switch (subregion) {
+    case "Die Bewohner": idx = dieBewohnerTaskIndex; break;
+    case "Der Markt": idx = marketTaskIndex; break;
+    case "Weg": idx = wegTaskIndex; break;
+    case "Baum": idx = baumTaskIndex; break;
+    case "Fluss aufwärts": idx = flussAufwaertsTaskIndex; break;
+    case "Der Hafen": idx = hafenTaskIndex; break;
+    case "Fluss abwärts": idx = flussAbwaertsTaskIndex; break;
+    default: idx = 0;
+  }
+  if (idx >= tasks.length) {
+    alert("Alle Aufgaben in dieser Kategorie wurden bereits abgearbeitet.");
+    backToSubregions();
+    return;
+  }
+  let chosenTask = tasks[idx];
+  document.getElementById("task-title").textContent = `Aufgabe in ${subregion}`;
+  document.getElementById("question-text").textContent = chosenTask.question;
+  let answerContainer = document.getElementById("answers-container");
+  answerContainer.innerHTML = "";
+  selectedAnswers = [];
+  if (chosenTask.sentence) {
+    let p = document.createElement("p");
+    p.style.fontStyle = "italic";
+    p.textContent = chosenTask.sentence;
+    answerContainer.appendChild(p);
+  }
+  if (chosenTask.ordering === true) {
+    setupOrderingTask(chosenTask.groups);
+    return;
+  }
+  if (chosenTask.pairs) {
+    setupMatchingGame(chosenTask.pairs);
+    return;
+  }
+  if (subregion === "Fluss abwärts") {
+    chosenTask.answers.forEach((answer, i) => {
+      let btn = document.createElement("button");
+      btn.textContent = answer;
+      btn.classList.add("button", "answer-button");
+      btn.onclick = () => {
+        if (i === chosenTask.correct) {
+          setAnswerStatus(subregion, "correct");
+          stars++;
+          updateStars();
+          alert("Richtig! Du hast eine Mispel erhalten.");
+          handleNextTask(subregion);
+        } else {
+          setAnswerStatus(subregion, "wrong");
+          alert("Falsch! Keine Wiederholung möglich.");
+          handleNextTask(subregion);
+        }
+      };
+      answerContainer.appendChild(btn);
+    });
+    return;
+  }
+  chosenTask.answers && chosenTask.answers.forEach((answer, i) => {
+    let btn = document.createElement("button");
+    btn.textContent = answer;
+    btn.classList.add("button", "answer-button");
+    if (!Array.isArray(chosenTask.correct)) {
+      btn.onclick = () => {
+        if (i === chosenTask.correct) {
+          setAnswerStatus(subregion, "correct");
+          stars++;
+          updateStars();
+          alert("Richtig! Du hast eine Mispel erhalten.");
+          handleNextTask(subregion);
+        } else {
+          setAnswerStatus(subregion, "wrong");
+          alert("Falsch! Keine Wiederholung möglich.");
+          handleNextTask(subregion);
+        }
+      };
+    } else {
+      btn.onclick = () => handleMultiChoice(i, btn, chosenTask.correct, subregion);
+    }
+    answerContainer.appendChild(btn);
+  });
+}
+
+function setAnswerStatus(subregion, result) {
+  let tasks = questions[subregion];
+  if (Array.isArray(tasks) && tasks.length > 1) {
+    switch (subregion) {
+      case "Die Bewohner": answeredStatus[subregion][dieBewohnerTaskIndex] = result; break;
+      case "Der Markt": answeredStatus[subregion][marketTaskIndex] = result; break;
+      case "Weg": answeredStatus[subregion][wegTaskIndex] = result; break;
+      case "Baum": answeredStatus[subregion][baumTaskIndex] = result; break;
+      case "Fluss aufwärts": answeredStatus[subregion][flussAufwaertsTaskIndex] = result; break;
+      case "Der Hafen": answeredStatus[subregion][hafenTaskIndex] = result; break;
+      case "Fluss abwärts": answeredStatus[subregion][flussAbwaertsTaskIndex] = result; break;
+    }
+  } else {
+    answeredStatus[subregion] = result;
+  }
 }
