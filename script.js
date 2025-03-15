@@ -51,9 +51,8 @@ const subregions = {
 
 /***********************************************************
  *  FRAGEN & ANTWORTEN
- *  ACHTUNG: Für "Weg" wurden drei Aufgaben, für "Baum" zwei, 
- *  für "Die Bewohner" drei, für "Fluss aufwärts" drei, für "Der Hafen" drei 
- *  und für "Fluss abwärts" nun drei Aufgaben definiert.
+ *  ACHTUNG: Die einzelnen Aufgaben sind in den Arrays der jeweiligen
+ *  Unterregionen hinterlegt.
  ***********************************************************/
 const questions = {
     "Weg": [
@@ -70,7 +69,7 @@ const questions = {
       {
         question: "Konjugiere die Verben in der richtigen Reihenfolge.",
         ordering: true,
-        [
+        groups: [
           {
             prompt: "Konjugiere das Verb 'Sunt':",
             words: ["sum", "es", "est", "sumus", "estis", "sunt"]
@@ -203,6 +202,7 @@ function setupOrderingTask(groups) {
 function setupOrderingGroup(group) {
     document.getElementById("question-text").textContent = group.prompt;
     let words = group.words.slice();
+    // Zufällige Reihenfolge der Wörter
     for (let i = words.length - 1; i > 0; i--) {
         let j = Math.floor(Math.random() * (i + 1));
         [words[i], words[j]] = [words[j], words[i]];
@@ -378,8 +378,18 @@ function startTask(subregion) {
         p.textContent = chosenTask.sentence;
         answerContainer.appendChild(p);
     }
-    // Nur wenn ein Matching-Spiel vorliegt (Erkennung über "pairs")
-    if (subregion === "Fluss abwärts" && chosenTask.pairs) {
+    // Wenn Ordering-Aufgabe (Konjugiere die Verben) → dann starten wir den Ordering-Task
+    if (chosenTask.ordering === true) {
+        setupOrderingTask(chosenTask.groups);
+        return;
+    }
+    // Falls es Matching-Aufgaben gibt (über pairs) – diese werden separat behandelt
+    if ((subregion === "Fluss aufwärts" || (subregion === "Der Hafen" && chosenTask.pairs)) && chosenTask.pairs) {
+        setupMatchingGame(chosenTask.pairs);
+        return;
+    }
+    // Falls es sich um Fluss abwärts handelt und kein Matching vorliegt, behandeln wir es als Standard-MC
+    if (subregion === "Fluss abwärts") {
         let submitBtn = document.createElement("button");
         submitBtn.textContent = "Bestätigen";
         submitBtn.classList.add("button", "submit-button");
@@ -394,7 +404,7 @@ function startTask(subregion) {
         });
         return;
     }
-    // Standard-Multiple-Choice (inkl. Fluss abwärts, wenn kein Matching-Spiel)
+    // Standard-Multiple-Choice
     chosenTask.answers && chosenTask.answers.forEach((answer, idx) => {
         let btn = document.createElement("button");
         btn.textContent = answer;
