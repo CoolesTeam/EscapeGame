@@ -156,7 +156,7 @@ body {
 .region-fluss .normal-text {
     background: rgba(255,255,255,0.5);
     color: black;
-    padding: 5px;
+    padding: 1px;
     border-radius: 5px;
     display: block;
 }
