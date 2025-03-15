@@ -20,7 +20,7 @@ let currentRegion = "";
 let currentSubregion = "";
 let selectedAnswers = [];
 
-// Indizes für Subregionen mit mehreren Aufgaben
+// Indizes für Unteraufgaben pro Kategorie
 let wegTaskIndex = 0;
 let baumTaskIndex = 0;
 let dieBewohnerTaskIndex = 0;
@@ -29,7 +29,7 @@ let flussAufwaertsTaskIndex = 0;
 let hafenTaskIndex = 0;
 let flussAbwaertsTaskIndex = 0;  // Neuer Index für "Fluss abwärts"
 
-// Jede Aufgabe wird einmal abgearbeitet – die Indizes werden fortlaufend erhöht.
+// Die Status-Arrays dienen nur als Platzhalter, um zu signalisieren, dass eine Aufgabe bereits abgearbeitet wurde.
 let answeredStatus = {
     "Weg": ["unanswered", "unanswered", "unanswered", "unanswered"],
     "Baum": ["unanswered", "unanswered"],
@@ -254,7 +254,7 @@ function checkOrderingGroup(group) {
     } else {
         alert("Falsch! Keine Wiederholung möglich.");
     }
-    // Immer zur nächsten Ordering-Gruppe wechseln, auch wenn falsch
+    // Wechsel immer zur nächsten Ordering-Gruppe, auch wenn falsch
     currentOrderingGroupIndex++;
     if (currentOrderingGroupIndex < currentOrderingGroups.length) {
         setupOrderingGroup(currentOrderingGroups[currentOrderingGroupIndex]);
@@ -367,7 +367,7 @@ function startTask(subregion) {
         p.textContent = chosenTask.sentence;
         answerContainer.appendChild(p);
     }
-    // Wenn es sich um einen Ordering-Aufgabe handelt (z. B. "Konjugiere ...")
+    // Falls es sich um eine Ordering-Aufgabe handelt
     if (chosenTask.ordering === true) {
         setupOrderingTask(chosenTask.groups);
         return;
@@ -590,6 +590,7 @@ function selectFlussItem(value, button, type) {
         selectedMatch = null;
     }
 }
+
 
 /***********************************************************
  *  STANDARD-FUNKTIONEN
