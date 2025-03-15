@@ -398,12 +398,10 @@ function startTask(subregion) {
     setupOrderingTask(chosenTask.groups);
     return;
   }
-  // Prüfe, ob das Aufgabenobjekt Matching-Paare besitzt.
   if (chosenTask.pairs) {
     setupMatchingGame(chosenTask.pairs);
     return;
   }
-  // Falls es sich um eine "Fluss abwärts"-Aufgabe ohne Matching handelt, also Standard-MC:
   if (subregion === "Fluss abwärts") {
     let submitBtn = document.createElement("button");
     submitBtn.textContent = "Bestätigen";
@@ -419,7 +417,6 @@ function startTask(subregion) {
     });
     return;
   }
-  // Standard-Multiple-Choice:
   chosenTask.answers && chosenTask.answers.forEach((answer, i) => {
     let btn = document.createElement("button");
     btn.textContent = answer;
@@ -608,8 +605,11 @@ function setupMatchingGame(pairs) {
   colorIndex = 0;
   let leftDiv = document.createElement("div");
   let rightDiv = document.createElement("div");
-  leftDiv.style.display = "block"; /* Damit sie untereinander stehen */
+  /* Damit die Buttons untereinander stehen, setze die Container als Block */
+  leftDiv.style.display = "block";
   rightDiv.style.display = "block";
+  leftDiv.style.margin = "10px auto";
+  rightDiv.style.margin = "10px auto";
   pairs.forEach(pair => {
     let leftBtn = document.createElement("button");
     leftBtn.textContent = pair.term;
