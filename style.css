@@ -89,12 +89,10 @@ body {
     border-radius: 8px;
     transition: 0.3s;
 }
-
 .region-button {
     background-color: rgba(0,123,255,0.8);
     color: white;
 }
-
 .answer-button {
     background-color: #f0f0f0;
     color: black;
@@ -106,7 +104,6 @@ body {
     border: 2px solid rgba(0,123,255,0.8);
     border-radius: 8px;
 }
-
 .back-button {
     background: rgba(255,255,255,0.2);
     color: white;
@@ -164,4 +161,4 @@ body {
  *************************************************************/
 .region-wald  {}
 .region-dorf  {}
-.region-fluss {}
+.region-fluss  {}
