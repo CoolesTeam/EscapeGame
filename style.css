@@ -50,7 +50,7 @@ body {
     font-size: 2em;
     font-weight: bold;
     margin: 10px 0;
-    display: block;
+    display: block; /* Block-Level, damit Überschriften untereinander stehen */
 }
 .normal-text {
     margin: 10px 0 20px;
@@ -162,36 +162,15 @@ body {
 }
 
 /*************************************************************
- * PLATZHALTER-KLASSEN FÜR REGIONEN & FRAGEN
+ * SPEZIFISCHE Regeln für Überschriften in den Screens
  *************************************************************/
-.region-wald  {}
-.region-dorf  {}
-.region-fluss  {}
-
-/* Beispiel für spezifische Hintergründe bei Aufgabenüberschriften:
-   Diese Regeln kannst du später nach Bedarf anpassen.
-   - Für "Unterregion wählen": nur der Textbereich (z. B. im h2) soll einen transparenten Hintergrund haben.
-   - Für "Aufgabe in Fluss aufwärts": ebenfalls, nur der Text selbst.
-   - Analog für weitere Überschriften.
-*/
-
-.subregion-screen .title-text {
-    background: rgba(255, 255, 255, 0.8); /* 80% Deckkraft */
-    padding: 5px 10px;
-    border-radius: 5px;
-    display: inline-block; /* Nur der Textbereich */
-}
-
-.task-screen .title-text {
-    background: rgba(255, 255, 255, 0.8);
-    padding: 5px 10px;
-    border-radius: 5px;
-    display: inline-block;
-}
-
+.subregion-screen .title-text,
+.task-screen .title-text,
 .task-screen .normal-text {
-    background: rgba(255, 255, 255, 0.8);
+    background: rgba(255,255,255,0.8); /* 80% Deckkraft */
     padding: 5px 10px;
     border-radius: 5px;
-    display: inline-block;
+    display: block; /* Block-Level, damit sie untereinander stehen */
+    width: auto;
+    margin: 0 auto;
 }
