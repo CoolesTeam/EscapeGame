@@ -1,70 +1,169 @@
-<!DOCTYPE html>
-<html lang="de">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Escape Game Gallien</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
-  <!-- Mispeln-Anzeige OBEN RECHTS -->
-  <div id="stars-info" class="stars-info">
-    Mispeln: <span id="stars-count">0</span>
-  </div>
+/*************************************************************
+ * GRUNDLAYOUT / HINTERGRUND
+ *************************************************************/
+body {
+    font-family: "Comic Sans MS", cursive, sans-serif;
+    text-align: center;
+    background: url("background.jpg") no-repeat center center fixed;
+    background-size: cover;
+    margin: 0;
+    min-height: 100vh;
+    overflow: hidden;
+    color: black;
+}
 
-  <!-- Willkommen-Screen -->
-  <div id="welcome-screen" class="screen welcome-screen">
-    <h1 class="title-text">Willkommen zum Escape Game Gallien!</h1>
-    <button class="button" onclick="showIntro()">Weiter</button>
-  </div>
+/*************************************************************
+ * ALLGEMEINE SCREEN-REGELN
+ *************************************************************/
+.screen {
+    width: 100%;
+    min-height: 100vh;
+    /* Um alle Screens standardmäßig zu zentrieren, können wir hier flex einsetzen: */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.welcome-screen { display: flex; }
+.intro-screen, .game-screen, .subregion-screen, .task-screen { display: none; }
 
-  <!-- Intro-Screen -->
-  <div id="intro-screen" class="screen intro-screen" style="display: none;">
-    <div class="intro-box">
-      <h2 class="title-text">Deine Mission</h2>
-      <p class="normal-text">
-        Du bist im Lateinunterricht und deine Lehrkraft möchte, dass du dein Lateinbuch 
-        aufschlägst, wie immer. Nur dieses Mal scheint da etwas anders zu sein. Mit deinem 
-        Sitznachbarn zusammen schaut ihr in das Buch und ihr seht ein Bild von Obelix, 
-        der in den Asterix Comics immer zu finden ist. Das Bild wirkt auf euch verschwommen 
-        und ehe ihr euch versteht, werdet ihr in das Buch reingezogen.<br><br>
-        Plötzlich steht ihr vor Asterix, der euch freundlich, aber hektisch empfängt. 
-        Er erklärt euch schnell, dass das Gallische Dorf in großer Gefahr schwebt und 
-        sie es nicht schaffen, es ungesehen von den Römern zu verlassen. Ihr Zaubertrank 
-        neigt sich leider dem Ende zu und Miraculix fehlen noch ein paar Mispeln, um 
-        einen neuen Trank zu konzipieren. Ihr willigt ein, ihnen zu helfen, aber da ihr euch 
-        gar nicht in der Gegend auskennt, braucht ihr einen Begleiter. Euch wird Idefix, 
-        der kleine Hund, als treuer Begleiter zur Verfügung gestellt und eine kleine Karte 
-        mit den Orten, zu denen ihr unauffällig kommen müsst. Los geht die Reise – viel Erfolg!
-      </p>
-      <button class="button" onclick="startGame()">Spiel starten</button>
-    </div>
-  </div>
+/*************************************************************
+ * OBEN RECHTS: MISPEL-ANZEIGE
+ *************************************************************/
+.stars-info {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-family: "Comic Sans MS", cursive, sans-serif;
+    font-size: 24px;
+    color: red;
+    background: rgba(255,255,255,0.6);
+    padding: 10px;
+    border-radius: 10px;
+    z-index: 1000;
+}
 
-  <!-- Game-Screen (Regionen) -->
-  <div id="game-screen" class="screen game-screen" style="display: none;">
-    <h2 class="title-text">Wähle eine Region:</h2>
-    <button id="wald-button" class="button region-button" onclick="showSubregions('wald')">Wald</button>
-    <button id="dorf-button" class="button region-button" onclick="showSubregions('dorf')">Dorf</button>
-    <button id="fluss-button" class="button region-button" onclick="showSubregions('fluss')">Fluss</button>
-  </div>
+/*************************************************************
+ * TEXTKOMPONENTEN
+ *************************************************************/
+.title-text {
+    font-size: 2em;
+    font-weight: bold;
+    margin: 10px 0;
+    display: block;
+}
+.normal-text {
+    margin: 10px 0 20px;
+    line-height: 1.4;
+    display: block;
+}
 
-  <!-- Subregion-Screen -->
-  <div id="subregion-screen" class="screen subregion-screen" style="display: none;">
-    <h2 class="title-text">Unterregion wählen</h2>
-    <div id="subregion-container" class="subregion-container"></div>
-    <button class="button back-button" onclick="backToRegions()">Zurück</button>
-  </div>
+/*************************************************************
+ * INTRO-BOX
+ *************************************************************/
+.intro-box {
+    background: rgba(255,255,255,0.95);
+    color: black;
+    padding: 25px;
+    border-radius: 10px;
+    width: 60%;
+    max-width: 600px;
+    text-align: center;
+    box-shadow: 0px 4px 10px rgba(0,0,0,0.5);
+    margin: 0 auto;
+}
 
-  <!-- Task-Screen -->
-  <div id="task-screen" class="screen task-screen" style="display: none;">
-    <h2 id="task-title" class="title-text"></h2>
-    <!-- Fragetext in eigenem Absatz -->
-    <p id="question-text" class="normal-text"></p>
-    <div id="answers-container" class="answers-container"></div>
-    <button class="button back-button" onclick="backToSubregions()">Zurück</button>
-  </div>
+/*************************************************************
+ * SCREEN-STILE
+ *************************************************************/
+.welcome-screen, .intro-screen, .game-screen, .subregion-screen, .task-screen {
+    position: relative;
+    padding: 20px;
+}
 
-  <script src="script.js" defer></script>
-</body>
-</html>
+/*************************************************************
+ * BUTTONS
+ *************************************************************/
+.button {
+    font-family: "Comic Sans MS", cursive, sans-serif;
+    padding: 15px 30px;
+    font-size: 18px;
+    border: none;
+    cursor: pointer;
+    margin: 10px;
+    border-radius: 8px;
+    transition: 0.3s;
+}
+.region-button {
+    background-color: rgba(0,123,255,0.8);
+    color: white;
+}
+.answer-button {
+    background-color: #f0f0f0;
+    color: black;
+    display: block;
+    margin: 10px auto;
+    width: 50%;
+    padding: 10px 0;
+    font-size: 16px;
+    border: 2px solid rgba(0,123,255,0.8);
+    border-radius: 8px;
+}
+.back-button {
+    background: rgba(255,255,255,0.2);
+    color: white;
+    padding: 10px;
+    border: 2px solid white;
+    border-radius: 5px;
+}
+
+/*************************************************************
+ * FARBKLASSEN FÜR MEHRFACHAUSWAHL
+ *************************************************************/
+.matching-blue {
+    background-color: blue !important;
+    color: white !important;
+}
+.matching-yellow {
+    background-color: yellow !important;
+    color: black !important;
+}
+.matching-pink {
+    background-color: pink !important;
+    color: black !important;
+}
+.matching-green {
+    background-color: green !important;
+    color: white !important;
+}
+
+/*************************************************************
+ * SPEZIELLE HINTERGRÜNDE
+ *************************************************************/
+.wald-background {
+    background: url("wald.jpg") no-repeat center center fixed !important;
+    background-size: cover !important;
+}
+.fluss-background {
+    background: url("fluss.jpg") no-repeat center center fixed !important;
+    background-size: cover !important;
+}
+
+/*************************************************************
+ * REGIONSSPEZIFISCHE STILE FÜR FLUSS
+ *************************************************************/
+.region-fluss .title-text,
+.region-fluss .normal-text {
+    background: rgba(255,255,255,0.5);
+    color: black;
+    padding: 5px;
+    border-radius: 5px;
+    display: block;
+}
+
+/*************************************************************
+ * PLATZHALTER-KLASSEN FÜR REGIONEN & FRAGEN
+ *************************************************************/
+.region-wald  {}
+.region-dorf  {}
+.region-fluss  {}
