@@ -162,8 +162,8 @@ const questions = {
       correct: 2
     },
     {
-      question: "Krieger: Einheitliche Uniformen wie die der Römer gab es bei den Galliern nicht. Manche hochgestellten krieger trugen bronze Brustpanzer, doch ein so großes metallisches Objekt ist recht teuer. Die meisten Krieger haben wohl in ihrer  Altagskleidung gekämpft, natürlich ergänzt um Schwert und Schuld, der Standartausrüstuung für den gallischen Kämpfer.\n\nWas trugen die hochgestellten Krieger der Gallier laut dem Text?",
-      answers: ["Einheitliche Uniformen & Schwerter", "Altagskleidung & Bronzene Brustpanzer", "Roben & Bronzene Brustpanzer"],
+      question: "Krieger: Einheitliche Uniformen wie die der Römer gab es bei den Galliern nicht. Manche hochgestellten krieger trugen bronze Brustpanzer, doch ein so großes metallisches Objekt ist recht teuer. Die meisten Krieger haben wohl in ihrer  Altagskleidung gekämpft, natürlich ergänzt um Schwert und Schuld, der Standartausrüstuung für den gallischen Kämpfer.     \n\nWas trugen die hochgestellten Krieger der Gallier laut dem Text?",
+      answers: ["Einheitliche Uniformen & Schwerter", "Bronzene Brustpanzer", "Roben"],
       correct: 1
     },
     {
