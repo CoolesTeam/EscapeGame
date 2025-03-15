@@ -70,7 +70,7 @@ const questions = {
       {
         question: "Konjugiere die Verben in der richtigen Reihenfolge.",
         ordering: true,
-        groups: [
+        [
           {
             prompt: "Konjugiere das Verb 'Sunt':",
             words: ["sum", "es", "est", "sumus", "estis", "sunt"]
