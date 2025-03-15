@@ -18,7 +18,7 @@ body {
 .screen {
     width: 100%;
     min-height: 100vh;
-    /* Alle Screens als Flex-Container zentriert */
+    /* Zentriert alle Screens als Flex-Container */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -162,9 +162,9 @@ body {
 }
 
 /*************************************************************
- * SPEZIFISCHE Regeln für Überschriften und Frage-Texte
+ * SPEZIFISCHE Regeln für Überschriften und Fragetexte
  *************************************************************/
-/* Im Game-Screen soll "Wähle eine Region:" ohne Hintergrund sein */
+/* Im Game-Screen soll "Wähle eine Region:" keinen Hintergrund haben */
 #game-screen .title-text {
     background: none;
     padding: 0;
@@ -178,9 +178,9 @@ body {
     border-radius: 5px;
 }
 
-/* Im Task-Screen sollen Überschrift (#task-title) und Fragetext (#question-text) als Blockelemente erscheinen */
+/* Im Task-Screen sollen Überschrift (#task-title) und Fragetext (#question-text) nur den Textbereich umschließen */
 #task-title, #question-text {
-    display: block;
+    display: inline-block;
     background: rgba(255, 255, 255, 0.8);
     padding: 5px 10px;
     border-radius: 5px;
