@@ -15,19 +15,28 @@ body {
 /*************************************************************
  * ALLGEMEINE SCREEN-REGELN
  *************************************************************/
+/* Alle Screens werden als Flex-Container zentriert */
 .screen {
     width: 100%;
     min-height: 100vh;
-    /* Zentriert alle Screens als Flex-Container */
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
 }
+
+/* Speziell für den Welcome-Screen: volle Höhe und klare Zentrierung */
 .welcome-screen {
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
+    text-align: center;
+    height: 100vh;
+}
+
+/* Falls du den Text innerhalb der h1 noch zentriert haben möchtest */
+.title-text {
     text-align: center;
 }
 
