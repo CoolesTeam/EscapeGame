@@ -181,6 +181,7 @@ body {
 /* Im Task-Screen sollen Überschrift (#task-title) und Fragetext (#question-text) nur den Textbereich umschließen */
 #task-title, #question-text {
     display: block;
+    width: fit-content;
     background: rgba(255, 255, 255, 0.8);
     padding: 5px 10px;
     border-radius: 5px;
