@@ -337,7 +337,7 @@ function showSubregions(region) {
         btn.textContent = sub;
         btn.classList.add("button", "subregion-button");
         btn.onclick = () => {
-            // Keine Zurücksetzung der Indizes – so bleiben abgeschlossene Aufgaben erhalten
+            // Keine Zurücksetzung der Indizes – so bleibt der Fortschritt erhalten
             startTask(sub);
         };
         container.appendChild(btn);
@@ -530,7 +530,9 @@ function checkFiveAnswers(correctAnswers) {
     setTimeout(() => handleNextTask(currentSubregion), 1000);
 }
 
-// Matching-Funktionen
+/***********************************************************
+ *  MATCHING-FUNKTIONEN
+ ***********************************************************/
 const pairColors = ["matching-blue", "matching-yellow", "matching-pink", "matching-green"];
 let colorIndex = 0;
 let selectedTerm = null;
@@ -538,65 +540,65 @@ let selectedMatch = null;
 let selectedPairs = {};
 let colorMap = {};
 
-function setupMatchingGame(pairs) {
-    let container = document.getElementById("answers-container");
-    container.innerHTML = "<p>Verbinde Orange (lateinische Wörter) mit Hellblau (deutsche Bedeutung) per Klick!</p>";
-    selectedTerm = null;
-    selectedMatch = null;
-    selectedPairs = {};
-    colorMap = {};
-    colorIndex = 0;
-    let leftDiv = document.createElement("div");
-    let rightDiv = document.createElement("div");
-    leftDiv.style.display = "inline-block";
-    leftDiv.style.marginRight = "50px";
-    leftDiv.style.verticalAlign = "top";
-    rightDiv.style.display = "inline-block";
-    rightDiv.style.verticalAlign = "top";
-    pairs.forEach(pair => {
-        let leftBtn = document.createElement("button");
-        leftBtn.textContent = pair.term;
-        leftBtn.style.backgroundColor = "orange";
-        leftBtn.style.color = "white";
-        leftBtn.style.padding = "20px 30px";
-        leftBtn.style.fontSize = "16px";
-        leftBtn.style.margin = "5px";
-        leftBtn.onclick = () => selectFlussItem(pair.term, leftBtn, "term");
-        leftDiv.appendChild(leftBtn);
-    });
-    pairs.forEach(pair => {
-        let rightBtn = document.createElement("button");
-        rightBtn.textContent = pair.match;
-        rightBtn.style.backgroundColor = "lightblue";
-        rightBtn.style.color = "black";
-        rightBtn.style.padding = "20px 30px";
-        rightBtn.style.fontSize = "16px";
-        rightBtn.style.margin = "5px";
-        rightBtn.onclick = () => selectFlussItem(pair.match, rightBtn, "match");
-        rightDiv.appendChild(rightBtn);
-    });
-    container.appendChild(leftDiv);
-    container.appendChild(rightDiv);
-    let checkBtn = document.createElement("button");
-    checkBtn.textContent = "Überprüfen";
-    checkBtn.classList.add("button");
-    checkBtn.style.marginTop = "20px";
-    checkBtn.onclick = () => checkFlussMatches(pairs);
-    container.appendChild(document.createElement("br"));
-    container.appendChild(checkBtn);
+function addPair(term, termBtn, match, matchBtn) {
+    // Falls bereits ein Paar existiert, entferne es
+    if (selectedPairs[term]) {
+        let oldMatch = selectedPairs[term];
+        removeColor(term, oldMatch);
+        delete selectedPairs[term];
+    }
+    // Entferne ein eventuell vorhandenes Paar, in dem 'match' bereits zugeordnet ist
+    for (let t in selectedPairs) {
+        if (selectedPairs[t] === match) {
+            removeColor(t, match);
+            delete selectedPairs[t];
+            break;
+        }
+    }
+    selectedPairs[term] = match;
+    let c = pairColors[colorIndex];
+    colorIndex = (colorIndex + 1) % pairColors.length;
+    colorMap[term] = c;
+    colorMap[match] = c;
+    termBtn.classList.add(c);
+    matchBtn.classList.add(c);
 }
 
-function selectFlussItem(value, button, type) {
-    if (type === "term") {
-        selectedTerm = { value, button };
+function removeColor(term, match) {
+    let cTerm = colorMap[term];
+    let cMatch = colorMap[match];
+    if (cTerm) {
+        document.querySelectorAll("button").forEach(b => {
+            if (b.textContent === term) b.classList.remove(cTerm);
+        });
+        delete colorMap[term];
+    }
+    if (cMatch) {
+        document.querySelectorAll("button").forEach(b => {
+            if (b.textContent === match) b.classList.remove(cMatch);
+        });
+        delete colorMap[match];
+    }
+}
+
+function checkFlussMatches(pairs) {
+    let correct = true;
+    for (let p of pairs) {
+        if (!selectedPairs[p.term] || selectedPairs[p.term] !== p.match) {
+            correct = false;
+            break;
+        }
+    }
+    if (correct) {
+        setAnswerStatus(currentSubregion, "correct");
+        stars++;
+        updateStars();
+        alert("Richtig! Du hast eine Mispel erhalten.");
     } else {
-        selectedMatch = { value, button };
+        setAnswerStatus(currentSubregion, "wrong");
+        alert("Falsch! Keine Wiederholung möglich.");
     }
-    if (selectedTerm && selectedMatch) {
-        addPair(selectedTerm.value, selectedTerm.button, selectedMatch.value, selectedMatch.button);
-        selectedTerm = null;
-        selectedMatch = null;
-    }
+    setTimeout(() => handleNextTask(currentSubregion), 1000);
 }
 
 /***********************************************************
