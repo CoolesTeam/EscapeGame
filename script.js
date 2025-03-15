@@ -27,9 +27,9 @@ let dieBewohnerTaskIndex = 0;
 let marketTaskIndex = 0;
 let flussAufwaertsTaskIndex = 0;
 let hafenTaskIndex = 0;
-let flussAbwaertsTaskIndex = 0;  // Neuer Index für "Fluss abwärts"
+let flussAbwaertsTaskIndex = 0;  // Index für "Fluss abwärts"
 
-// Jede Aufgabe wird einmal abgearbeitet – die Indizes werden fortlaufend erhöht.
+// Jede Aufgabe wird einmal abgearbeitet – Indizes werden fortlaufend erhöht.
 let answeredStatus = {
     "Weg": ["unanswered", "unanswered", "unanswered", "unanswered"],
     "Baum": ["unanswered", "unanswered"],
@@ -581,6 +581,7 @@ function selectFlussItem(value, button, type) {
         selectedMatch = null;
     }
 }
+
 
 
 /***********************************************************
