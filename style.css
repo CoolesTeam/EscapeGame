@@ -25,7 +25,7 @@ body {
     justify-content: center;
 }
 .welcome-screen { display: flex; }
-.intro-screen, .game-screen, .subregion-screen, .task-screen { display: none; }
+.intro-screen, .game-screen, .subregion-screen, .task-screen, #end-screen { display: none; }
 
 /*************************************************************
  * OBEN RECHTS: MISPEL-ANZEIGE
@@ -76,7 +76,7 @@ body {
 /*************************************************************
  * SCREEN-STILE
  *************************************************************/
-.welcome-screen, .intro-screen, .game-screen, .subregion-screen, .task-screen {
+.welcome-screen, .intro-screen, .game-screen, .subregion-screen, .task-screen, #end-screen {
     position: relative;
     padding: 20px;
 }
@@ -162,7 +162,7 @@ body {
 }
 
 /*************************************************************
- * SPEZIFISCHE Regeln für Überschriften und Fragetexte
+ * SPEZIFISCHE Regeln für Überschriften und Fragetexte im Task-Screen
  *************************************************************/
 /* Im Game-Screen soll "Wähle eine Region:" keinen Hintergrund haben */
 #game-screen .title-text {
@@ -178,10 +178,9 @@ body {
     border-radius: 5px;
 }
 
-/* Im Task-Screen sollen Überschrift (#task-title) und Fragetext (#question-text) nur den Textbereich umschließen */
+/* Im Task-Screen sollen Überschrift (#task-title) und Fragetext (#question-text) nur so breit wie der Text sein */
 #task-title, #question-text {
-    display: block;
-    width: fit-content;
+    display: table;
     background: rgba(255, 255, 255, 0.8);
     padding: 5px 10px;
     border-radius: 5px;
