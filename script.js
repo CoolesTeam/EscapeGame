@@ -136,12 +136,12 @@ const questions = {
   ],
   "Fluss aufwärts": [
     {
-      question: "Merktext: Frauen trugen einfache Kleider und Röcke ...",
+      question: "Merktext: Frauen trugen einfache Kleider und Röcke, die gerade oder als Glockenrock geschnitten waren. Manche Darstellungen au Römischen Fresken zeigen auch kletische Frauen in Pumpenhosen. Darüber trugen wie Männer eien Chiton, der jedoch länger war und meist bis zu den Knöcheln reichte. Das obere Ende wurde über der brust und dem Rücken umgeschlagen und mit Fieben zusammengesteckt.",
       answers: ["Hosen und T-Shirts", "Einfache Kleider und Röcke", "Anzüge"],
       correct: 1
     },
     {
-      question: "Unteraufgabe: Wahr oder Falsch: Frauen trugen immer einen Chiton, der bis zu den Knöcheln reichte",
+      question: "Unteraufgabe: Wahr oder Falsch: Frauen trugen immer einen Chiton, der bis zu den Knöcheln reichte.",
       answers: ["Wahr", "Falsch"],
       correct: 0
     },
@@ -162,7 +162,7 @@ const questions = {
       correct: 2
     },
     {
-      question: "Krieger: Einheitliche Uniformen ...\n\nWas trugen die hochgestellten Krieger der Gallier laut dem Text?",
+      question: "Krieger: Einheitliche Uniformen wie die der Römer gab es bei den Galliern nicht. Manche hochgestellten krieger trugen bronze Brustpanzer, doch ein so großes metallisches Objekt ist recht teuer. Die meisten Krieger haben wohl in ihrer  Altagskleidung gekämpft, natürlich ergänzt um Schwert und Schuld, der Standartausrüstuung für den gallischen Kämpfer.\n\nWas trugen die hochgestellten Krieger der Gallier laut dem Text?",
       answers: ["Einheitliche Uniformen & Schwerter", "Altagskleidung & Bronzene Brustpanzer", "Roben & Bronzene Brustpanzer"],
       correct: 1
     },
@@ -179,7 +179,7 @@ const questions = {
       correct: [0, 2, 4, 5, 6]
     },
     {
-      question: "Ranglisten: Wer stand an der Spitze der gallischen Gesellschaft?",
+      question: "Ranglisten: Die Gesellschaft der Gallier war stark hierarchisch struckturiert. An der Spitze standen die Druiden, die nicht nur relligiöse Führer, sondern auch politische Berater und Lehrer waren. Ihnen folgten die Kriegeshäupinge, die militärische Anführer der Stämme darstellten. Die breite Masse bestand aus bauern und handwerkern, während Sklaven am unteren Ende der sozialen Hierarchie standen. Wer stand an der Spitze der gallischen Gesellschaft?",
       answers: ["Die Bauern", "Die Sklaven", "Die Druiden"],
       correct: 2
     },
