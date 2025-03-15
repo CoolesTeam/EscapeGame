@@ -10,7 +10,7 @@ function showIntro() {
 function startGame() {
     console.log("startGame() aufgerufen");
     document.getElementById("intro-screen").style.display = "none";
-    document.getElementById("game-screen").style.display = "block";
+    document.getElementById("game-screen").style.display = "flex";
     updateStars();
 }
 
@@ -306,6 +306,20 @@ function backToSubregions() {
  *  TASK-ABLAUF
  ***********************************************************/
 function showSubregions(region) {
+    // Überprüfe, ob in den Kategorien "dorf" und "fluss" alle Aufgaben abgearbeitet wurden.
+    if (region === "dorf") {
+      if (dieBewohnerTaskIndex >= questions["Die Bewohner"].length && marketTaskIndex >= questions["Der Markt"].length) {
+         alert("Kategorie Dorf wurde bereits abgeschlossen.");
+         return;
+      }
+    }
+    if (region === "fluss") {
+      if (flussAufwaertsTaskIndex >= questions["Fluss aufwärts"].length && hafenTaskIndex >= questions["Der Hafen"].length && flussAbwaertsTaskIndex >= questions["Fluss abwärts"].length) {
+         alert("Kategorie Fluss wurde bereits abgeschlossen.");
+         return;
+      }
+    }
+    
     currentRegion = region;
     document.body.classList.remove("wald-background", "fluss-background");
     if (region === "wald") document.body.classList.add("wald-background");
