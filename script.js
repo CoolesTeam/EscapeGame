@@ -394,35 +394,22 @@ function startTask(subregion) {
     p.textContent = chosenTask.sentence;
     answerContainer.appendChild(p);
   }
+  // Falls es sich um eine Ordering-Aufgabe handelt:
   if (chosenTask.ordering === true) {
     setupOrderingTask(chosenTask.groups);
     return;
   }
+  // Falls es Matching-Paare gibt, nutze die Matching-Funktion:
   if (chosenTask.pairs) {
     setupMatchingGame(chosenTask.pairs);
     return;
   }
-  if (subregion === "Fluss abwärts") {
-    // Für "Fluss abwärts" Standard-MC: Wir fügen hier einen "Bestätigen"-Button hinzu.
-    let submitBtn = document.createElement("button");
-    submitBtn.textContent = "Bestätigen";
-    submitBtn.classList.add("button", "submit-button");
-    submitBtn.onclick = () => checkFiveAnswers(chosenTask.correct);
-    answerContainer.appendChild(submitBtn);
-    chosenTask.answers.forEach((answer, i) => {
-      let btn = document.createElement("button");
-      btn.textContent = answer;
-      btn.classList.add("button", "answer-button");
-      btn.onclick = () => setMatchingColors(i, btn);
-      answerContainer.appendChild(btn);
-    });
-    return;
-  }
-  // Standard-Multiple-Choice für alle anderen Fälle:
+  // Standard-Multiple-Choice (auch für Fluss abwärts, wenn keine pairs vorhanden):
   chosenTask.answers && chosenTask.answers.forEach((answer, i) => {
     let btn = document.createElement("button");
     btn.textContent = answer;
     btn.classList.add("button", "answer-button");
+    // Für standardmäßige Multiple-Choice-Fragen erfolgt die Auswertung direkt per Klick:
     if (!Array.isArray(chosenTask.correct)) {
       btn.onclick = () => {
         if (i === chosenTask.correct) {
@@ -534,7 +521,6 @@ function setMatchingColors(i, button) {
 }
 
 function checkFiveAnswers(correctAnswers) {
-  // Verwende einen numerischen Vergleich für die Sortierung
   selectedAnswers.sort((a, b) => a - b);
   correctAnswers.sort((a, b) => a - b);
   if (JSON.stringify(selectedAnswers) === JSON.stringify(correctAnswers)) {
