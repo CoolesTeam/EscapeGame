@@ -174,7 +174,7 @@ const questions = {
       correct: [0, 2, 4, 5, 6]
     },
     {
-      question: "Ranglisten: Wer stand an der Spitze der gallischen Gesellschaft?",
+      question: "Ranglisten: Die Gesellschaft der Gallier war stark hierarchisch strukturiert. An der Spitze standen die Druiden, die nicht nur religiöse Führer, sondern auch politische Berater und Lehrer waren. Ihnen folgten die Kriegshäuptlinge, die militärische Anführer der Stämme darstellten. Die breite Masse bestand aus Bauern und Handwerkern, während Sklaven am unteren Ende der sozialen Hierarchie standen. Wer stand an der Spitze der gallischen Gesellschaft?",
       answers: ["Die Bauern", "Die Sklaven", "Die Druiden"],
       correct: 2
     },
@@ -203,6 +203,7 @@ function setupOrderingTask(groups) {
 function setupOrderingGroup(group) {
   document.getElementById("question-text").textContent = group.prompt;
   let words = group.words.slice();
+  // Zufällige Reihenfolge der Wörter
   for (let i = words.length - 1; i > 0; i--) {
     let j = Math.floor(Math.random() * (i + 1));
     [words[i], words[j]] = [words[j], words[i]];
@@ -397,10 +398,12 @@ function startTask(subregion) {
     setupOrderingTask(chosenTask.groups);
     return;
   }
-  if ((subregion === "Fluss aufwärts" || (subregion === "Der Hafen" && chosenTask.pairs)) && chosenTask.pairs) {
+  // Prüfe, ob das Aufgabenobjekt Matching-Paare besitzt.
+  if (chosenTask.pairs) {
     setupMatchingGame(chosenTask.pairs);
     return;
   }
+  // Falls es sich um eine "Fluss abwärts"-Aufgabe ohne Matching handelt, also Standard-MC:
   if (subregion === "Fluss abwärts") {
     let submitBtn = document.createElement("button");
     submitBtn.textContent = "Bestätigen";
@@ -416,6 +419,7 @@ function startTask(subregion) {
     });
     return;
   }
+  // Standard-Multiple-Choice:
   chosenTask.answers && chosenTask.answers.forEach((answer, i) => {
     let btn = document.createElement("button");
     btn.textContent = answer;
@@ -604,11 +608,8 @@ function setupMatchingGame(pairs) {
   colorIndex = 0;
   let leftDiv = document.createElement("div");
   let rightDiv = document.createElement("div");
-  leftDiv.style.display = "inline-block";
-  leftDiv.style.marginRight = "50px";
-  leftDiv.style.verticalAlign = "top";
-  rightDiv.style.display = "inline-block";
-  rightDiv.style.verticalAlign = "top";
+  leftDiv.style.display = "block"; /* Damit sie untereinander stehen */
+  rightDiv.style.display = "block";
   pairs.forEach(pair => {
     let leftBtn = document.createElement("button");
     leftBtn.textContent = pair.term;
