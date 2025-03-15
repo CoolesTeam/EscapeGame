@@ -420,7 +420,7 @@ function startTask(subregion) {
   selectedAnswers = [];
   if (chosenTask.sentence) {
     let p = document.createElement("p");
-    p.style.fontStyle = "italic";
+    p.className = "sentence-text";
     p.textContent = chosenTask.sentence;
     answerContainer.appendChild(p);
   }
