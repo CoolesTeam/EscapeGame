@@ -8,7 +8,7 @@ body {
     background-size: cover;
     margin: 0;
     min-height: 100vh;
-    overflow: hidden;
+    overflow-x: hidden;
     color: black;
 }
 
@@ -18,6 +18,7 @@ body {
 .screen {
     width: 100%;
     min-height: 100vh;
+    /* Zentriert alle Screens als Flex-Container */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -54,6 +55,7 @@ body {
     margin: 10px 0 20px;
     line-height: 1.4;
     display: block;
+    text-align: center;
 }
 
 /*************************************************************
@@ -137,18 +139,15 @@ body {
 }
 
 /*************************************************************
- * SPEZIFISCHE Regeln für Überschriften und Fragetexte
+ * SPEZIFISCHE Regeln für Überschriften und Fragetexte im Task-Screen
  *************************************************************/
-/* Im Game-Screen soll "Wähle eine Region:" keinen Hintergrund haben */
 #game-screen .title-text { background: none; padding: 0; }
-/* In der Subregion-Auswahl – Hintergrund nur hinter dem Text */
 #subregion-screen .title-text {
     display: inline-block;
     background: rgba(255,255,255,0.8);
     padding: 5px 10px;
     border-radius: 5px;
 }
-/* Im Task-Screen sollen Überschrift und Fragetext nur so breit wie der Text sein */
 #task-title, #question-text {
     display: table;
     width: fit-content;
@@ -156,4 +155,30 @@ body {
     padding: 5px 10px;
     border-radius: 5px;
     margin: 10px auto;
+}
+
+/*************************************************************
+ * RESPONSIVE DESIGN
+ *************************************************************/
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+@media (max-width: 768px) {
+    .intro-box, .screen {
+        width: 90%;
+        padding: 10px;
+    }
+    .title-text {
+        font-size: 1.5em;
+    }
+    .button {
+        padding: 10px 20px;
+        font-size: 16px;
+    }
+    .answer-button {
+        width: 80%;
+        font-size: 14px;
+    }
 }
