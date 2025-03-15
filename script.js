@@ -29,7 +29,7 @@ let flussAufwaertsTaskIndex = 0;
 let hafenTaskIndex = 0;
 let flussAbwaertsTaskIndex = 0;  // Neuer Index für "Fluss abwärts"
 
-// Jede Aufgabe wird einmal abgearbeitet, daher wird der Index fortlaufend erhöht.
+// Jede Aufgabe wird einmal abgearbeitet – die Indizes werden fortlaufend erhöht
 let answeredStatus = {
     "Weg": ["unanswered", "unanswered", "unanswered"],
     "Baum": ["unanswered", "unanswered"],
@@ -308,7 +308,7 @@ function showSubregions(region) {
         btn.textContent = sub;
         btn.classList.add("button", "subregion-button");
         btn.onclick = () => {
-            // Setze die jeweiligen Indizes zurück
+            // Setze die entsprechenden Indizes zurück
             if (region === "dorf" && sub === "Die Bewohner") dieBewohnerTaskIndex = 0;
             if (region === "dorf" && sub === "Der Markt") marketTaskIndex = 0;
             if (region === "fluss" && sub === "Fluss aufwärts") flussAufwaertsTaskIndex = 0;
@@ -354,17 +354,14 @@ function startTask(subregion) {
         p.textContent = chosenTask.sentence;
         answerContainer.appendChild(p);
     }
-    // Wenn es sich um einen Ordering-Aufgabe handelt (z. B. "Konjugiere die Verben")
     if (chosenTask.ordering === true) {
         setupOrderingTask(chosenTask.groups);
         return;
     }
-    // Falls Matching-Aufgaben existieren (über pairs)
     if ((subregion === "Fluss aufwärts" || (subregion === "Der Hafen" && chosenTask.pairs)) && chosenTask.pairs) {
         setupMatchingGame(chosenTask.pairs);
         return;
     }
-    // Falls es sich um Fluss abwärts handelt und kein Matching vorliegt, als Standard-MC
     if (subregion === "Fluss abwärts") {
         let submitBtn = document.createElement("button");
         submitBtn.textContent = "Bestätigen";
@@ -380,7 +377,6 @@ function startTask(subregion) {
         });
         return;
     }
-    // Standard-Multiple-Choice
     chosenTask.answers && chosenTask.answers.forEach((answer, i) => {
         let btn = document.createElement("button");
         btn.textContent = answer;
@@ -636,6 +632,7 @@ function checkFlussMatches(pairs) {
     }
     setTimeout(() => handleNextTask(currentSubregion), 1000);
 }
+
 
 function updateStars() {
     document.getElementById("stars-count").textContent = stars;
