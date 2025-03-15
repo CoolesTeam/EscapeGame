@@ -90,7 +90,7 @@ const questions = {
   "Baum": [
     {
       question: "Suche das Subjekt des Satzes heraus und klicke es an.",
-      sentence: "Est bos cervi figura, cuius a media fronte inter aures unum cornu exsistit excelsius magisque directum his, quae nobis nota sunt, cornibus.",
+      sentence: "Est bos cervi figura, cuius a media fronte inter aures unum cornu exsistit excelsius magisque directum his, quae nobis nota sunt cornibus.",
       answers: ["bos", "cervi figura", "cornibus", "quae", "nota sunt"],
       correct: 0
     },
@@ -124,18 +124,12 @@ const questions = {
   "Der Markt": [
     {
       question: "Klicke die drei Stämme an:",
-      sentence: "Gallia est omnis divisa in partes tres, quarum unam incolunt 
-Belgae, aliam Aquitani, tertiam qui ipsorum lingua Celtae, nostra Galli 
-appellantur.
-",
+      sentence: "Gallia est omnis divisa in partes tres, quarum unam incolunt Belgae, aliam Aquitani, tertiam qui ipsorum lingua Celtae, nostra Galli appellantur.",
       answers: ["Belgae", "Gallia", "Aquitani", "Celtae", "Galli"],
       correct: [0, 2, 3]
     },
     {
-      question: "Markiere die beiden Flüsse. Eorum una pars, quam Gallos obtinere dictum est, initium capit a 
-flumine Rhodano, continetur Garumna flumine, Oceano, finibus 
-Belgarum.
-",
+      question: "Markiere die beiden Flüsse. Eorum una pars, quam Gallos obtinere dictum est, initium capit a flumine Rhodano, continetur Garumna flumine, Oceano, finibus Belgarum.",
       answers: ["Rhodano", "Garumna", "Belgarum", "Aquitani"],
       correct: [0, 1]
     }
@@ -147,7 +141,7 @@ Belgarum.
       correct: 1
     },
     {
-      question: "Unteraufgabe: Wahr oder Falsch: Frauen trugen immer einen Chiton, der bis zu den Knöcheln reichte?",
+      question: "Unteraufgabe: Wahr oder Falsch: Frauen trugen immer einen Chiton, der bis zu den Knöcheln reichte",
       answers: ["Wahr", "Falsch"],
       correct: 0
     },
