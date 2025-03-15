@@ -131,7 +131,7 @@ const questions = {
   ],
   "Fluss aufwärts": [
     {
-      question: "Merktext: Frauen trugen einfache Kleider und Röcke, die gerade oder als Glockenrock geschnitten waren. Manche Darstellungen au Römischen Fresken zeigen auch kletische Frauen in Pumpenhosen. Darüber trugen wie Männer eien Chiton, der jedoch länger war und meist bis zu den Knöcheln reichte. Das obere Ende wurde über der brust und dem Rücken umgeschlagen und mit Fieben zusammengesteckt.   Welche Art von kleidung trugen die Frauen laut dem Text ",
+      question: "Merktext: Frauen trugen einfache Kleider und Röcke, die gerade oder als Glockenrock geschnitten waren. Manche Darstellungen auf römischen Fresken zeigen auch keltische Frauen in Pumpenhosen. Darüber trugen Frauen zuweilen wie die Männer einen Chiton, der jedoch länger war und meist bis zu den Knöcheln reichte. Das obere Ende des Chitons wurde über Brust und Rücken umgeschlagen und mit Fibeln zusammengesteckt. Welche Art von Kleidung trugen die Frauen laut dem Text?",
       answers: ["Hosen und T-Shirts", "Einfache Kleider und Röcke", "Anzüge"],
       correct: 1
     },
@@ -141,7 +141,7 @@ const questions = {
       correct: 0
     },
     {
-      question: "Ordne die Paare (Deutsch-Latein) richtig zu",
+      question: "Ordne die Paare (Deutsch-Latein) richtig zu.",
       pairs: [
         { term: "caelo", match: "Himmel" },
         { term: "sacris", match: "Opfer" },
@@ -152,12 +152,12 @@ const questions = {
   ],
   "Der Hafen": [
     {
-      question: "Wie wird dieser Stamm beschrieben? Haec civitas longe plurimum totius Galliae",
+      question: "Wie wird dieser Stamm beschrieben? Haec civitas longe plurimum totius Galliae.",
       answers: ["der größte Stamm", "der kleinste Stamm", "der mächtigste Stamm"],
       correct: 2
     },
     {
-      question: "Krieger: Einheitliche Uniformen wie die der Römer gab es bei den Galliern nicht. Manche hochgestellten krieger trugen bronze Brustpanzer, doch ein so großes metallisches Objekt ist recht teuer. Die meisten Krieger haben wohl in ihrer  Altagskleidung gekämpft, natürlich ergänzt um Schwert und Schuld, der Standartausrüstuung für den gallischen Kämpfer.     \n\nWas trugen die hochgestellten Krieger der Gallier laut dem Text?",
+      question: "Krieger: Einheitliche Uniformen wie die der Römer gab es bei den Galliern nicht. Manche hochgestellten Krieger trugen bronzene Brustpanzer, doch ein so großes metallisches Objekt ist recht teuer. Die meisten Krieger haben wohl in ihrer Alltagskleidung gekämpft, natürlich ergänzt um Schwert und Schild, der Standardausrüstung für den gallischen Kämpfer. Was trugen die hochgestellten Krieger der Gallier laut dem Text?",
       answers: ["Einheitliche Uniformen & Schwerter", "Bronzene Brustpanzer", "Roben"],
       correct: 1
     },
@@ -174,7 +174,7 @@ const questions = {
       correct: [0, 2, 4, 5, 6]
     },
     {
-      question: "Ranglisten: Die Gesellschaft der Gallier war stark hierarchisch struckturiert. An der Spitze standen die Druiden, die nicht nur relligiöse Führer, sondern auch politische Berater und Lehrer waren. Ihnen folgten die Kriegeshäupinge, die militärische Anführer der Stämme darstellten. Die breite Masse bestand aus bauern und handwerkern, während Sklaven am unteren Ende der sozialen Hierarchie standen.     Wer stand an der Spitze der gallischen Gesellschaft?",
+      question: "Ranglisten: Wer stand an der Spitze der gallischen Gesellschaft?",
       answers: ["Die Bauern", "Die Sklaven", "Die Druiden"],
       correct: 2
     },
@@ -203,7 +203,6 @@ function setupOrderingTask(groups) {
 function setupOrderingGroup(group) {
   document.getElementById("question-text").textContent = group.prompt;
   let words = group.words.slice();
-  // Zufällige Reihenfolge der Wörter
   for (let i = words.length - 1; i > 0; i--) {
     let j = Math.floor(Math.random() * (i + 1));
     [words[i], words[j]] = [words[j], words[i]];
@@ -324,7 +323,6 @@ function checkFlussMatches(pairs) {
  *  TASK-ABLAUF
  ***********************************************************/
 function showSubregions(region) {
-  // Prüfe, ob in den Regionen "dorf" und "fluss" alle Aufgaben abgearbeitet wurden
   if (region === "dorf") {
     if (dieBewohnerTaskIndex >= questions["Die Bewohner"].length &&
         marketTaskIndex >= questions["Der Markt"].length) {
@@ -355,7 +353,6 @@ function showSubregions(region) {
     btn.textContent = sub;
     btn.classList.add("button", "subregion-button");
     btn.onclick = () => {
-      // Keine Zurücksetzung der Indizes – Fortschritt bleibt erhalten
       startTask(sub);
     };
     container.appendChild(btn);
