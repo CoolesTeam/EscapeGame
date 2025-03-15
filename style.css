@@ -24,7 +24,13 @@ body {
     align-items: center;
     justify-content: center;
 }
-.welcome-screen { display: flex; }
+.welcome-screen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
 .intro-screen, .game-screen, .subregion-screen, .task-screen, #end-screen { display: none; }
 
 /*************************************************************
