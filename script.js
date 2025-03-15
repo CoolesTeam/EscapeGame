@@ -29,7 +29,7 @@ let flussAufwaertsTaskIndex = 0;
 let hafenTaskIndex = 0;
 let flussAbwaertsTaskIndex = 0;  // Neuer Index für "Fluss abwärts"
 
-// Jede Aufgabe wird einmal abgearbeitet – die Indizes werden fortlaufend erhöht
+// Jede Aufgabe wird einmal abgearbeitet – die Indizes werden fortlaufend erhöht.
 let answeredStatus = {
     "Weg": ["unanswered", "unanswered", "unanswered"],
     "Baum": ["unanswered", "unanswered"],
@@ -121,7 +121,7 @@ const questions = {
         correct: [0, 2, 3]
       },
       {
-        question: "Markiere die beiden Flüsse. Eorum una pars, quam Gallos obtinere dictum est, initium capit a flumine Rhodano, continetur Garumna flumine, Oceano, finibus Belgarum.",
+        question: "Markiere die beiden Flüsse. Eorum una pars, quam Gallos obtinere dictum ist, initium capit a flumine Rhodano, continetur Garumna flumine, Oceano, finibus Belgarum.",
         answers: ["Rhodano", "Garumna", "Belgarum", "Aquitani"],
         correct: [0, 1]
       }
@@ -244,11 +244,347 @@ function checkOrderingGroup(group) {
     if (correct) {
         alert("Richtig! Du hast eine Mispel erhalten.");
         stars++;
+        updateStars();
     } else {
         alert("Falsch! Keine Wiederholung möglich.");
     }
-    handleNextTask(currentSubregion);
+    // Unabhängig vom Ergebnis: zum nächsten Ordering-Block wechseln
+    currentOrderingGroupIndex++;
+    if (currentOrderingGroupIndex < currentOrderingGroups.length) {
+        setupOrderingGroup(currentOrderingGroups[currentOrderingGroupIndex]);
+    } else {
+        handleNextTask(currentSubregion);
+    }
 }
+
+/***********************************************************
+ *  STANDARD-FUNKTIONEN
+ ***********************************************************/
+function updateStars() {
+    document.getElementById("stars-count").textContent = stars;
+}
+
+function applyRegionClass(region) {
+    document.body.classList.remove("region-wald", "region-dorf", "region-fluss");
+    if (region === "wald") document.body.classList.add("region-wald");
+    if (region === "dorf") document.body.classList.add("region-dorf");
+    if (region === "fluss") document.body.classList.add("region-fluss");
+}
+
+function subregionToClassName(subregion) {
+    return "question-" + subregion.toLowerCase().replace(/\s+/g, "-").replace(/[^\w-]/g, "");
+}
+
+function applySubregionClass(subregion) {
+    const taskScreen = document.getElementById("task-screen");
+    taskScreen.classList.remove(
+      "question-weg", "question-baum", "question-die-bewohner",
+      "question-der-markt", "question-fluss-aufwärts",
+      "question-der-hafen", "question-fluss-abwärts"
+    );
+    const newClass = subregionToClassName(subregion);
+    taskScreen.classList.add(newClass);
+}
+
+function backToRegions() {
+    document.body.classList.remove("wald-background", "fluss-background");
+    document.getElementById("subregion-screen").style.display = "none";
+    document.getElementById("game-screen").style.display = "block";
+}
+
+function backToSubregions() {
+    document.getElementById("task-screen").style.display = "none";
+    document.getElementById("subregion-screen").style.display = "block";
+}
+
+/***********************************************************
+ *  TASK-ABLAUF
+ ***********************************************************/
+function showSubregions(region) {
+    currentRegion = region;
+    document.body.classList.remove("wald-background", "fluss-background");
+    if (region === "wald") document.body.classList.add("wald-background");
+    if (region === "fluss") document.body.classList.add("fluss-background");
+    applyRegionClass(region);
+    document.getElementById("game-screen").style.display = "none";
+    document.getElementById("subregion-screen").style.display = "block";
+    let container = document.getElementById("subregion-container");
+    container.innerHTML = "";
+    subregions[region].forEach(sub => {
+        let btn = document.createElement("button");
+        btn.textContent = sub;
+        btn.classList.add("button", "subregion-button");
+        btn.onclick = () => {
+            // Setze die jeweiligen Indizes zurück
+            if (region === "dorf" && sub === "Die Bewohner") dieBewohnerTaskIndex = 0;
+            if (region === "dorf" && sub === "Der Markt") marketTaskIndex = 0;
+            if (region === "fluss" && sub === "Fluss aufwärts") flussAufwaertsTaskIndex = 0;
+            if (region === "fluss" && sub === "Der Hafen") hafenTaskIndex = 0;
+            if (region === "fluss" && sub === "Fluss abwärts") flussAbwaertsTaskIndex = 0;
+            startTask(sub);
+        };
+        container.appendChild(btn);
+    });
+}
+
+function startTask(subregion) {
+    currentSubregion = subregion;
+    applySubregionClass(subregion);
+    document.getElementById("subregion-screen").style.display = "none";
+    document.getElementById("task-screen").style.display = "block";
+    let tasks = questions[subregion];
+    let idx;
+    switch(subregion) {
+      case "Die Bewohner": idx = dieBewohnerTaskIndex; break;
+      case "Der Markt": idx = marketTaskIndex; break;
+      case "Weg": idx = wegTaskIndex; break;
+      case "Baum": idx = baumTaskIndex; break;
+      case "Fluss aufwärts": idx = flussAufwaertsTaskIndex; break;
+      case "Der Hafen": idx = hafenTaskIndex; break;
+      case "Fluss abwärts": idx = flussAbwaertsTaskIndex; break;
+      default: idx = 0;
+    }
+    if (idx >= tasks.length) {
+        alert("Alle Aufgaben in dieser Kategorie wurden bereits abgearbeitet.");
+        backToSubregions();
+        return;
+    }
+    let chosenTask = tasks[idx];
+    document.getElementById("task-title").textContent = `Aufgabe in ${subregion}`;
+    document.getElementById("question-text").textContent = chosenTask.question;
+    let answerContainer = document.getElementById("answers-container");
+    answerContainer.innerHTML = "";
+    selectedAnswers = [];
+    if (chosenTask.sentence) {
+        let p = document.createElement("p");
+        p.style.fontStyle = "italic";
+        p.textContent = chosenTask.sentence;
+        answerContainer.appendChild(p);
+    }
+    // Falls es sich um einen Ordering-Aufgabe handelt (z. B. "Konjugiere die Verben")
+    if (chosenTask.ordering === true) {
+        setupOrderingTask(chosenTask.groups);
+        return;
+    }
+    // Falls Matching-Aufgaben existieren (über pairs)
+    if ((subregion === "Fluss aufwärts" || (subregion === "Der Hafen" && chosenTask.pairs)) && chosenTask.pairs) {
+        setupMatchingGame(chosenTask.pairs);
+        return;
+    }
+    // Falls es sich um Fluss abwärts handelt und kein Matching vorliegt, als Standard-MC
+    if (subregion === "Fluss abwärts") {
+        let submitBtn = document.createElement("button");
+        submitBtn.textContent = "Bestätigen";
+        submitBtn.classList.add("button", "submit-button");
+        submitBtn.onclick = () => checkFiveAnswers(chosenTask.correct);
+        answerContainer.appendChild(submitBtn);
+        chosenTask.answers.forEach((answer, i) => {
+            let btn = document.createElement("button");
+            btn.textContent = answer;
+            btn.classList.add("button", "answer-button");
+            btn.onclick = () => setMatchingColors(i, btn);
+            answerContainer.appendChild(btn);
+        });
+        return;
+    }
+    // Standard-Multiple-Choice
+    chosenTask.answers && chosenTask.answers.forEach((answer, i) => {
+        let btn = document.createElement("button");
+        btn.textContent = answer;
+        btn.classList.add("button", "answer-button");
+        if (!Array.isArray(chosenTask.correct)) {
+            btn.onclick = () => {
+                if (i === chosenTask.correct) {
+                    setAnswerStatus(subregion, "correct");
+                    stars++;
+                    updateStars();
+                    alert("Richtig! Du hast eine Mispel erhalten.");
+                    handleNextTask(subregion);
+                } else {
+                    setAnswerStatus(subregion, "wrong");
+                    alert("Falsch! Keine Wiederholung möglich.");
+                    handleNextTask(subregion);
+                }
+            };
+        } else {
+            btn.onclick = () => handleMultiChoice(i, btn, chosenTask.correct, subregion);
+        }
+        answerContainer.appendChild(btn);
+    });
+}
+
+function setAnswerStatus(subregion, result) {
+    let tasks = questions[subregion];
+    if (Array.isArray(tasks) && tasks.length > 1) {
+        switch(subregion) {
+          case "Die Bewohner": answeredStatus[subregion][dieBewohnerTaskIndex] = result; break;
+          case "Der Markt": answeredStatus[subregion][marketTaskIndex] = result; break;
+          case "Weg": answeredStatus[subregion][wegTaskIndex] = result; break;
+          case "Baum": answeredStatus[subregion][baumTaskIndex] = result; break;
+          case "Fluss aufwärts": answeredStatus[subregion][flussAufwaertsTaskIndex] = result; break;
+          case "Der Hafen": answeredStatus[subregion][hafenTaskIndex] = result; break;
+          case "Fluss abwärts": answeredStatus[subregion][flussAbwaertsTaskIndex] = result; break;
+        }
+    } else {
+        answeredStatus[subregion] = result;
+    }
+}
+
+function handleNextTask(subregion) {
+    let tasks = questions[subregion];
+    if (Array.isArray(tasks) && tasks.length > 1) {
+        switch(subregion) {
+          case "Die Bewohner": dieBewohnerTaskIndex++; break;
+          case "Der Markt": marketTaskIndex++; break;
+          case "Weg": wegTaskIndex++; break;
+          case "Baum": baumTaskIndex++; break;
+          case "Fluss aufwärts": flussAufwaertsTaskIndex++; break;
+          case "Der Hafen": hafenTaskIndex++; break;
+          case "Fluss abwärts": flussAbwaertsTaskIndex++; break;
+        }
+    }
+    if (
+        (subregion === "Weg" && wegTaskIndex < questions["Weg"].length) ||
+        (subregion === "Baum" && baumTaskIndex < questions["Baum"].length) ||
+        (subregion === "Die Bewohner" && dieBewohnerTaskIndex < questions["Die Bewohner"].length) ||
+        (subregion === "Der Markt" && marketTaskIndex < questions["Der Markt"].length) ||
+        (subregion === "Fluss aufwärts" && flussAufwaertsTaskIndex < questions["Fluss aufwärts"].length) ||
+        (subregion === "Der Hafen" && hafenTaskIndex < questions["Der Hafen"].length) ||
+        (subregion === "Fluss abwärts" && flussAbwaertsTaskIndex < questions["Fluss abwärts"].length)
+    ) {
+        setTimeout(() => startTask(subregion), 1000);
+    } else {
+        setTimeout(backToSubregions, 1000);
+    }
+}
+
+function handleMultiChoice(i, button, correctAnswers, subregion) {
+    let maxLen = correctAnswers.length;
+    if (selectedAnswers.includes(i)) {
+        selectedAnswers = selectedAnswers.filter(idx => idx !== i);
+        button.style.backgroundColor = "#f0f0f0";
+        button.style.color = "black";
+    } else {
+        if (selectedAnswers.length < maxLen) {
+            selectedAnswers.push(i);
+            button.style.backgroundColor = "orange";
+            button.style.color = "white";
+        } else {
+            alert(`Du kannst nur ${maxLen} Antworten auswählen!`);
+        }
+    }
+    if (selectedAnswers.length === maxLen) {
+        let sortedSel = [...selectedAnswers].sort();
+        let sortedCor = [...correctAnswers].sort();
+        if (JSON.stringify(sortedSel) === JSON.stringify(sortedCor)) {
+            setAnswerStatus(subregion, "correct");
+            stars++;
+            updateStars();
+            alert("Richtig! Du hast eine Mispel erhalten.");
+            handleNextTask(subregion);
+        } else {
+            setAnswerStatus(subregion, "wrong");
+            alert("Falsch! Keine Wiederholung möglich.");
+            handleNextTask(subregion);
+        }
+    }
+}
+
+function setMatchingColors(i, button) {
+    const colors = ["matching-blue", "matching-yellow", "matching-pink", "matching-green"];
+    button.classList.remove(...colors);
+    if (selectedAnswers.includes(i)) {
+        selectedAnswers = selectedAnswers.filter(idx => idx !== i);
+    } else {
+        selectedAnswers.push(i);
+        let c = colors[selectedAnswers.length % colors.length];
+        button.classList.add(c);
+    }
+}
+
+function checkFiveAnswers(correctAnswers) {
+    selectedAnswers.sort();
+    correctAnswers.sort();
+    if (JSON.stringify(selectedAnswers) === JSON.stringify(correctAnswers)) {
+        setAnswerStatus(currentSubregion, "correct");
+        stars++;
+        updateStars();
+        alert("Richtig! Du hast eine Mispel erhalten.");
+    } else {
+        setAnswerStatus(currentSubregion, "wrong");
+        alert("Falsch! Keine Wiederholung möglich.");
+    }
+    setTimeout(() => handleNextTask(currentSubregion), 1000);
+}
+
+const pairColors = ["matching-blue", "matching-yellow", "matching-pink", "matching-green"];
+let colorIndex = 0;
+let selectedTerm = null;
+let selectedMatch = null;
+let selectedPairs = {};
+let colorMap = {};
+
+function setupMatchingGame(pairs) {
+    let container = document.getElementById("answers-container");
+    container.innerHTML = "<p>Verbinde Orange (lateinische Wörter) mit Hellblau (deutsche Bedeutung) per Klick!</p>";
+    selectedTerm = null;
+    selectedMatch = null;
+    selectedPairs = {};
+    colorMap = {};
+    colorIndex = 0;
+    let leftDiv = document.createElement("div");
+    let rightDiv = document.createElement("div");
+    leftDiv.style.display = "inline-block";
+    leftDiv.style.marginRight = "50px";
+    leftDiv.style.verticalAlign = "top";
+    rightDiv.style.display = "inline-block";
+    rightDiv.style.verticalAlign = "top";
+    pairs.forEach(pair => {
+        let leftBtn = document.createElement("button");
+        leftBtn.textContent = pair.term;
+        leftBtn.style.backgroundColor = "orange";
+        leftBtn.style.color = "white";
+        leftBtn.style.padding = "20px 30px";
+        leftBtn.style.fontSize = "16px";
+        leftBtn.style.margin = "5px";
+        leftBtn.onclick = () => selectFlussItem(pair.term, leftBtn, "term");
+        leftDiv.appendChild(leftBtn);
+    });
+    pairs.forEach(pair => {
+        let rightBtn = document.createElement("button");
+        rightBtn.textContent = pair.match;
+        rightBtn.style.backgroundColor = "lightblue";
+        rightBtn.style.color = "black";
+        rightBtn.style.padding = "20px 30px";
+        rightBtn.style.fontSize = "16px";
+        rightBtn.style.margin = "5px";
+        rightBtn.onclick = () => selectFlussItem(pair.match, rightBtn, "match");
+        rightDiv.appendChild(rightBtn);
+    });
+    container.appendChild(leftDiv);
+    container.appendChild(rightDiv);
+    let checkBtn = document.createElement("button");
+    checkBtn.textContent = "Überprüfen";
+    checkBtn.classList.add("button");
+    checkBtn.style.marginTop = "20px";
+    checkBtn.onclick = () => checkFlussMatches(pairs);
+    container.appendChild(document.createElement("br"));
+    container.appendChild(checkBtn);
+}
+
+function selectFlussItem(value, button, type) {
+    if (type === "term") {
+        selectedTerm = { value, button };
+    } else {
+        selectedMatch = { value, button };
+    }
+    if (selectedTerm && selectedMatch) {
+        addPair(selectedTerm.value, selectedTerm.button, selectedMatch.value, selectedMatch.button);
+        selectedTerm = null;
+        selectedMatch = null;
+    }
+}
+
 
 /***********************************************************
  *  STANDARD-FUNKTIONEN
