@@ -156,7 +156,7 @@ body {
 .region-fluss .normal-text {
     background: rgba(255,255,255,0.5);
     color: black;
-    padding: 1px;
+    padding: 5px;
     border-radius: 5px;
     display: block;
 }
@@ -167,3 +167,31 @@ body {
 .region-wald  {}
 .region-dorf  {}
 .region-fluss  {}
+
+/* Beispiel für spezifische Hintergründe bei Aufgabenüberschriften:
+   Diese Regeln kannst du später nach Bedarf anpassen.
+   - Für "Unterregion wählen": nur der Textbereich (z. B. im h2) soll einen transparenten Hintergrund haben.
+   - Für "Aufgabe in Fluss aufwärts": ebenfalls, nur der Text selbst.
+   - Analog für weitere Überschriften.
+*/
+
+.subregion-screen .title-text {
+    background: rgba(255, 255, 255, 0.8); /* 80% Deckkraft */
+    padding: 5px 10px;
+    border-radius: 5px;
+    display: inline-block; /* Nur der Textbereich */
+}
+
+.task-screen .title-text {
+    background: rgba(255, 255, 255, 0.8);
+    padding: 5px 10px;
+    border-radius: 5px;
+    display: inline-block;
+}
+
+.task-screen .normal-text {
+    background: rgba(255, 255, 255, 0.8);
+    padding: 5px 10px;
+    border-radius: 5px;
+    display: inline-block;
+}
