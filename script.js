@@ -62,7 +62,7 @@ const questions = {
       correct: 2
     },
     {
-      question: "Finde die Verben und markiere sie!",
+      question: "Finde die Verben und klicke sie an.",
       answers: ["Sunt", "item", "quae", "appellantur", "aleces"],
       correct: [0, 3]
     },
@@ -89,8 +89,8 @@ const questions = {
   ],
   "Baum": [
     {
-      question: "Suche das Subjekt des Satzes...",
-      sentence: "Est bos cervi figura, cuius ...",
+      question: "Suche das Subjekt des Satzes heraus und klicke es an.",
+      sentence: "Est bos cervi figura, cuius a media fronte inter aures unum cornu exsistit excelsius magisque directum his, quae nobis nota sunt, cornibus.",
       answers: ["bos", "cervi figura", "cornibus", "quae", "nota sunt"],
       correct: 0
     },
@@ -102,11 +102,11 @@ const questions = {
   ],
   "Die Bewohner": [
     {
-      question: "Übersetze: Dicebant servos ...",
+      question: "Übersetze: Dicebant servos nullis iuribus praeditos esse et penitus a dominis pendere.",
       answers: [
-        "Die Sklaven haben keine Rechte ...",
-        "Sie sagten, dass die Sklaven keinerlei Rechte hätten ...",
-        "Die Sklaven sagen, dass sie keine Rechte haben ..."
+        "Die Sklaven haben keine Rechte.",
+        "Sie sagten, dass die Sklaven keinerlei Rechte hätten.",
+        "Die Sklaven sagen, dass sie keine Rechte haben."
       ],
       correct: 1
     },
@@ -124,12 +124,18 @@ const questions = {
   "Der Markt": [
     {
       question: "Klicke die drei Stämme an:",
-      sentence: "Gallia est omnis divisa ...",
+      sentence: "Gallia est omnis divisa in partes tres, quarum unam incolunt 
+Belgae, aliam Aquitani, tertiam qui ipsorum lingua Celtae, nostra Galli 
+appellantur.
+",
       answers: ["Belgae", "Gallia", "Aquitani", "Celtae", "Galli"],
       correct: [0, 2, 3]
     },
     {
-      question: "Markiere die beiden Flüsse.",
+      question: "Markiere die beiden Flüsse. Eorum una pars, quam Gallos obtinere dictum est, initium capit a 
+flumine Rhodano, continetur Garumna flumine, Oceano, finibus 
+Belgarum.
+",
       answers: ["Rhodano", "Garumna", "Belgarum", "Aquitani"],
       correct: [0, 1]
     }
@@ -146,7 +152,7 @@ const questions = {
       correct: 0
     },
     {
-      question: "Ordne die Begriffe richtig zu...",
+      question: "Ordne die Begriffe richtig zu",
       pairs: [
         { term: "caelo", match: "Himmel" },
         { term: "sacris", match: "Opfer" },
@@ -157,13 +163,13 @@ const questions = {
   ],
   "Der Hafen": [
     {
-      question: "Wie wird dieser Stamm beschrieben?",
+      question: "Wie wird dieser Stamm beschrieben? Haec civitas longe plurimum totius Galliae",
       answers: ["der größte Stamm", "der kleinste Stamm", "der mächtigste Stamm"],
       correct: 2
     },
     {
       question: "Krieger: Einheitliche Uniformen ...\n\nWas trugen die hochgestellten Krieger der Gallier laut dem Text?",
-      answers: ["Einheitliche Uniformen", "Bronzene Brustpanzer", "Roben"],
+      answers: ["Einheitliche Uniformen & Schwerter", "Altagskleidung & Bronzene Brustpanzer", "Roben & Bronzene Brustpanzer"],
       correct: 1
     },
     {
@@ -174,7 +180,7 @@ const questions = {
   ],
   "Fluss abwärts": [
     {
-      question: "Markiere alle Adjektive...",
+      question: "Markiere alle Adjektive.",
       answers: ["publica", "controversiis", "privata", "disciplinae", "magnus", "magno", "omnibus", "interpretantur"],
       correct: [0, 2, 4, 5, 6]
     },
