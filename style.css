@@ -178,9 +178,9 @@ body {
     border-radius: 5px;
 }
 
-/* Im Task-Screen sollen Überschrift (#task-title) und Fragetext (#question-text) als inline-block erscheinen */
+/* Im Task-Screen sollen Überschrift (#task-title) und Fragetext (#question-text) als Blockelemente erscheinen */
 #task-title, #question-text {
-    display: inline-block;
+    display: block;
     background: rgba(255, 255, 255, 0.8);
     padding: 5px 10px;
     border-radius: 5px;
