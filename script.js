@@ -146,7 +146,7 @@ const questions = {
       correct: 0
     },
     {
-      question: "Ordne die Begriffe richtig zu",
+      question: "Ordne die Paare (Deutsch-Latein) richtig zu",
       pairs: [
         { term: "caelo", match: "Himmel" },
         { term: "sacris", match: "Opfer" },
