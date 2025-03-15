@@ -29,7 +29,7 @@ let dieBewohnerTaskIndex = 0;
 let marketTaskIndex = 0;
 let flussAufwaertsTaskIndex = 0;
 let hafenTaskIndex = 0;
-let flussAbwaertsTaskIndex = 0;  // Index für "Fluss abwärts"
+let flussAbwaertsTaskIndex = 0;  // Für "Fluss abwärts"
 
 // Jede Aufgabe wird einmal abgearbeitet – Indizes werden fortlaufend erhöht.
 let answeredStatus = {
@@ -203,7 +203,6 @@ function setupOrderingTask(groups) {
 function setupOrderingGroup(group) {
   document.getElementById("question-text").textContent = group.prompt;
   let words = group.words.slice();
-  // Zufällige Reihenfolge der Wörter
   for (let i = words.length - 1; i > 0; i--) {
     let j = Math.floor(Math.random() * (i + 1));
     [words[i], words[j]] = [words[j], words[i]];
@@ -398,25 +397,35 @@ function startTask(subregion) {
     setupOrderingTask(chosenTask.groups);
     return;
   }
+  // Wenn die Aufgabe Matching-Paare hat, nutze Matching
   if (chosenTask.pairs) {
     setupMatchingGame(chosenTask.pairs);
     return;
   }
+  // Falls es sich um "Fluss abwärts" handelt, aber KEINE Matching-Aufgabe (Standard-MC)
   if (subregion === "Fluss abwärts") {
-    let submitBtn = document.createElement("button");
-    submitBtn.textContent = "Bestätigen";
-    submitBtn.classList.add("button", "submit-button");
-    submitBtn.onclick = () => checkFiveAnswers(chosenTask.correct);
-    answerContainer.appendChild(submitBtn);
     chosenTask.answers.forEach((answer, i) => {
       let btn = document.createElement("button");
       btn.textContent = answer;
       btn.classList.add("button", "answer-button");
-      btn.onclick = () => setMatchingColors(i, btn);
+      btn.onclick = () => {
+        if (i === chosenTask.correct) {
+          setAnswerStatus(subregion, "correct");
+          stars++;
+          updateStars();
+          alert("Richtig! Du hast eine Mispel erhalten.");
+          handleNextTask(subregion);
+        } else {
+          setAnswerStatus(subregion, "wrong");
+          alert("Falsch! Keine Wiederholung möglich.");
+          handleNextTask(subregion);
+        }
+      };
       answerContainer.appendChild(btn);
     });
     return;
   }
+  // Standard-Multiple-Choice für alle anderen Fälle:
   chosenTask.answers && chosenTask.answers.forEach((answer, i) => {
     let btn = document.createElement("button");
     btn.textContent = answer;
@@ -605,7 +614,7 @@ function setupMatchingGame(pairs) {
   colorIndex = 0;
   let leftDiv = document.createElement("div");
   let rightDiv = document.createElement("div");
-  /* Damit die Buttons untereinander stehen, setze die Container als Block */
+  /* Buttons untereinander */
   leftDiv.style.display = "block";
   rightDiv.style.display = "block";
   leftDiv.style.margin = "10px auto";
