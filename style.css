@@ -18,7 +18,6 @@ body {
 .screen {
     width: 100%;
     min-height: 100vh;
-    /* Zentriert alle Screens als Flex-Container */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -34,7 +33,6 @@ body {
     position: absolute;
     top: 20px;
     right: 20px;
-    font-family: "Comic Sans MS", cursive, sans-serif;
     font-size: 24px;
     color: red;
     background: rgba(255,255,255,0.6);
@@ -50,7 +48,7 @@ body {
     font-size: 2em;
     font-weight: bold;
     margin: 10px 0;
-    display: block; /* Block-Level, damit Überschriften untereinander stehen */
+    display: block;
 }
 .normal-text {
     margin: 10px 0 20px;
@@ -63,21 +61,18 @@ body {
  *************************************************************/
 .intro-box {
     background: rgba(255,255,255,0.95);
-    color: black;
     padding: 25px;
     border-radius: 10px;
     width: 60%;
     max-width: 600px;
     text-align: center;
     box-shadow: 0px 4px 10px rgba(0,0,0,0.5);
-    margin: 0 auto;
 }
 
 /*************************************************************
  * SCREEN-STILE
  *************************************************************/
 .welcome-screen, .intro-screen, .game-screen, .subregion-screen, .task-screen, #end-screen {
-    position: relative;
     padding: 20px;
 }
 
@@ -85,7 +80,6 @@ body {
  * BUTTONS
  *************************************************************/
 .button {
-    font-family: "Comic Sans MS", cursive, sans-serif;
     padding: 15px 30px;
     font-size: 18px;
     border: none;
@@ -111,43 +105,25 @@ body {
 }
 .back-button {
     background: rgba(255,255,255,0.2);
-    color: white;
     padding: 10px;
     border: 2px solid white;
     border-radius: 5px;
+    color: white;
 }
 
 /*************************************************************
  * FARBKLASSEN FÜR MEHRFACHAUSWAHL
  *************************************************************/
-.matching-blue {
-    background-color: blue !important;
-    color: white !important;
-}
-.matching-yellow {
-    background-color: yellow !important;
-    color: black !important;
-}
-.matching-pink {
-    background-color: pink !important;
-    color: black !important;
-}
-.matching-green {
-    background-color: green !important;
-    color: white !important;
-}
+.matching-blue { background-color: blue !important; color: white !important; }
+.matching-yellow { background-color: yellow !important; color: black !important; }
+.matching-pink { background-color: pink !important; color: black !important; }
+.matching-green { background-color: green !important; color: white !important; }
 
 /*************************************************************
  * SPEZIELLE HINTERGRÜNDE
  *************************************************************/
-.wald-background {
-    background: url("wald.jpg") no-repeat center center fixed !important;
-    background-size: cover !important;
-}
-.fluss-background {
-    background: url("fluss.jpg") no-repeat center center fixed !important;
-    background-size: cover !important;
-}
+.wald-background { background: url("wald.jpg") no-repeat center center fixed !important; background-size: cover !important; }
+.fluss-background { background: url("fluss.jpg") no-repeat center center fixed !important; background-size: cover !important; }
 
 /*************************************************************
  * REGIONSSPEZIFISCHE STILE FÜR FLUSS
@@ -155,33 +131,28 @@ body {
 .region-fluss .title-text,
 .region-fluss .normal-text {
     background: rgba(255,255,255,0.5);
-    color: black;
     padding: 5px;
     border-radius: 5px;
     display: block;
 }
 
 /*************************************************************
- * SPEZIFISCHE Regeln für Überschriften und Fragetexte im Task-Screen
+ * SPEZIFISCHE Regeln für Überschriften und Fragetexte
  *************************************************************/
 /* Im Game-Screen soll "Wähle eine Region:" keinen Hintergrund haben */
-#game-screen .title-text {
-    background: none;
-    padding: 0;
-}
-
-/* In der Subregion-Auswahl ("Unterregion wählen") – Hintergrund nur hinter dem Text */
+#game-screen .title-text { background: none; padding: 0; }
+/* In der Subregion-Auswahl – Hintergrund nur hinter dem Text */
 #subregion-screen .title-text {
     display: inline-block;
-    background: rgba(255, 255, 255, 0.8);
+    background: rgba(255,255,255,0.8);
     padding: 5px 10px;
     border-radius: 5px;
 }
-
-/* Im Task-Screen sollen Überschrift (#task-title) und Fragetext (#question-text) nur so breit wie der Text sein */
+/* Im Task-Screen sollen Überschrift und Fragetext nur so breit wie der Text sein */
 #task-title, #question-text {
     display: table;
-    background: rgba(255, 255, 255, 0.8);
+    width: fit-content;
+    background: rgba(255,255,255,0.8);
     padding: 5px 10px;
     border-radius: 5px;
     margin: 10px auto;
