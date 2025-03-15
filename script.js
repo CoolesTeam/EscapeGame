@@ -306,7 +306,7 @@ function backToSubregions() {
  *  TASK-ABLAUF
  ***********************************************************/
 function showSubregions(region) {
-    // Prüfe, ob in den Regionen Dorf und Fluss bereits alle Aufgaben abgearbeitet wurden
+    // Prüfe, ob in den Regionen "dorf" und "fluss" alle Aufgaben abgearbeitet wurden
     if (region === "dorf") {
         if (dieBewohnerTaskIndex >= questions["Die Bewohner"].length &&
             marketTaskIndex >= questions["Der Markt"].length) {
@@ -337,11 +337,7 @@ function showSubregions(region) {
         btn.textContent = sub;
         btn.classList.add("button", "subregion-button");
         btn.onclick = () => {
-            if (region === "dorf" && sub === "Die Bewohner") dieBewohnerTaskIndex = 0;
-            if (region === "dorf" && sub === "Der Markt") marketTaskIndex = 0;
-            if (region === "fluss" && sub === "Fluss aufwärts") flussAufwaertsTaskIndex = 0;
-            if (region === "fluss" && sub === "Der Hafen") hafenTaskIndex = 0;
-            if (region === "fluss" && sub === "Fluss abwärts") flussAbwaertsTaskIndex = 0;
+            // Keine Zurücksetzung der Indizes – so bleiben abgeschlossene Aufgaben erhalten
             startTask(sub);
         };
         container.appendChild(btn);
