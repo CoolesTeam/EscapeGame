@@ -19,8 +19,6 @@ body {
     width: 100%;
     min-height: 100vh;
 }
-
-/* Standardmäßig: Nur welcome-screen sichtbar */
 .welcome-screen { display: block; }
 .intro-screen, .game-screen, .subregion-screen, .task-screen { display: none; }
 
@@ -93,7 +91,6 @@ body {
 }
 
 .region-button {
-    display: inline-block;
     background-color: rgba(0,123,255,0.8);
     color: white;
 }
@@ -152,8 +149,6 @@ body {
 
 /*************************************************************
  * REGIONSSPEZIFISCHE STILE FÜR FLUSS
- * Nur die Texte im Task-Screen (Frage & Titel)
- * bekommen einen weißen, halbtransparenten Hintergrund – in Block-Darstellung.
  *************************************************************/
 .region-fluss .title-text,
 .region-fluss .normal-text {
@@ -170,11 +165,3 @@ body {
 .region-wald  {}
 .region-dorf  {}
 .region-fluss {}
-
-.question-weg  {}
-.question-baum {}
-.question-die-bewohner {}
-.question-der-markt     {}
-.question-fluss-aufwärts {}
-.question-der-hafen      {}
-.question-fluss-abwärts  {}
