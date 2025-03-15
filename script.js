@@ -141,7 +141,7 @@ const questions = {
         correct: 1
       },
       {
-        question: "Unteraufgabe: Wahr oder Falsch: Frauen trugen immer einen Chiton, der bis zu den Knien reichte?",
+        question: "Unteraufgabe: Wahr oder Falsch: Frauen trugen immer einen Chiton, der bis zu den Knöcheln reichte?",
         answers: ["Wahr", "Falsch"],
         correct: 0
       },
