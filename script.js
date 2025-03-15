@@ -29,7 +29,7 @@ let flussAufwaertsTaskIndex = 0;
 let hafenTaskIndex = 0;
 let flussAbwaertsTaskIndex = 0;  // Neuer Index für "Fluss abwärts"
 
-// Status der Aufgaben – jede Aufgabe wird genau einmal abgearbeitet
+// Jede Aufgabe wird einmal abgearbeitet, daher wird der Index fortlaufend erhöht.
 let answeredStatus = {
     "Weg": ["unanswered", "unanswered", "unanswered"],
     "Baum": ["unanswered", "unanswered"],
@@ -51,8 +51,6 @@ const subregions = {
 
 /***********************************************************
  *  FRAGEN & ANTWORTEN
- *  ACHTUNG: Die einzelnen Aufgaben sind in den Arrays der jeweiligen
- *  Unterregionen hinterlegt.
  ***********************************************************/
 const questions = {
     "Weg": [
@@ -246,26 +244,23 @@ function checkOrderingGroup(group) {
     if (correct) {
         alert("Richtig! Du hast eine Mispel erhalten.");
         stars++;
-        updateStars();
-        currentOrderingGroupIndex++;
-        if (currentOrderingGroupIndex < currentOrderingGroups.length) {
-            setupOrderingGroup(currentOrderingGroups[currentOrderingGroupIndex]);
-        } else {
-            handleNextTask(currentSubregion);
-        }
     } else {
         alert("Falsch! Keine Wiederholung möglich.");
-        handleNextTask(currentSubregion);
     }
+    handleNextTask(currentSubregion);
 }
 
 /***********************************************************
  *  STANDARD-FUNKTIONEN
  ***********************************************************/
+function updateStars() {
+    document.getElementById("stars-count").textContent = stars;
+}
+
 function applyRegionClass(region) {
     document.body.classList.remove("region-wald", "region-dorf", "region-fluss");
-    if (region === "wald")  document.body.classList.add("region-wald");
-    if (region === "dorf")  document.body.classList.add("region-dorf");
+    if (region === "wald") document.body.classList.add("region-wald");
+    if (region === "dorf") document.body.classList.add("region-dorf");
     if (region === "fluss") document.body.classList.add("region-fluss");
 }
 
@@ -284,10 +279,24 @@ function applySubregionClass(subregion) {
     taskScreen.classList.add(newClass);
 }
 
+function backToRegions() {
+    document.body.classList.remove("wald-background", "fluss-background");
+    document.getElementById("subregion-screen").style.display = "none";
+    document.getElementById("game-screen").style.display = "block";
+}
+
+function backToSubregions() {
+    document.getElementById("task-screen").style.display = "none";
+    document.getElementById("subregion-screen").style.display = "block";
+}
+
+/***********************************************************
+ *  TASK-ABLAUF
+ ***********************************************************/
 function showSubregions(region) {
     currentRegion = region;
     document.body.classList.remove("wald-background", "fluss-background");
-    if (region === "wald")  document.body.classList.add("wald-background");
+    if (region === "wald") document.body.classList.add("wald-background");
     if (region === "fluss") document.body.classList.add("fluss-background");
     applyRegionClass(region);
     document.getElementById("game-screen").style.display = "none";
@@ -299,6 +308,7 @@ function showSubregions(region) {
         btn.textContent = sub;
         btn.classList.add("button", "subregion-button");
         btn.onclick = () => {
+            // Setze die jeweiligen Indizes zurück
             if (region === "dorf" && sub === "Die Bewohner") dieBewohnerTaskIndex = 0;
             if (region === "dorf" && sub === "Der Markt") marketTaskIndex = 0;
             if (region === "fluss" && sub === "Fluss aufwärts") flussAufwaertsTaskIndex = 0;
@@ -316,57 +326,23 @@ function startTask(subregion) {
     document.getElementById("subregion-screen").style.display = "none";
     document.getElementById("task-screen").style.display = "block";
     let tasks = questions[subregion];
-    if (!tasks) {
-        console.error("Keine Frage für Subregion:", subregion);
+    let idx;
+    switch(subregion) {
+      case "Die Bewohner": idx = dieBewohnerTaskIndex; break;
+      case "Der Markt": idx = marketTaskIndex; break;
+      case "Weg": idx = wegTaskIndex; break;
+      case "Baum": idx = baumTaskIndex; break;
+      case "Fluss aufwärts": idx = flussAufwaertsTaskIndex; break;
+      case "Der Hafen": idx = hafenTaskIndex; break;
+      case "Fluss abwärts": idx = flussAbwaertsTaskIndex; break;
+      default: idx = 0;
+    }
+    if (idx >= tasks.length) {
+        alert("Alle Aufgaben in dieser Kategorie wurden bereits abgearbeitet.");
+        backToSubregions();
         return;
     }
-    let status = answeredStatus[subregion];
-    let chosenTask;
-    let idx;
-    if (Array.isArray(tasks) && tasks.length > 1) {
-        if (subregion === "Die Bewohner") {
-            idx = dieBewohnerTaskIndex;
-        } else if (subregion === "Der Markt") {
-            idx = marketTaskIndex;
-        } else if (subregion === "Weg") {
-            idx = wegTaskIndex;
-        } else if (subregion === "Baum") {
-            idx = baumTaskIndex;
-        } else if (subregion === "Fluss aufwärts") {
-            idx = flussAufwaertsTaskIndex;
-        } else if (subregion === "Der Hafen") {
-            idx = hafenTaskIndex;
-        } else if (subregion === "Fluss abwärts") {
-            idx = flussAbwaertsTaskIndex;
-        } else {
-            idx = 0;
-        }
-        // Überspringe bereits beantwortete Aufgaben
-        while (idx < tasks.length && status[idx] !== "unanswered") {
-            idx++;
-        }
-        if (idx >= tasks.length) {
-            alert("Alle Aufgaben in dieser Kategorie wurden bereits abgearbeitet.");
-            handleNextTask(subregion);
-            return;
-        }
-        // Aktualisiere den entsprechenden Index
-        if (subregion === "Die Bewohner") dieBewohnerTaskIndex = idx;
-        else if (subregion === "Der Markt") marketTaskIndex = idx;
-        else if (subregion === "Weg") wegTaskIndex = idx;
-        else if (subregion === "Baum") baumTaskIndex = idx;
-        else if (subregion === "Fluss aufwärts") flussAufwaertsTaskIndex = idx;
-        else if (subregion === "Der Hafen") hafenTaskIndex = idx;
-        else if (subregion === "Fluss abwärts") flussAbwaertsTaskIndex = idx;
-        chosenTask = tasks[idx];
-    } else {
-        if (status !== "unanswered") {
-            alert("Diese Aufgabe wurde bereits beantwortet. Keine Wiederholung möglich!");
-            handleNextTask(subregion);
-            return;
-        }
-        chosenTask = tasks[0];
-    }
+    let chosenTask = tasks[idx];
     document.getElementById("task-title").textContent = `Aufgabe in ${subregion}`;
     document.getElementById("question-text").textContent = chosenTask.question;
     let answerContainer = document.getElementById("answers-container");
@@ -378,7 +354,7 @@ function startTask(subregion) {
         p.textContent = chosenTask.sentence;
         answerContainer.appendChild(p);
     }
-    // Falls es sich um einen Ordering-Aufgabe handelt (z. B. "Konjugiere die Verben")
+    // Wenn es sich um einen Ordering-Aufgabe handelt (z. B. "Konjugiere die Verben")
     if (chosenTask.ordering === true) {
         setupOrderingTask(chosenTask.groups);
         return;
@@ -395,23 +371,23 @@ function startTask(subregion) {
         submitBtn.classList.add("button", "submit-button");
         submitBtn.onclick = () => checkFiveAnswers(chosenTask.correct);
         answerContainer.appendChild(submitBtn);
-        chosenTask.answers.forEach((answer, idx) => {
+        chosenTask.answers.forEach((answer, i) => {
             let btn = document.createElement("button");
             btn.textContent = answer;
             btn.classList.add("button", "answer-button");
-            btn.onclick = () => setMatchingColors(idx, btn);
+            btn.onclick = () => setMatchingColors(i, btn);
             answerContainer.appendChild(btn);
         });
         return;
     }
     // Standard-Multiple-Choice
-    chosenTask.answers && chosenTask.answers.forEach((answer, idx) => {
+    chosenTask.answers && chosenTask.answers.forEach((answer, i) => {
         let btn = document.createElement("button");
         btn.textContent = answer;
         btn.classList.add("button", "answer-button");
         if (!Array.isArray(chosenTask.correct)) {
             btn.onclick = () => {
-                if (idx === chosenTask.correct) {
+                if (i === chosenTask.correct) {
                     setAnswerStatus(subregion, "correct");
                     stars++;
                     updateStars();
@@ -424,7 +400,7 @@ function startTask(subregion) {
                 }
             };
         } else {
-            btn.onclick = () => handleMultiChoice(idx, btn, chosenTask.correct, subregion);
+            btn.onclick = () => handleMultiChoice(i, btn, chosenTask.correct, subregion);
         }
         answerContainer.appendChild(btn);
     });
@@ -433,20 +409,14 @@ function startTask(subregion) {
 function setAnswerStatus(subregion, result) {
     let tasks = questions[subregion];
     if (Array.isArray(tasks) && tasks.length > 1) {
-        if (subregion === "Die Bewohner") {
-            answeredStatus[subregion][dieBewohnerTaskIndex] = result;
-        } else if (subregion === "Der Markt") {
-            answeredStatus[subregion][marketTaskIndex] = result;
-        } else if (subregion === "Weg") {
-            answeredStatus[subregion][wegTaskIndex] = result;
-        } else if (subregion === "Baum") {
-            answeredStatus[subregion][baumTaskIndex] = result;
-        } else if (subregion === "Fluss aufwärts") {
-            answeredStatus[subregion][flussAufwaertsTaskIndex] = result;
-        } else if (subregion === "Der Hafen") {
-            answeredStatus[subregion][hafenTaskIndex] = result;
-        } else if (subregion === "Fluss abwärts") {
-            answeredStatus[subregion][flussAbwaertsTaskIndex] = result;
+        switch(subregion) {
+          case "Die Bewohner": answeredStatus[subregion][dieBewohnerTaskIndex] = result; break;
+          case "Der Markt": answeredStatus[subregion][marketTaskIndex] = result; break;
+          case "Weg": answeredStatus[subregion][wegTaskIndex] = result; break;
+          case "Baum": answeredStatus[subregion][baumTaskIndex] = result; break;
+          case "Fluss aufwärts": answeredStatus[subregion][flussAufwaertsTaskIndex] = result; break;
+          case "Der Hafen": answeredStatus[subregion][hafenTaskIndex] = result; break;
+          case "Fluss abwärts": answeredStatus[subregion][flussAbwaertsTaskIndex] = result; break;
         }
     } else {
         answeredStatus[subregion] = result;
@@ -456,20 +426,14 @@ function setAnswerStatus(subregion, result) {
 function handleNextTask(subregion) {
     let tasks = questions[subregion];
     if (Array.isArray(tasks) && tasks.length > 1) {
-        if (subregion === "Die Bewohner") {
-            dieBewohnerTaskIndex++;
-        } else if (subregion === "Der Markt") {
-            marketTaskIndex++;
-        } else if (subregion === "Weg") {
-            wegTaskIndex++;
-        } else if (subregion === "Baum") {
-            baumTaskIndex++;
-        } else if (subregion === "Fluss aufwärts") {
-            flussAufwaertsTaskIndex++;
-        } else if (subregion === "Der Hafen") {
-            hafenTaskIndex++;
-        } else if (subregion === "Fluss abwärts") {
-            flussAbwaertsTaskIndex++;
+        switch(subregion) {
+          case "Die Bewohner": dieBewohnerTaskIndex++; break;
+          case "Der Markt": marketTaskIndex++; break;
+          case "Weg": wegTaskIndex++; break;
+          case "Baum": baumTaskIndex++; break;
+          case "Fluss aufwärts": flussAufwaertsTaskIndex++; break;
+          case "Der Hafen": hafenTaskIndex++; break;
+          case "Fluss abwärts": flussAbwaertsTaskIndex++; break;
         }
     }
     if (
@@ -483,20 +447,19 @@ function handleNextTask(subregion) {
     ) {
         setTimeout(() => startTask(subregion), 1000);
     } else {
-        // Wenn alle Aufgaben abgearbeitet wurden, kehre zur Subregionsauswahl zurück
         setTimeout(backToSubregions, 1000);
     }
 }
 
-function handleMultiChoice(index, button, correctAnswers, subregion) {
+function handleMultiChoice(i, button, correctAnswers, subregion) {
     let maxLen = correctAnswers.length;
-    if (selectedAnswers.includes(index)) {
-        selectedAnswers = selectedAnswers.filter(i => i !== index);
+    if (selectedAnswers.includes(i)) {
+        selectedAnswers = selectedAnswers.filter(idx => idx !== i);
         button.style.backgroundColor = "#f0f0f0";
         button.style.color = "black";
     } else {
         if (selectedAnswers.length < maxLen) {
-            selectedAnswers.push(index);
+            selectedAnswers.push(i);
             button.style.backgroundColor = "orange";
             button.style.color = "white";
         } else {
@@ -520,13 +483,13 @@ function handleMultiChoice(index, button, correctAnswers, subregion) {
     }
 }
 
-function setMatchingColors(index, button) {
+function setMatchingColors(i, button) {
     const colors = ["matching-blue", "matching-yellow", "matching-pink", "matching-green"];
     button.classList.remove(...colors);
-    if (selectedAnswers.includes(index)) {
-        selectedAnswers = selectedAnswers.filter(i => i !== index);
+    if (selectedAnswers.includes(i)) {
+        selectedAnswers = selectedAnswers.filter(idx => idx !== i);
     } else {
-        selectedAnswers.push(index);
+        selectedAnswers.push(i);
         let c = colors[selectedAnswers.length % colors.length];
         button.classList.add(c);
     }
@@ -544,7 +507,6 @@ function checkFiveAnswers(correctAnswers) {
         setAnswerStatus(currentSubregion, "wrong");
         alert("Falsch! Keine Wiederholung möglich.");
     }
-    // Hier werden nun weitere Aufgaben abgearbeitet
     setTimeout(() => handleNextTask(currentSubregion), 1000);
 }
 
