@@ -346,7 +346,7 @@ function showEndScreen() {
   document.getElementById("game-screen").style.display = "none";
   document.getElementById("subregion-screen").style.display = "none";
   document.getElementById("task-screen").style.display = "none";
-  // End-Screen anzeigen
+  // End-Screen anzeigen (CSS regelt nun, dass er den kompletten Viewport abdeckt)
   document.getElementById("end-screen").style.display = "flex";
 }
 
@@ -700,20 +700,4 @@ function selectFlussItem(value, button, type) {
  *  STANDARD-FUNKTIONEN (updateStars, backToRegions, backToSubregions)
  ***********************************************************/
 function updateStars() {
-  document.getElementById("stars-count").textContent = stars;
-}
-
-function backToRegions() {
-  document.body.classList.remove("wald-background", "fluss-background");
-  document.getElementById("subregion-screen").style.display = "none";
-  document.getElementById("game-screen").style.display = "block";
-}
-
-function backToSubregions() {
-  if (checkGameComplete()) {
-    showEndScreen();
-  } else {
-    document.getElementById("task-screen").style.display = "none";
-    document.getElementById("subregion-screen").style.display = "block";
-  }
-}
+  document.getElementById("stars-count").textContent = 
