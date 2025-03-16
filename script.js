@@ -638,7 +638,7 @@ function removeColor(term, match) {
 
 function setupMatchingGame(pairs) {
   let container = document.getElementById("answers-container");
-  container.innerHTML = "<p>Verbinde Orange (lateinische Wörter) mit Hellblau (deutsche Bedeutung) per Klick!</p>";
+  container.innerHTML = "";
   selectedTerm = null;
   selectedMatch = null;
   selectedPairs = {};
