@@ -67,21 +67,21 @@ const questions = {
       correct: [0, 3]
     },
     {
-      question: "Konjugiere das Verb 'Sunt' in der richtigen Reihenfolge:",
+      question: "Konjugiere das Verb 'Sunt':",
       ordering: true,
       groups: [
         {
-          prompt: "Konjugiere das Verb 'Sunt':",
+          prompt: "Konjugiere das Verb 'Sunt' in der richtigen Reihenfolge:",
           words: ["sum", "es", "est", "sumus", "estis", "sunt"]
         }
       ]
     },
     {
-      question: "Konjugiere das Verb 'Appellare'in der richtigen Reihenfolge:",
+      question: "Konjugiere das Verb 'Appellare':",
       ordering: true,
       groups: [
         {
-          prompt: "Konjugiere das Verb 'Appellare':",
+          prompt: "Konjugiere das Verb 'Appellare' in der richtigen Reihenfolge:",
           words: ["appello", "appellas", "appellat", "appellamus", "appellatis", "appellant"]
         }
       ]
