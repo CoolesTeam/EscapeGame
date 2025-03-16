@@ -58,12 +58,12 @@ const questions = {
   "Weg": [
     {
       question: "Finde das Relativpronomen und klicke es an.",
-      answers: ["Sunt", "item", "quae", "appellantur"],
+      answers: ["sunt", "item", "quae", "appellantur"],
       correct: 2
     },
     {
       question: "Finde die Verben und klicke sie an.",
-      answers: ["Sunt", "item", "quae", "appellantur", "aleces"],
+      answers: ["sunt", "item", "quae", "appellantur", "aleces"],
       correct: [0, 3]
     },
     {
