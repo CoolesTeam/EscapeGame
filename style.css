@@ -2,7 +2,7 @@
  * GRUNDLAYOUT / HINTERGRUND
  *************************************************************/
 body {
-    font-family: "Comic Sans MS", cursive, sans-serif;
+    font-family: 'Comic Neue', "Comic Sans MS", cursive, sans-serif;
     text-align: center;
     background: url("background.jpg") no-repeat center center fixed;
     background-size: cover;
@@ -11,6 +11,7 @@ body {
     overflow-x: hidden;
     color: black;
 }
+
 
 /*************************************************************
  * ALLGEMEINE SCREEN-REGELN
