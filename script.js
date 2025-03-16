@@ -55,7 +55,7 @@ const subregions = {
  *  FRAGEN & ANTWORTEN
  ***********************************************************/
 const questions = {
-  "'Weg'": [
+  "Weg": [
     {
       question: "Finde das Relativpronomen und klicke es an.",
       answers: ["sunt", "item", "quae", "appellantur"],
@@ -87,7 +87,7 @@ const questions = {
       ]
     }
   ],
-  "'Baum'": [
+  "Baum": [
     {
       question: "Suche das Subjekt des Satzes heraus und klicke es an.",
       sentence: "Est bos cervi figura, cuius a media fronte inter aures unum cornu exsistit excelsius magisque directum his, quae nobis nota sunt cornibus.",
@@ -100,7 +100,7 @@ const questions = {
       correct: 2
     }
   ],
-  "'Die Bewohner'": [
+  "Die Bewohner": [
     {
       question: "Übersetze: Dicebant servos nullis iuribus praeditos esse et penitus a dominis pendere.",
       answers: [
@@ -116,7 +116,7 @@ const questions = {
       correct: 0
     }
   ],
-  "'Der Markt'": [
+  "Der Markt": [
     {
       question: "Klicke die drei Stämme an:",
       sentence: "Gallia est omnis divisa in partes tres, quarum unam incolunt Belgae, aliam Aquitani, tertiam qui ipsorum lingua Celtae, nostra Galli appellantur.",
@@ -129,7 +129,7 @@ const questions = {
       correct: [0, 1]
     }
   ],
-  "'Fluss aufwärts'": [
+  "Fluss aufwärts": [
     {
       question: "Merktext: Frauen trugen einfache Kleider und Röcke, die gerade oder als Glockenrock geschnitten waren. Manche Darstellungen auf römischen Fresken zeigen auch keltische Frauen in Pumpenhosen. Darüber trugen Frauen zuweilen wie die Männer einen Chiton, der jedoch länger war und meist bis zu den Knöcheln reichte. Das obere Ende des Chitons wurde über Brust und Rücken umgeschlagen und mit Fibeln zusammengesteckt.             Welche Art von Kleidung trugen die Frauen laut dem Text?",
       answers: ["Hosen und T-Shirts", "Einfache Kleider und Röcke", "Anzüge"],
@@ -150,7 +150,7 @@ const questions = {
       ]
     }
   ],
-  "'Der Hafen'": [
+  "Der Hafen": [
     {
       question: "Wie wird dieser Stamm beschrieben? Haec civitas longe plurimum totius Galliae.",
       answers: ["der größte Stamm", "der kleinste Stamm", "der mächtigste Stamm"],
@@ -167,7 +167,7 @@ const questions = {
       correct: 1
     }
   ],
-  "'Fluss abwärts'": [
+  "Fluss abwärts": [
     {
       question: "Markiere alle Adjektive.",
       answers: ["publica", "controversiis", "privata", "disciplinae", "magnus", "magno", "omnibus", "interpretantur"],
