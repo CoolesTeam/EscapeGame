@@ -348,6 +348,8 @@ function showEndScreen() {
   document.getElementById("task-screen").style.display = "none";
   // End-Screen anzeigen (über CSS fixiert, mit weißem Hintergrund)
   document.getElementById("end-screen").style.display = "flex";
+  // Endnachricht aktualisieren:
+  document.getElementById("end-message").textContent = `Du hast ${stars} Mispeln gefunden!`;
 }
 
 /***********************************************************
