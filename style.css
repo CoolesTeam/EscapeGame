@@ -67,6 +67,12 @@ body {
 /*************************************************************
  * INTRO-BOX
  *************************************************************/
+.intro-screen {
+  display: flex;
+  align-items: center;      /* Vertikale Zentrierung */
+  justify-content: center;  /* Horizontale Zentrierung */
+  height: 100vh;            /* Volle Höhe des Viewports */
+}
 .intro-box {
     background: rgba(255,255,255,0.95);
     padding: 25px;
@@ -75,7 +81,9 @@ body {
     max-width: 600px;
     text-align: center;
     box-shadow: 0px 4px 10px rgba(0,0,0,0.5);
+    margin: auto;
 }
+
 
 /*************************************************************
  * SCREEN-STILE
