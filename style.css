@@ -164,7 +164,7 @@ body {
 }
 
 /*************************************************************
- * ENDBILD: End-Screen-Style (fixiert, ohne Hintergrundbild)
+ * ENDBILD: End-Screen-Style (fixiert, weißer Hintergrund)
  *************************************************************/
 #end-screen {
     display: none;
@@ -177,6 +177,12 @@ body {
     z-index: 2000;
     align-items: center;
     justify-content: center;
+}
+
+/* Begrenze die Bildgröße im End-Screen */
+#end-screen img {
+    max-width: 90%;
+    max-height: 90%;
 }
 
 /*************************************************************
