@@ -15,31 +15,22 @@ body {
 /*************************************************************
  * ALLGEMEINE SCREEN-REGELN
  *************************************************************/
-/* Alle Screens werden als Flex-Container zentriert */
 .screen {
     width: 100%;
     min-height: 100vh;
+    /* Zentriert alle Screens als Flex-Container */
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
 }
-
-/* Speziell für den Welcome-Screen: volle Höhe und klare Zentrierung */
-.welcome-screen {
-    display: flex;
-    flex-direction: column;
+.welcome-screen { 
+    display: flex; 
+    height: 100vh; 
     align-items: center;
     justify-content: center;
     text-align: center;
-    height: 100vh;
 }
-
-/* Falls du den Text innerhalb der h1 noch zentriert haben möchtest */
-.title-text {
-    text-align: center;
-}
-
 .intro-screen, .game-screen, .subregion-screen, .task-screen, #end-screen { display: none; }
 
 /*************************************************************
@@ -170,19 +161,6 @@ body {
     padding: 5px 10px;
     border-radius: 5px;
     margin: 10px auto;
-}
-
-/*************************************************************
- * NEUE KLASSE FÜR SÄTZE (weiß transparenter Hintergrund)
- *************************************************************/
-.sentence-text {
-    display: block;
-    background: rgba(255, 255, 255, 0.8);
-    padding: 10px 15px;
-    border-radius: 5px;
-    margin: 10px auto;
-    width: fit-content;
-    font-style: italic;
 }
 
 /*************************************************************
