@@ -209,7 +209,7 @@ body {
 #end-message {
     position: absolute;
     bottom: 20px;
-    left: 40%;
+    left: 45%;
     transform: translateX(-50%);
     font-size: 1.5em;
     font-weight: 700;
