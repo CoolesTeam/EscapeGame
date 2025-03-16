@@ -67,7 +67,7 @@ const questions = {
       correct: [0, 3]
     },
     {
-      question: "Konjugiere das Verb 'Sunt':",
+      question: "Konjugiere das Verb 'Sunt' in der richtigen Reihenfolge:",
       ordering: true,
       groups: [
         {
@@ -77,7 +77,7 @@ const questions = {
       ]
     },
     {
-      question: "Konjugiere das Verb 'Appellare':",
+      question: "Konjugiere das Verb 'Appellare'in der richtigen Reihenfolge:",
       ordering: true,
       groups: [
         {
