@@ -12,7 +12,6 @@ body {
     color: black;
 }
 
-
 /*************************************************************
  * ALLGEMEINE SCREEN-REGELN
  *************************************************************/
@@ -32,7 +31,7 @@ body {
     justify-content: center;
     text-align: center;
 }
-.intro-screen, .game-screen, .subregion-screen, .task-screen, #end-screen { display: none; }
+.intro-screen, .game-screen, .subregion-screen, .task-screen { display: none; }
 
 /*************************************************************
  * OBEN RECHTS: MISPEL-ANZEIGE
@@ -81,7 +80,7 @@ body {
 /*************************************************************
  * SCREEN-STILE
  *************************************************************/
-.welcome-screen, .intro-screen, .game-screen, .subregion-screen, .task-screen, #end-screen {
+.welcome-screen, .intro-screen, .game-screen, .subregion-screen, .task-screen {
     padding: 20px;
 }
 
@@ -162,6 +161,22 @@ body {
     padding: 5px 10px;
     border-radius: 5px;
     margin: 10px auto;
+}
+
+/*************************************************************
+ * ENDBILD: End-Screen-Style (fixiert, ohne Hintergrundbild)
+ *************************************************************/
+#end-screen {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #fff;
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
 }
 
 /*************************************************************
