@@ -205,6 +205,15 @@ body {
     max-height: 90%;
 }
 
+/* Endnachricht: Positionierbar in der rechten Ecke; hier über CSS anpassbar */
+#end-message {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    font-size: 1.5em;
+    color: #333;
+}
+
 /*************************************************************
  * RESPONSIVE DESIGN
  *************************************************************/
