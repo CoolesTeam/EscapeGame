@@ -67,21 +67,21 @@ const questions = {
       correct: [0, 3]
     },
     {
-      question: "Konjugiere das Verb 'sunt':",
+      question: "Konjugiere das Verb 'Sunt':",
       ordering: true,
       groups: [
         {
-          prompt: "Konjugiere das Verb 'sunt':",
+          prompt: "Konjugiere das Verb 'Sunt':",
           words: ["sum", "es", "est", "sumus", "estis", "sunt"]
         }
       ]
     },
     {
-      question: "Konjugiere das Verb 'appellare':",
+      question: "Konjugiere das Verb 'Appellare':",
       ordering: true,
       groups: [
         {
-          prompt: "Konjugiere das Verb 'appellare':",
+          prompt: "Konjugiere das Verb 'Appellare':",
           words: ["appello", "appellas", "appellat", "appellamus", "appellatis", "appellant"]
         }
       ]
@@ -131,7 +131,7 @@ const questions = {
   ],
   "Fluss aufwärts": [
     {
-      question: "Merktext: Frauen trugen einfache Kleider und Röcke, die gerade oder als Glockenrock geschnitten waren. Manche Darstellungen auf römischen Fresken zeigen auch keltische Frauen in Pumpenhosen. Darüber trugen Frauen zuweilen wie die Männer einen Chiton, der jedoch länger war und meist bis zu den Knöcheln reichte. Das obere Ende des Chitons wurde über Brust und Rücken umgeschlagen und mit Fibeln zusammengesteckt.             Welche Art von Kleidung trugen die Frauen laut dem Text?",
+      question: "Merktext: Frauen trugen einfache Kleider und Röcke, die gerade oder als Glockenrock geschnitten waren. Manche Darstellungen auf römischen Fresken zeigen auch keltische Frauen in Pumpenhosen. Darüber trugen Frauen zuweilen wie die Männer einen Chiton, der jedoch länger war und meist bis zu den Knöcheln reichte. Das obere Ende des Chitons wurde über Brust und Rücken umgeschlagen und mit Fibeln zusammengesteckt. Welche Art von Kleidung trugen die Frauen laut dem Text?",
       answers: ["Hosen und T-Shirts", "Einfache Kleider und Röcke", "Anzüge"],
       correct: 1
     },
@@ -157,7 +157,7 @@ const questions = {
       correct: 2
     },
     {
-      question: "Krieger: Einheitliche Uniformen wie die der Römer gab es bei den Galliern nicht. Manche hochgestellten Krieger trugen bronzene Brustpanzer, doch ein so großes metallisches Objekt ist recht teuer. Die meisten Krieger haben wohl in ihrer Alltagskleidung gekämpft, natürlich ergänzt um Schwert und Schild, der Standardausrüstung für den gallischen Kämpfer.  Was trugen die hochgestellten Krieger der Gallier laut dem Text?",
+      question: "Krieger: Einheitliche Uniformen wie die der Römer gab es bei den Galliern nicht. Manche hochgestellten Krieger trugen bronzene Brustpanzer, doch ein so großes metallisches Objekt ist recht teuer. Die meisten Krieger haben wohl in ihrer Alltagskleidung gekämpft, natürlich ergänzt um Schwert und Schild, der Standardausrüstung für den gallischen Kämpfer. Was trugen die hochgestellten Krieger der Gallier laut dem Text?",
       answers: ["Einheitliche Uniformen & Schwerter", "Bronzene Brustpanzer", "Roben"],
       correct: 1
     },
@@ -174,7 +174,7 @@ const questions = {
       correct: [0, 2, 4, 5, 6]
     },
     {
-      question: "Ranglisten: Die Gesellschaft der Gallier war stark hierarchisch strukturiert. An der Spitze standen die Druiden, die nicht nur religiöse Führer, sondern auch politische Berater und Lehrer waren. Ihnen folgten die Kriegshäuptlinge, die militärische Anführer der Stämme darstellten. Die breite Masse bestand aus Bauern und Handwerkern, während Sklaven am unteren Ende der sozialen Hierarchie standen.            Wer stand an der Spitze der gallischen Gesellschaft?",
+      question: "Ranglisten: Die Gesellschaft der Gallier war stark hierarchisch strukturiert. An der Spitze standen die Druiden, die nicht nur religiöse Führer, sondern auch politische Berater und Lehrer waren. Ihnen folgten die Kriegshäuptlinge, die militärische Anführer der Stämme darstellten. Die breite Masse bestand aus Bauern und Handwerkern, während Sklaven am unteren Ende der sozialen Hierarchie standen. Wer stand an der Spitze der gallischen Gesellschaft?",
       answers: ["Die Bauern", "Die Sklaven", "Die Druiden"],
       correct: 2
     },
@@ -415,7 +415,16 @@ function startTask(subregion) {
     return;
   }
   let chosenTask = tasks[idx];
-  document.getElementById("task-title").textContent = `Aufgabe in ${subregion}`;
+  
+  // Hier den Titel mit entsprechendem Präfix und kursivem Subregionsnamen setzen
+  let prefix = "";
+  if (subregion === "Weg" || subregion === "Baum" || subregion === "Fluss aufwärts" || subregion === "Fluss abwärts") {
+    prefix = "Aufgabe in ";
+  } else if (subregion === "Der Markt" || subregion === "Die Bewohner" || subregion === "Der Hafen") {
+    prefix = "Aufgabe ";
+  }
+  document.getElementById("task-title").innerHTML = prefix + "<em>" + subregion + "</em>";
+  
   document.getElementById("question-text").textContent = chosenTask.question;
   let answerContainer = document.getElementById("answers-container");
   answerContainer.innerHTML = "";
