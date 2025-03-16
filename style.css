@@ -208,12 +208,14 @@ body {
 /* Endnachricht: Positionierbar in der rechten Ecke; hier über CSS anpassbar */
 #end-message {
     position: absolute;
-    right: 20px;
-    top: 20px;
-    font-size: 2.5em;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 1.5em;
     font-weight: 700;
     color: #990000;
 }
+
 
 /*************************************************************
  * RESPONSIVE DESIGN
