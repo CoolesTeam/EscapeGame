@@ -420,7 +420,7 @@ function startTask(subregion) {
   selectedAnswers = [];
   if (chosenTask.sentence) {
     let p = document.createElement("p");
-    p.style.fontStyle = "italic";
+    p.className = "sentence-text";
     p.textContent = chosenTask.sentence;
     answerContainer.appendChild(p);
   }
@@ -638,7 +638,7 @@ function removeColor(term, match) {
 
 function setupMatchingGame(pairs) {
   let container = document.getElementById("answers-container");
-  container.innerHTML = "";
+  container.innerHTML = "<p>Verbinde Orange (lateinische Wörter) mit Hellblau (deutsche Bedeutung) per Klick!</p>";
   selectedTerm = null;
   selectedMatch = null;
   selectedPairs = {};
